@@ -117,7 +117,7 @@ export default function MockTestPage() {
           ) : tests.length > 0 ? (
             <div className="space-y-3">
               {tests.map((test) => (
-                <Button key={test._id} className="w-full" size="lg" render={<Link href={`/exam/${test._id}`} />}>
+                <Button key={test._id} className="w-full" size="lg" render={<Link href={`/exam/${test._id}`} target="_blank" />}>
                     Start {test.title}{" "}
                     <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>

@@ -164,7 +164,7 @@ function FoundationContent() {
                               {Math.floor(test.duration / 60)} Minutes
                             </p>
                           </div>
-                          <Button render={<Link href={`/exam/${test._id}`} />}>
+                          <Button render={<Link href={`/exam/${test._id}`} target="_blank" />}>
                               Start <ArrowRight className="ml-1 h-4 w-4" />
                           </Button>
                         </CardContent>

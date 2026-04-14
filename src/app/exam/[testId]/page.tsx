@@ -51,7 +51,13 @@ export default function ExamPage() {
 
     try {
       await submitAttempt(attemptId);
-      router.push(`/results/${attemptId}`);
+      // Navigate to results — if opened in new window, open results in opener and close
+      if (window.opener && !window.opener.closed) {
+        window.opener.location.href = `/results/${attemptId}`;
+        window.close();
+      } else {
+        router.push(`/results/${attemptId}`);
+      }
     } catch {
       toast.error("Failed to submit test. Please try again.");
     }

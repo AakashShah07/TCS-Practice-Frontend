@@ -89,7 +89,7 @@ export default function TopicPracticePage() {
       const test = await generatePracticeTest(practiceParams);
       // Start attempt for the generated test
       const attempt = await startAttempt(test.testId);
-      router.push(`/exam/${test.testId}`);
+      window.open(`/exam/${test.testId}`, "_blank");
     } catch {
       toast.error("Failed to generate practice test. Try again.");
     } finally {
