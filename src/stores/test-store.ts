@@ -1,243 +1,236 @@
 "use client";
 
 import { create } from "zustand";
-import type { Question, Section, Answer } from "@/lib/api/types";
+import type { Question, Section } from "@/lib/api/types";
+
+export type QuestionStatus =
+  | "not_visited"
+  | "not_answered"
+  | "answered"
+  | "marked_for_review";
+
+interface ResponseState {
+  selectedAnswer: number | null;
+  status: QuestionStatus;
+  timeSpent: number;
+}
 
 interface TestState {
+  attemptId: string | null;
   testId: string | null;
+  testTitle: string;
   questions: Question[];
   sections: { name: Section; startIndex: number; endIndex: number }[];
   currentQuestionIndex: number;
   currentSection: Section;
-  answers: Record<string, Answer>;
-  visited: Record<string, boolean>;
-  markedForReview: Record<string, boolean>;
-  timer: number; // seconds remaining
+  responses: ResponseState[];
+  timer: number;
   totalDuration: number;
   startedAt: string | null;
   isSubmitted: boolean;
   tabSwitchCount: number;
+  questionEnteredAt: number; // timestamp when user entered current question
 
   // Actions
-  initTest: (testId: string, questions: Question[], duration: number, sections: { name: Section; startIndex: number; endIndex: number }[]) => void;
-  setAnswer: (questionId: string, selectedOption: number) => void;
-  clearAnswer: (questionId: string) => void;
-  markForReview: (questionId: string) => void;
-  unmarkForReview: (questionId: string) => void;
-  visitQuestion: (questionId: string) => void;
-  goToQuestion: (index: number) => void;
-  nextQuestion: () => void;
-  prevQuestion: () => void;
-  setSection: (section: Section) => void;
+  initTest: (params: {
+    attemptId: string;
+    testId: string;
+    testTitle: string;
+    questions: Question[];
+    duration: number;
+    sections: { name: Section; startIndex: number; endIndex: number }[];
+    responses?: ResponseState[];
+    currentQuestion?: number;
+    tabSwitchCount?: number;
+    timer?: number;
+  }) => void;
+  setAnswer: (index: number, selectedAnswer: number) => void;
+  clearAnswer: (index: number) => void;
+  markForReview: (index: number) => void;
+  goToQuestion: (index: number) => number; // returns time spent on previous question
+  nextQuestion: () => number;
+  prevQuestion: () => number;
+  setSection: (section: Section) => number;
   decrementTimer: () => void;
   setSubmitted: () => void;
   incrementTabSwitch: () => void;
-  updateTimeSpent: (questionId: string, time: number) => void;
+  getStatus: (index: number) => QuestionStatus;
+  getAnsweredCount: () => number;
   resetTest: () => void;
-  saveToLocalStorage: () => void;
-  loadFromLocalStorage: (testId: string) => boolean;
 }
 
 const initialState = {
+  attemptId: null,
   testId: null,
+  testTitle: "",
   questions: [],
   sections: [],
   currentQuestionIndex: 0,
   currentSection: "numerical" as Section,
-  answers: {},
-  visited: {},
-  markedForReview: {},
+  responses: [],
   timer: 0,
   totalDuration: 0,
   startedAt: null,
   isSubmitted: false,
   tabSwitchCount: 0,
+  questionEnteredAt: Date.now(),
 };
 
 export const useTestStore = create<TestState>((set, get) => ({
   ...initialState,
 
-  initTest: (testId, questions, duration, sections) => {
-    const firstQuestion = questions[0];
+  initTest: (params) => {
+    const defaultResponses = params.questions.map(() => ({
+      selectedAnswer: null,
+      status: "not_visited" as QuestionStatus,
+      timeSpent: 0,
+    }));
+
+    // Mark first question as visited
+    const responses = params.responses || defaultResponses;
+    const currentIdx = params.currentQuestion || 0;
+    if (responses[currentIdx] && responses[currentIdx].status === "not_visited") {
+      responses[currentIdx].status = "not_answered";
+    }
+
+    const firstSection =
+      params.questions[currentIdx]?.section || "numerical";
+
     set({
-      testId,
-      questions,
-      sections,
-      currentQuestionIndex: 0,
-      currentSection: firstQuestion?.section || "numerical",
-      answers: {},
-      visited: firstQuestion ? { [firstQuestion.id]: true } : {},
-      markedForReview: {},
-      timer: duration,
-      totalDuration: duration,
+      attemptId: params.attemptId,
+      testId: params.testId,
+      testTitle: params.testTitle,
+      questions: params.questions,
+      sections: params.sections,
+      currentQuestionIndex: currentIdx,
+      currentSection: firstSection,
+      responses,
+      timer: params.timer ?? params.duration,
+      totalDuration: params.duration,
       startedAt: new Date().toISOString(),
       isSubmitted: false,
-      tabSwitchCount: 0,
+      tabSwitchCount: params.tabSwitchCount || 0,
+      questionEnteredAt: Date.now(),
     });
   },
 
-  setAnswer: (questionId, selectedOption) => {
-    const { answers } = get();
-    const existing = answers[questionId];
-    set({
-      answers: {
-        ...answers,
-        [questionId]: {
-          questionId,
-          selectedOption,
-          timeSpent: existing?.timeSpent || 0,
-        },
-      },
-    });
-    get().saveToLocalStorage();
+  setAnswer: (index, selectedAnswer) => {
+    const responses = [...get().responses];
+    if (responses[index]) {
+      responses[index] = {
+        ...responses[index],
+        selectedAnswer,
+        status: "answered",
+      };
+      set({ responses });
+    }
   },
 
-  clearAnswer: (questionId) => {
-    const { answers } = get();
-    set({
-      answers: {
-        ...answers,
-        [questionId]: {
-          questionId,
-          selectedOption: null,
-          timeSpent: answers[questionId]?.timeSpent || 0,
-        },
-      },
-    });
-    get().saveToLocalStorage();
+  clearAnswer: (index) => {
+    const responses = [...get().responses];
+    if (responses[index]) {
+      responses[index] = {
+        ...responses[index],
+        selectedAnswer: null,
+        status: "not_answered",
+      };
+      set({ responses });
+    }
   },
 
-  markForReview: (questionId) => {
-    set({ markedForReview: { ...get().markedForReview, [questionId]: true } });
-    get().saveToLocalStorage();
-  },
-
-  unmarkForReview: (questionId) => {
-    const updated = { ...get().markedForReview };
-    delete updated[questionId];
-    set({ markedForReview: updated });
-    get().saveToLocalStorage();
-  },
-
-  visitQuestion: (questionId) => {
-    set({ visited: { ...get().visited, [questionId]: true } });
-    get().saveToLocalStorage();
+  markForReview: (index) => {
+    const responses = [...get().responses];
+    if (responses[index]) {
+      responses[index] = {
+        ...responses[index],
+        status: "marked_for_review",
+      };
+      set({ responses });
+    }
   },
 
   goToQuestion: (index) => {
-    const { questions } = get();
-    if (index >= 0 && index < questions.length) {
-      const question = questions[index];
-      set({
-        currentQuestionIndex: index,
-        currentSection: question.section,
-        visited: { ...get().visited, [question.id]: true },
-      });
-      get().saveToLocalStorage();
+    const { currentQuestionIndex, responses, questions, questionEnteredAt } =
+      get();
+    if (index < 0 || index >= questions.length) return 0;
+
+    // Calculate time spent on previous question
+    const timeSpent = Math.floor((Date.now() - questionEnteredAt) / 1000);
+
+    // Update time on current question
+    const updatedResponses = [...responses];
+    if (updatedResponses[currentQuestionIndex]) {
+      updatedResponses[currentQuestionIndex] = {
+        ...updatedResponses[currentQuestionIndex],
+        timeSpent:
+          updatedResponses[currentQuestionIndex].timeSpent + timeSpent,
+      };
     }
+
+    // Mark new question as visited
+    if (
+      updatedResponses[index] &&
+      updatedResponses[index].status === "not_visited"
+    ) {
+      updatedResponses[index] = {
+        ...updatedResponses[index],
+        status: "not_answered",
+      };
+    }
+
+    set({
+      responses: updatedResponses,
+      currentQuestionIndex: index,
+      currentSection: questions[index].section,
+      questionEnteredAt: Date.now(),
+    });
+
+    return timeSpent;
   },
 
   nextQuestion: () => {
     const { currentQuestionIndex, questions } = get();
     if (currentQuestionIndex < questions.length - 1) {
-      get().goToQuestion(currentQuestionIndex + 1);
+      return get().goToQuestion(currentQuestionIndex + 1);
     }
+    return 0;
   },
 
   prevQuestion: () => {
     const { currentQuestionIndex } = get();
     if (currentQuestionIndex > 0) {
-      get().goToQuestion(currentQuestionIndex - 1);
+      return get().goToQuestion(currentQuestionIndex - 1);
     }
+    return 0;
   },
 
   setSection: (section) => {
-    const { sections, questions } = get();
+    const { sections, questions, currentQuestionIndex } = get();
     const sectionInfo = sections.find((s) => s.name === section);
     if (sectionInfo) {
-      const question = questions[sectionInfo.startIndex];
-      set({
-        currentSection: section,
-        currentQuestionIndex: sectionInfo.startIndex,
-        visited: { ...get().visited, [question.id]: true },
-      });
-      get().saveToLocalStorage();
+      return get().goToQuestion(sectionInfo.startIndex);
     }
+    return 0;
   },
 
   decrementTimer: () => {
     const { timer } = get();
-    if (timer > 0) {
-      set({ timer: timer - 1 });
-    }
+    if (timer > 0) set({ timer: timer - 1 });
   },
 
-  setSubmitted: () => {
-    set({ isSubmitted: true });
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(`test_state_${get().testId}`);
-    }
+  setSubmitted: () => set({ isSubmitted: true }),
+
+  incrementTabSwitch: () =>
+    set({ tabSwitchCount: get().tabSwitchCount + 1 }),
+
+  getStatus: (index) => {
+    const { responses } = get();
+    return responses[index]?.status || "not_visited";
   },
 
-  incrementTabSwitch: () => {
-    set({ tabSwitchCount: get().tabSwitchCount + 1 });
-  },
-
-  updateTimeSpent: (questionId, time) => {
-    const { answers } = get();
-    const existing = answers[questionId];
-    set({
-      answers: {
-        ...answers,
-        [questionId]: {
-          questionId,
-          selectedOption: existing?.selectedOption ?? null,
-          timeSpent: (existing?.timeSpent || 0) + time,
-        },
-      },
-    });
+  getAnsweredCount: () => {
+    return get().responses.filter((r) => r.status === "answered").length;
   },
 
   resetTest: () => set(initialState),
-
-  saveToLocalStorage: () => {
-    if (typeof window === "undefined") return;
-    const state = get();
-    const saveData = {
-      testId: state.testId,
-      currentQuestionIndex: state.currentQuestionIndex,
-      currentSection: state.currentSection,
-      answers: state.answers,
-      visited: state.visited,
-      markedForReview: state.markedForReview,
-      timer: state.timer,
-      totalDuration: state.totalDuration,
-      startedAt: state.startedAt,
-      tabSwitchCount: state.tabSwitchCount,
-    };
-    localStorage.setItem(`test_state_${state.testId}`, JSON.stringify(saveData));
-  },
-
-  loadFromLocalStorage: (testId) => {
-    if (typeof window === "undefined") return false;
-    const saved = localStorage.getItem(`test_state_${testId}`);
-    if (!saved) return false;
-    try {
-      const data = JSON.parse(saved);
-      set({
-        currentQuestionIndex: data.currentQuestionIndex,
-        currentSection: data.currentSection,
-        answers: data.answers,
-        visited: data.visited,
-        markedForReview: data.markedForReview,
-        timer: data.timer,
-        totalDuration: data.totalDuration,
-        startedAt: data.startedAt,
-        tabSwitchCount: data.tabSwitchCount,
-      });
-      return true;
-    } catch {
-      return false;
-    }
-  },
 }));

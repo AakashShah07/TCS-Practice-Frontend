@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Trophy,
@@ -22,10 +22,18 @@ import { Button } from "@/components/ui/button";
 import PerformanceCharts from "@/components/analytics/PerformanceCharts";
 import TopicIntelligence from "@/components/analytics/TopicIntelligence";
 import TopicStrengths from "@/components/analytics/TopicStrengths";
-import { useProgressStore } from "@/stores/progress-store";
-import { fetchAnalytics } from "@/lib/api/analytics";
-import { generateRecommendations } from "@/lib/recommendations";
-import type { Recommendation } from "@/lib/api/types";
+import {
+  fetchDashboardAnalytics,
+  fetchTopicStats,
+  fetchRecommendations,
+  fetchTrends,
+} from "@/lib/api/analytics";
+import type {
+  DashboardAnalytics,
+  TopicStat,
+  Recommendation,
+  TrendData,
+} from "@/lib/api/types";
 
 function formatTime(seconds: number) {
   const hours = Math.floor(seconds / 3600);
@@ -40,48 +48,44 @@ const priorityColors: Record<string, string> = {
   low: "border-blue-200 bg-blue-50",
 };
 
-const typeIcons: Record<string, string> = {
+const typeLabels: Record<string, string> = {
   revise: "Revise",
-  practice: "Practice",
   focus: "Focus",
+  strength: "Strength",
   speed: "Speed",
 };
 
 export default function AnalyticsPage() {
-  const {
-    analyticsData,
-    isLoadingAnalytics,
-    setAnalyticsData,
-    setLoadingAnalytics,
-  } = useProgressStore();
+  const [dashboard, setDashboard] = useState<DashboardAnalytics | null>(null);
+  const [topicStats, setTopicStats] = useState<TopicStat[]>([]);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [trends, setTrends] = useState<TrendData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
-      setLoadingAnalytics(true);
+      setLoading(true);
       try {
-        const data = await fetchAnalytics();
-        // Generate client-side recommendations
-        const recs = generateRecommendations(
-          data.topicStats,
-          data.sectionPerformance
-        );
-        setAnalyticsData({
-          ...data,
-          recommendations:
-            data.recommendations.length > 0
-              ? data.recommendations
-              : recs,
-        });
+        const [dashData, topics, recs, trendData] = await Promise.all([
+          fetchDashboardAnalytics(),
+          fetchTopicStats(),
+          fetchRecommendations(),
+          fetchTrends(),
+        ]);
+        setDashboard(dashData);
+        setTopicStats(topics);
+        setRecommendations(recs);
+        setTrends(trendData);
       } catch {
         // API not ready
       } finally {
-        setLoadingAnalytics(false);
+        setLoading(false);
       }
     }
     load();
-  }, [setAnalyticsData, setLoadingAnalytics]);
+  }, []);
 
-  if (isLoadingAnalytics) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -89,7 +93,7 @@ export default function AnalyticsPage() {
     );
   }
 
-  if (!analyticsData) {
+  if (!dashboard) {
     return (
       <div className="text-center py-20 space-y-4">
         <Trophy className="h-12 w-12 text-muted-foreground mx-auto" />
@@ -98,13 +102,42 @@ export default function AnalyticsPage() {
           Complete some tests to see your performance analytics
         </p>
         <Button render={<Link href="/tests" />}>
-            Take a Test <ArrowRight className="ml-1 h-4 w-4" />
+          Take a Test <ArrowRight className="ml-1 h-4 w-4" />
         </Button>
       </div>
     );
   }
 
-  const data = analyticsData;
+  // Derive strong/weak topics from topicStats
+  const strongTopics = topicStats
+    .filter((t) => t.confidence === "strong")
+    .map((t) => t.topic);
+  const weakTopics = topicStats
+    .filter((t) => t.confidence === "weak")
+    .map((t) => t.topic);
+
+  // Build chart data from trends
+  const scoreHistory = (trends?.scoreHistory || []).map((h) => ({
+    date: new Date(h.date).toLocaleDateString(),
+    score: h.percentage,
+  }));
+  const accuracyHistory = scoreHistory.map((h) => ({
+    date: h.date,
+    accuracy: h.score,
+  }));
+
+  // Build section performance from dashboard
+  const sectionPerformance = Object.entries(dashboard.sectionPerformance).map(
+    ([section, perf]) => ({
+      section,
+      accuracy:
+        perf.totalQuestions > 0
+          ? Math.round((perf.totalCorrect / perf.totalQuestions) * 100)
+          : 0,
+      testsCount: perf.attempts,
+      improvement: 0,
+    })
+  );
 
   return (
     <div className="space-y-8">
@@ -124,7 +157,7 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {Math.round(data.averageScore)}%
+              {Math.round(dashboard.avgScore)}%
             </div>
           </CardContent>
         </Card>
@@ -134,7 +167,7 @@ export default function AnalyticsPage() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.totalTests}</div>
+            <div className="text-2xl font-bold">{dashboard.totalTests}</div>
           </CardContent>
         </Card>
         <Card>
@@ -144,7 +177,7 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {Math.round(data.accuracyRate)}%
+              {Math.round(dashboard.avgAccuracy)}%
             </div>
           </CardContent>
         </Card>
@@ -157,7 +190,7 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {formatTime(data.totalTimePracticed)}
+              {formatTime(dashboard.totalTimeSpent)}
             </div>
           </CardContent>
         </Card>
@@ -165,24 +198,21 @@ export default function AnalyticsPage() {
 
       {/* Performance Charts */}
       <PerformanceCharts
-        scoreHistory={data.scoreHistory}
-        accuracyHistory={data.accuracyHistory}
-        sectionPerformance={data.sectionPerformance}
+        scoreHistory={scoreHistory}
+        accuracyHistory={accuracyHistory}
+        sectionPerformance={sectionPerformance}
       />
 
       {/* Topic Intelligence */}
-      {data.topicStats.length > 0 && (
-        <TopicIntelligence topicStats={data.topicStats} />
+      {topicStats.length > 0 && (
+        <TopicIntelligence topicStats={topicStats} />
       )}
 
       {/* Strengths & Weaknesses */}
-      <TopicStrengths
-        strongTopics={data.strongTopics}
-        weakTopics={data.weakTopics}
-      />
+      <TopicStrengths strongTopics={strongTopics} weakTopics={weakTopics} />
 
       {/* Smart Recommendations */}
-      {data.recommendations.length > 0 && (
+      {recommendations.length > 0 && (
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -194,13 +224,13 @@ export default function AnalyticsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {data.recommendations.map((rec: Recommendation) => (
+            {recommendations.map((rec, index) => (
               <div
-                key={rec.id}
+                key={index}
                 className={`flex items-start gap-3 p-3 rounded-lg border ${priorityColors[rec.priority]}`}
               >
                 <Badge variant="outline" className="shrink-0 text-xs mt-0.5">
-                  {typeIcons[rec.type] || rec.type}
+                  {typeLabels[rec.type] || rec.type}
                 </Badge>
                 <div className="flex-1">
                   <p className="text-sm">{rec.message}</p>
@@ -209,15 +239,21 @@ export default function AnalyticsPage() {
                       variant="link"
                       size="sm"
                       className="h-auto p-0 mt-1"
-                      render={<Link href={`/practice?section=${rec.section}`} />}
+                      render={
+                        <Link
+                          href={`/practice?section=${rec.section || "numerical"}`}
+                        />
+                      }
                     >
-                        Practice {rec.topic}{" "}
-                        <ArrowRight className="ml-1 h-3 w-3" />
+                      Practice {rec.topic}{" "}
+                      <ArrowRight className="ml-1 h-3 w-3" />
                     </Button>
                   )}
                 </div>
                 <Badge
-                  variant={rec.priority === "high" ? "destructive" : "secondary"}
+                  variant={
+                    rec.priority === "high" ? "destructive" : "secondary"
+                  }
                   className="text-xs shrink-0"
                 >
                   {rec.priority}

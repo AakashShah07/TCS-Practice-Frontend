@@ -1,50 +1,37 @@
 "use client";
 
 import { useTestStore } from "@/stores/test-store";
+import { navigate } from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
 
 export default function QuestionPalette() {
   const {
+    attemptId,
     questions,
     currentQuestionIndex,
-    answers,
-    visited,
-    markedForReview,
+    responses,
     goToQuestion,
+    getStatus,
   } = useTestStore();
-
-  function getStatus(index: number) {
-    const q = questions[index];
-    if (!q) return "not-visited";
-    const answer = answers[q.id];
-    const isVisited = visited[q.id];
-    const isMarked = markedForReview[q.id];
-    const isAnswered = answer?.selectedOption !== null && answer?.selectedOption !== undefined;
-
-    if (isMarked && isAnswered) return "marked-answered";
-    if (isMarked) return "marked";
-    if (isAnswered) return "answered";
-    if (isVisited) return "not-answered";
-    return "not-visited";
-  }
 
   const statusStyles: Record<string, string> = {
     answered: "bg-green-500 text-white hover:bg-green-600",
-    "not-answered": "bg-red-500 text-white hover:bg-red-600",
-    "not-visited": "bg-gray-200 text-gray-700 hover:bg-gray-300",
-    marked: "bg-yellow-400 text-yellow-900 hover:bg-yellow-500",
-    "marked-answered":
-      "bg-yellow-400 text-yellow-900 ring-2 ring-green-500 hover:bg-yellow-500",
+    not_answered: "bg-red-500 text-white hover:bg-red-600",
+    not_visited: "bg-gray-200 text-gray-700 hover:bg-gray-300",
+    marked_for_review: "bg-yellow-400 text-yellow-900 hover:bg-yellow-500",
   };
 
-  const answeredCount = questions.filter(
-    (q) => answers[q.id]?.selectedOption !== null && answers[q.id]?.selectedOption !== undefined
-  ).length;
-  const notAnsweredCount = questions.filter(
-    (q) => visited[q.id] && (answers[q.id]?.selectedOption === null || answers[q.id]?.selectedOption === undefined)
-  ).length;
-  const notVisitedCount = questions.filter((q) => !visited[q.id]).length;
-  const markedCount = Object.keys(markedForReview).length;
+  const answeredCount = responses.filter((r) => r.status === "answered").length;
+  const notAnsweredCount = responses.filter((r) => r.status === "not_answered").length;
+  const notVisitedCount = responses.filter((r) => r.status === "not_visited").length;
+  const markedCount = responses.filter((r) => r.status === "marked_for_review").length;
+
+  function handleGoToQuestion(index: number) {
+    const timeSpent = goToQuestion(index);
+    if (attemptId) {
+      navigate(attemptId, index, currentQuestionIndex, timeSpent, questions[index]?.section).catch(() => {});
+    }
+  }
 
   return (
     <div className="w-64 border-l bg-background flex flex-col h-full overflow-hidden">
@@ -82,10 +69,10 @@ export default function QuestionPalette() {
             return (
               <button
                 key={index}
-                onClick={() => goToQuestion(index)}
+                onClick={() => handleGoToQuestion(index)}
                 className={cn(
                   "w-9 h-9 rounded text-xs font-medium transition-all",
-                  statusStyles[status],
+                  statusStyles[status] || statusStyles.not_visited,
                   isCurrent && "ring-2 ring-primary ring-offset-1"
                 )}
               >

@@ -25,9 +25,9 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
   const {
     timer,
     questions,
-    answers,
     currentQuestionIndex,
     currentSection,
+    getAnsweredCount,
   } = useTestStore();
 
   const minutes = Math.floor(timer / 60);
@@ -35,14 +35,12 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
   const isLowTime = timer <= 300; // 5 minutes
   const isCriticalTime = timer <= 60;
 
-  const answeredCount = Object.values(answers).filter(
-    (a) => a.selectedOption !== null
-  ).length;
+  const answeredCount = getAnsweredCount();
   const unattempted = questions.length - answeredCount;
 
   const sectionLabels: Record<string, string> = {
     numerical: "Numerical Ability",
-    logical: "Logical Reasoning",
+    reasoning: "Reasoning Ability",
     verbal: "Verbal Ability",
     advanced: "Advanced",
   };

@@ -12,7 +12,7 @@ import type { SectionResult } from "@/lib/api/types";
 
 const sectionLabels: Record<string, string> = {
   numerical: "Numerical Ability",
-  logical: "Logical Reasoning",
+  reasoning: "Reasoning Ability",
   verbal: "Verbal Ability",
   advanced: "Advanced",
 };
@@ -63,19 +63,6 @@ export default function SectionAnalysis({ sections }: Props) {
                 </p>
               </div>
             </div>
-
-            {section.weakTopics.length > 0 && (
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-muted-foreground">
-                  Weak areas:
-                </span>
-                {section.weakTopics.map((topic) => (
-                  <Badge key={topic} variant="outline" className="text-xs text-red-600">
-                    {topic}
-                  </Badge>
-                ))}
-              </div>
-            )}
           </div>
         ))}
       </CardContent>

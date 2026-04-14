@@ -24,28 +24,29 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useProgressStore } from "@/stores/progress-store";
-import { fetchDashboardStats } from "@/lib/api/dashboard";
+import { fetchDashboardAnalytics } from "@/lib/api/analytics";
+import { fetchHistory } from "@/lib/api/results";
 
 const testSections = [
   {
     title: "Numerical Ability",
-    description: "20 Questions • 25 Minutes",
+    description: "20 Questions \u2022 25 Minutes",
     icon: Calculator,
     href: "/tests/foundation?section=numerical",
     color: "text-blue-600",
     bg: "bg-blue-50",
   },
   {
-    title: "Logical Reasoning",
-    description: "20 Questions • 25 Minutes",
+    title: "Reasoning Ability",
+    description: "20 Questions \u2022 25 Minutes",
     icon: Brain,
-    href: "/tests/foundation?section=logical",
+    href: "/tests/foundation?section=reasoning",
     color: "text-purple-600",
     bg: "bg-purple-50",
   },
   {
     title: "Verbal Ability",
-    description: "25 Questions • 25 Minutes",
+    description: "25 Questions \u2022 25 Minutes",
     icon: BookOpen,
     href: "/tests/foundation?section=verbal",
     color: "text-green-600",
@@ -53,7 +54,7 @@ const testSections = [
   },
   {
     title: "Advanced Reasoning",
-    description: "14 Questions • 25 Minutes",
+    description: "14 Questions \u2022 25 Minutes",
     icon: Zap,
     href: "/tests/advanced",
     color: "text-orange-600",
@@ -69,25 +70,34 @@ function formatTime(seconds: number) {
 }
 
 export default function DashboardPage() {
-  const { dashboardStats, isLoadingDashboard, setDashboardStats, setLoadingDashboard } =
+  const { dashboard, history, isLoading, setDashboard, setHistory, setLoading } =
     useProgressStore();
 
   useEffect(() => {
-    async function loadStats() {
-      setLoadingDashboard(true);
+    async function loadData() {
+      setLoading(true);
       try {
-        const stats = await fetchDashboardStats();
-        setDashboardStats(stats);
+        const [dashboardData, historyData] = await Promise.all([
+          fetchDashboardAnalytics(),
+          fetchHistory(1, 5),
+        ]);
+        setDashboard(dashboardData);
+        setHistory(historyData.data);
       } catch {
         // API not ready yet — show empty state
       } finally {
-        setLoadingDashboard(false);
+        setLoading(false);
       }
     }
-    loadStats();
-  }, [setDashboardStats, setLoadingDashboard]);
+    loadData();
+  }, [setDashboard, setHistory, setLoading]);
 
-  const stats = dashboardStats;
+  const questionsSolved = dashboard?.sectionPerformance
+    ? Object.values(dashboard.sectionPerformance).reduce(
+        (sum, s) => sum + s.totalQuestions,
+        0
+      )
+    : 0;
 
   return (
     <div className="space-y-8">
@@ -107,7 +117,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isLoadingDashboard ? "—" : (stats?.testsCompleted ?? 0)}
+              {isLoading ? "\u2014" : (dashboard?.totalTests ?? 0)}
             </div>
           </CardContent>
         </Card>
@@ -118,10 +128,10 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isLoadingDashboard
-                ? "—"
-                : stats?.averageScore
-                ? `${Math.round(stats.averageScore)}%`
+              {isLoading
+                ? "\u2014"
+                : dashboard?.avgScore
+                ? `${Math.round(dashboard.avgScore)}%`
                 : "0%"}
             </div>
           </CardContent>
@@ -133,7 +143,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isLoadingDashboard ? "—" : (stats?.questionsSolved ?? 0)}
+              {isLoading ? "\u2014" : questionsSolved}
             </div>
           </CardContent>
         </Card>
@@ -144,9 +154,9 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isLoadingDashboard
-                ? "—"
-                : formatTime(stats?.totalTimePracticed ?? 0)}
+              {isLoading
+                ? "\u2014"
+                : formatTime(dashboard?.totalTimeSpent ?? 0)}
             </div>
           </CardContent>
         </Card>
@@ -187,7 +197,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle className="text-xl">Full Mock Test</CardTitle>
           <CardDescription className="text-primary-foreground/80">
-            Complete TCS NQT simulation — 79 Questions • 120 Minutes
+            Complete TCS NQT simulation — 79 Questions \u2022 120 Minutes
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -208,14 +218,14 @@ export default function DashboardPage() {
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium">Foundation Section</span>
-                <span className="text-muted-foreground">65 Qs • 75 mins</span>
+                <span className="text-muted-foreground">65 Qs \u2022 75 mins</span>
               </div>
               <Progress value={82} className="h-2" />
             </div>
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium">Advanced Section</span>
-                <span className="text-muted-foreground">14 Qs • 25 mins</span>
+                <span className="text-muted-foreground">14 Qs \u2022 25 mins</span>
               </div>
               <Progress value={18} className="h-2" />
             </div>
@@ -229,27 +239,29 @@ export default function DashboardPage() {
       </Card>
 
       {/* Recent Tests */}
-      {stats?.recentTests && stats.recentTests.length > 0 && (
+      {history && history.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Recent Tests</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {stats.recentTests.map((test) => (
+              {history.map((item) => (
                 <Link
-                  key={test.id}
-                  href={`/results/${test.id}`}
+                  key={item._id}
+                  href={`/results/${item._id}`}
                   className="flex items-center justify-between p-3 rounded-lg hover:bg-accent transition-colors"
                 >
                   <div>
-                    <p className="font-medium text-sm">{test.testTitle}</p>
-                    <p className="text-xs text-muted-foreground">{test.date}</p>
+                    <p className="font-medium text-sm">{item.test.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
                   <Badge
-                    variant={test.percentage >= 70 ? "default" : "secondary"}
+                    variant={item.percentage >= 70 ? "default" : "secondary"}
                   >
-                    {Math.round(test.percentage)}%
+                    {Math.round(item.percentage)}%
                   </Badge>
                 </Link>
               ))}

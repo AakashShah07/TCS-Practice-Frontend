@@ -12,18 +12,18 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { fetchTestsByType } from "@/lib/api/tests";
-import type { TestListItem } from "@/lib/api/types";
+import { fetchTests } from "@/lib/api/tests";
+import type { Test } from "@/lib/api/types";
 
 export default function AdvancedPage() {
-  const [tests, setTests] = useState<TestListItem[]>([]);
+  const [tests, setTests] = useState<Test[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
       try {
-        const data = await fetchTestsByType("advanced");
+        const data = await fetchTests({ type: "section_test", section: "advanced" });
         setTests(data);
       } catch {
         // API not ready
@@ -67,9 +67,9 @@ export default function AdvancedPage() {
           </div>
           <div className="flex gap-3 text-sm text-muted-foreground">
             <span>14 Questions</span>
-            <span>•</span>
+            <span>&bull;</span>
             <span>25 Minutes</span>
-            <span>•</span>
+            <span>&bull;</span>
             <span>Negative Marking Applies</span>
           </div>
         </CardContent>
@@ -82,16 +82,16 @@ export default function AdvancedPage() {
         ) : tests.length > 0 ? (
           <div className="grid gap-3">
             {tests.map((test) => (
-              <Card key={test.id}>
+              <Card key={test._id}>
                 <CardContent className="flex items-center justify-between py-4">
                   <div>
                     <p className="font-medium">{test.title}</p>
                     <p className="text-sm text-muted-foreground">
-                      {test.totalQuestions} Questions •{" "}
+                      {test.totalQuestions} Questions{" "}
                       {Math.floor(test.duration / 60)} Minutes
                     </p>
                   </div>
-                  <Button render={<Link href={`/exam/${test.id}`} />}>
+                  <Button render={<Link href={`/exam/${test._id}`} />}>
                       Start <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
                 </CardContent>

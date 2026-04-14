@@ -8,16 +8,13 @@ import QuestionPanel from "@/components/exam/QuestionPanel";
 import QuestionPalette from "@/components/exam/QuestionPalette";
 import SectionPanel from "@/components/exam/SectionPanel";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useTestStore } from "@/stores/test-store";
-import { startExam, submitExam } from "@/lib/api/exam";
+import {
+  startAttempt,
+  getAttemptState,
+  submitAttempt,
+  recordTabSwitch,
+} from "@/lib/api/exam";
 import type { Section } from "@/lib/api/types";
 
 export default function ExamPage() {
@@ -26,89 +23,57 @@ export default function ExamPage() {
   const testId = params.testId as string;
 
   const {
+    attemptId,
     questions,
     timer,
-    answers,
-    startedAt,
     currentQuestionIndex,
     isSubmitted,
     tabSwitchCount,
+    testTitle,
     initTest,
     decrementTimer,
     setSubmitted,
     incrementTabSwitch,
-    updateTimeSpent,
-    loadFromLocalStorage,
     resetTest,
   } = useTestStore();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showResume, setShowResume] = useState(false);
   const [showPalette, setShowPalette] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const questionTimeRef = useRef<number>(Date.now());
 
   const handleSubmit = useCallback(async () => {
-    if (isSubmitted) return;
-
-    // Track time on current question
-    const currentQ = questions[currentQuestionIndex];
-    if (currentQ) {
-      const elapsed = Math.floor((Date.now() - questionTimeRef.current) / 1000);
-      updateTimeSpent(currentQ.id, elapsed);
-    }
+    if (isSubmitted || !attemptId) return;
 
     setSubmitted();
     if (timerRef.current) clearInterval(timerRef.current);
 
     try {
-      const currentAnswers = useTestStore.getState().answers;
-      const result = await submitExam({
-        testId,
-        answers: currentAnswers,
-        totalTimeTaken:
-          useTestStore.getState().totalDuration -
-          useTestStore.getState().timer,
-        startedAt: startedAt || new Date().toISOString(),
-        submittedAt: new Date().toISOString(),
-      });
-      router.push(`/results/${result.id}`);
+      const result = await submitAttempt(attemptId);
+      router.push(`/results/${attemptId}`);
     } catch {
       toast.error("Failed to submit test. Please try again.");
     }
-  }, [
-    isSubmitted,
-    questions,
-    currentQuestionIndex,
-    testId,
-    startedAt,
-    setSubmitted,
-    updateTimeSpent,
-    router,
-  ]);
+  }, [isSubmitted, attemptId, setSubmitted, router]);
 
   // Load test
   useEffect(() => {
     async function load() {
       setLoading(true);
       try {
-        // Check for saved state
-        const hasSaved = loadFromLocalStorage(testId);
-        if (hasSaved) {
-          setShowResume(true);
-          setLoading(false);
-          return;
-        }
+        // Start a new attempt
+        const attempt = await startAttempt(testId);
 
-        const test = await startExam(testId);
+        // Get the full attempt state with populated questions
+        const state = await getAttemptState(attempt._id);
 
-        // Build sections
+        // Build sections from questions
         const sectionMap = new Map<
           Section,
           { startIndex: number; endIndex: number }
         >();
-        test.questions.forEach((q, i) => {
+        const questions = state.responses.map((r) => r.question);
+        questions.forEach((q, i) => {
           const existing = sectionMap.get(q.section);
           if (!existing) {
             sectionMap.set(q.section, { startIndex: i, endIndex: i });
@@ -123,7 +88,24 @@ export default function ExamPage() {
           })
         );
 
-        initTest(testId, test.questions, test.duration, sections);
+        // Map attempt responses to store response format
+        const responses = state.responses.map((r) => ({
+          selectedAnswer: r.selectedAnswer,
+          status: r.status,
+          timeSpent: r.timeSpent,
+        }));
+
+        initTest({
+          attemptId: attempt._id,
+          testId: state.test._id,
+          testTitle: state.test.title,
+          questions,
+          duration: state.duration,
+          sections,
+          responses,
+          currentQuestion: state.currentQuestion,
+          tabSwitchCount: state.tabSwitchCount,
+        });
       } catch {
         setError("Failed to load test. Please try again.");
       } finally {
@@ -139,7 +121,7 @@ export default function ExamPage() {
 
   // Timer
   useEffect(() => {
-    if (loading || showResume || isSubmitted || questions.length === 0) return;
+    if (loading || isSubmitted || questions.length === 0) return;
 
     timerRef.current = setInterval(() => {
       decrementTimer();
@@ -148,7 +130,7 @@ export default function ExamPage() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [loading, showResume, isSubmitted, questions.length, decrementTimer]);
+  }, [loading, isSubmitted, questions.length, decrementTimer]);
 
   // Auto-submit and warnings
   useEffect(() => {
@@ -164,26 +146,12 @@ export default function ExamPage() {
     }
   }, [timer, questions.length, isSubmitted, handleSubmit]);
 
-  // Track time per question
-  useEffect(() => {
-    const prevTime = questionTimeRef.current;
-    questionTimeRef.current = Date.now();
-
-    return () => {
-      const currentQ = questions[currentQuestionIndex];
-      if (currentQ) {
-        const elapsed = Math.floor((Date.now() - prevTime) / 1000);
-        if (elapsed > 0) updateTimeSpent(currentQ.id, elapsed);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentQuestionIndex]);
-
   // Tab switch detection
   useEffect(() => {
     function handleVisibilityChange() {
-      if (document.hidden && !isSubmitted) {
+      if (document.hidden && !isSubmitted && attemptId) {
         incrementTabSwitch();
+        recordTabSwitch(attemptId).catch(() => {});
         toast.warning(
           `Tab switch detected! (${tabSwitchCount + 1} time${tabSwitchCount > 0 ? "s" : ""})`,
           { duration: 3000 }
@@ -193,16 +161,16 @@ export default function ExamPage() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [isSubmitted, incrementTabSwitch, tabSwitchCount]);
+  }, [isSubmitted, incrementTabSwitch, tabSwitchCount, attemptId]);
 
   // Fullscreen suggestion
   useEffect(() => {
-    if (!loading && !showResume && questions.length > 0) {
+    if (!loading && questions.length > 0) {
       toast.info("For the best experience, press F11 for fullscreen", {
         duration: 5000,
       });
     }
-  }, [loading, showResume, questions.length]);
+  }, [loading, questions.length]);
 
   if (loading) {
     return (
@@ -226,80 +194,9 @@ export default function ExamPage() {
     );
   }
 
-  // Resume dialog
-  if (showResume) {
-    return (
-      <Dialog open onOpenChange={() => {}}>
-        <DialogContent className="[&>button]:hidden">
-          <DialogHeader>
-            <DialogTitle>Resume Test?</DialogTitle>
-            <DialogDescription>
-              You have a previously saved test session. Would you like to resume
-              or start fresh?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                resetTest();
-                localStorage.removeItem(`test_state_${testId}`);
-                setShowResume(false);
-                setLoading(true);
-                // Re-trigger load
-                window.location.reload();
-              }}
-            >
-              Start Fresh
-            </Button>
-            <Button
-              onClick={async () => {
-                // Need to load questions from API but keep saved state
-                try {
-                  const test = await startExam(testId);
-                  const sectionMap = new Map<
-                    Section,
-                    { startIndex: number; endIndex: number }
-                  >();
-                  test.questions.forEach((q, i) => {
-                    const existing = sectionMap.get(q.section);
-                    if (!existing) {
-                      sectionMap.set(q.section, {
-                        startIndex: i,
-                        endIndex: i,
-                      });
-                    } else {
-                      existing.endIndex = i;
-                    }
-                  });
-                  const sections = Array.from(sectionMap.entries()).map(
-                    ([name, range]) => ({ name, ...range })
-                  );
-
-                  // Set questions and sections but keep saved progress
-                  useTestStore.setState({
-                    testId,
-                    questions: test.questions,
-                    sections,
-                  });
-                  loadFromLocalStorage(testId);
-                } catch {
-                  toast.error("Failed to load test questions.");
-                }
-                setShowResume(false);
-              }}
-            >
-              Resume Test
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
   return (
     <div className="flex flex-col h-screen">
-      <ExamTopBar testTitle="TCS NQT Test" onSubmit={handleSubmit} />
+      <ExamTopBar testTitle={testTitle || "TCS NQT Test"} onSubmit={handleSubmit} />
       <SectionPanel />
       <div className="flex flex-1 overflow-hidden">
         <QuestionPanel />

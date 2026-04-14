@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 const testCategories = [
   {
     title: "Foundation Section",
-    description: "Core aptitude tests covering numerical, logical, and verbal abilities",
+    description: "Core aptitude tests covering numerical, reasoning, and verbal abilities",
     badge: "65 Questions • 75 Minutes",
     tests: [
       {
@@ -45,7 +45,7 @@ const testCategories = [
         icon: Brain,
         color: "text-purple-600",
         bg: "bg-purple-50",
-        href: "/tests/foundation?section=logical",
+        href: "/tests/foundation?section=reasoning",
       },
       {
         title: "Verbal Ability",

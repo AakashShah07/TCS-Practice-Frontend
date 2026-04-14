@@ -1,16 +1,16 @@
 import apiClient from "./client";
-import type { Topic, Question } from "./types";
+import type { ApiResponse, Test } from "./types";
 
-export async function fetchTopics(): Promise<Topic[]> {
-  const { data } = await apiClient.get<Topic[]>("/practice/topics");
-  return data;
-}
-
-export async function fetchTopicQuestions(
-  topicId: string
-): Promise<Question[]> {
-  const { data } = await apiClient.get<Question[]>(
-    `/practice/topics/${topicId}/questions`
+export async function fetchPracticeTests(params?: {
+  section?: string;
+  topic?: string;
+}): Promise<Test[]> {
+  const query = new URLSearchParams();
+  query.set("type", "topic_practice");
+  if (params?.section) query.set("section", params.section);
+  if (params?.topic) query.set("topic", params.topic);
+  const { data } = await apiClient.get<ApiResponse<Test[]>>(
+    `/tests?${query.toString()}`
   );
-  return data;
+  return data.data;
 }

@@ -35,8 +35,8 @@ export default function RegisterPage() {
     }
     setLoading(true);
     try {
-      const { user, token } = await register(name, email, password);
-      storeLogin(user, token);
+      const response = await register(name, email, password);
+      storeLogin(response.data, response.accessToken, response.refreshToken);
       toast.success("Account created! Welcome!");
       router.push("/dashboard");
     } catch {

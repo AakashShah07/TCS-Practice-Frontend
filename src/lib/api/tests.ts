@@ -1,28 +1,30 @@
 import apiClient from "./client";
-import type { TestListItem, Test } from "./types";
+import type { ApiResponse, Test } from "./types";
 
-export async function fetchTests(): Promise<TestListItem[]> {
-  const { data } = await apiClient.get<TestListItem[]>("/tests");
-  return data;
+export async function fetchTests(params?: {
+  type?: string;
+  section?: string;
+}): Promise<Test[]> {
+  const query = new URLSearchParams();
+  if (params?.type) query.set("type", params.type);
+  if (params?.section) query.set("section", params.section);
+  const qs = query.toString();
+  const { data } = await apiClient.get<ApiResponse<Test[]>>(
+    `/tests${qs ? `?${qs}` : ""}`
+  );
+  return data.data;
 }
 
 export async function fetchTestById(testId: string): Promise<Test> {
-  const { data } = await apiClient.get<Test>(`/tests/${testId}`);
-  return data;
+  const { data } = await apiClient.get<ApiResponse<Test>>(`/tests/${testId}`);
+  return data.data;
 }
 
-export async function fetchTestsByType(
-  type: "foundation" | "advanced" | "mock"
-): Promise<TestListItem[]> {
-  const { data } = await apiClient.get<TestListItem[]>(`/tests?type=${type}`);
-  return data;
-}
-
-export async function fetchTestsBySection(
+export async function fetchTopicsBySection(
   section: string
-): Promise<TestListItem[]> {
-  const { data } = await apiClient.get<TestListItem[]>(
-    `/tests?section=${section}`
+): Promise<string[]> {
+  const { data } = await apiClient.get<ApiResponse<string[]>>(
+    `/tests/topics/${section}`
   );
-  return data;
+  return data.data;
 }

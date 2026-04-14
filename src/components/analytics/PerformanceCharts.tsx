@@ -34,7 +34,7 @@ interface Props {
 
 const sectionLabels: Record<string, string> = {
   numerical: "Numerical",
-  logical: "Logical",
+  reasoning: "Reasoning",
   verbal: "Verbal",
   advanced: "Advanced",
 };

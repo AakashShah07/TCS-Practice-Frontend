@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Calculator, Brain, BookOpen, ArrowRight } from "lucide-react";
@@ -14,8 +14,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { fetchTestsByType } from "@/lib/api/tests";
-import type { TestListItem } from "@/lib/api/types";
+import { fetchTests } from "@/lib/api/tests";
+import type { Test } from "@/lib/api/types";
 
 const sectionInfo = {
   numerical: {
@@ -34,8 +34,8 @@ const sectionInfo = {
       "Number Systems",
     ],
   },
-  logical: {
-    title: "Logical Reasoning",
+  reasoning: {
+    title: "Reasoning Ability",
     icon: Brain,
     color: "text-purple-600",
     bg: "bg-purple-50",
@@ -63,16 +63,24 @@ const sectionInfo = {
 };
 
 export default function FoundationPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>}>
+      <FoundationContent />
+    </Suspense>
+  );
+}
+
+function FoundationContent() {
   const searchParams = useSearchParams();
   const section = searchParams.get("section") || "numerical";
-  const [tests, setTests] = useState<TestListItem[]>([]);
+  const [tests, setTests] = useState<Test[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
       try {
-        const data = await fetchTestsByType("foundation");
+        const data = await fetchTests({ type: "section_test" });
         setTests(data);
       } catch {
         // API not ready
@@ -101,7 +109,7 @@ export default function FoundationPage() {
       <Tabs defaultValue={section} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="numerical">Numerical</TabsTrigger>
-          <TabsTrigger value="logical">Logical</TabsTrigger>
+          <TabsTrigger value="reasoning">Reasoning</TabsTrigger>
           <TabsTrigger value="verbal">Verbal</TabsTrigger>
         </TabsList>
 
@@ -147,16 +155,16 @@ export default function FoundationPage() {
                 ) : sectionTests.length > 0 ? (
                   <div className="grid gap-3">
                     {sectionTests.map((test) => (
-                      <Card key={test.id}>
+                      <Card key={test._id}>
                         <CardContent className="flex items-center justify-between py-4">
                           <div>
                             <p className="font-medium">{test.title}</p>
                             <p className="text-sm text-muted-foreground">
-                              {test.totalQuestions} Questions •{" "}
+                              {test.totalQuestions} Questions{" "}
                               {Math.floor(test.duration / 60)} Minutes
                             </p>
                           </div>
-                          <Button render={<Link href={`/exam/${test.id}`} />}>
+                          <Button render={<Link href={`/exam/${test._id}`} />}>
                               Start <ArrowRight className="ml-1 h-4 w-4" />
                           </Button>
                         </CardContent>

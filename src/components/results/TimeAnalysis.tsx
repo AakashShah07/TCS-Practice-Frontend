@@ -7,67 +7,29 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import type { QuestionResult } from "@/lib/api/types";
+import type { QuestionDetail } from "@/lib/api/types";
 
 interface Props {
-  questionResults: QuestionResult[];
+  questionDetails: QuestionDetail[];
 }
 
-function getTimeInsight(q: QuestionResult, avgTime: number): string | null {
-  if (q.timeSpent > avgTime * 2 && !q.isCorrect) {
-    return "Overthinking — spent too long and still got it wrong";
-  }
-  if (q.timeSpent < avgTime * 0.3 && !q.isCorrect && q.selectedAnswer !== null) {
-    return "Likely guessing — too fast and incorrect";
-  }
-  if (q.timeSpent > avgTime * 2 && q.isCorrect) {
-    return "Correct but slow — practice for speed";
-  }
-  return null;
-}
+export default function TimeAnalysis({ questionDetails }: Props) {
+  if (questionDetails.length === 0) return null;
 
-export default function TimeAnalysis({ questionResults }: Props) {
   const avgTime =
-    questionResults.reduce((sum, q) => sum + q.timeSpent, 0) /
-    questionResults.length;
+    questionDetails.reduce((sum, q) => sum + q.timeSpent, 0) /
+    questionDetails.length;
 
-  const overthinking = questionResults.filter(
+  const overthinking = questionDetails.filter(
     (q) => q.timeSpent > avgTime * 2 && !q.isCorrect
   );
-  const guessing = questionResults.filter(
+  const guessing = questionDetails.filter(
     (q) =>
       q.timeSpent < avgTime * 0.3 && !q.isCorrect && q.selectedAnswer !== null
   );
-  const slowCorrect = questionResults.filter(
+  const slowCorrect = questionDetails.filter(
     (q) => q.timeSpent > avgTime * 2 && q.isCorrect
   );
-
-  // Group by topic for insights
-  const topicTimeMap = new Map<
-    string,
-    { totalTime: number; count: number; correct: number }
-  >();
-  questionResults.forEach((q) => {
-    const existing = topicTimeMap.get(q.topic) || {
-      totalTime: 0,
-      count: 0,
-      correct: 0,
-    };
-    existing.totalTime += q.timeSpent;
-    existing.count += 1;
-    if (q.isCorrect) existing.correct += 1;
-    topicTimeMap.set(q.topic, existing);
-  });
-
-  const topicInsights = Array.from(topicTimeMap.entries())
-    .map(([topic, data]) => ({
-      topic,
-      avgTime: data.totalTime / data.count,
-      accuracy: (data.correct / data.count) * 100,
-    }))
-    .filter((t) => t.avgTime > avgTime * 1.5 && t.accuracy < 50)
-    .sort((a, b) => a.accuracy - b.accuracy);
 
   return (
     <Card>
@@ -111,30 +73,11 @@ export default function TimeAnalysis({ questionResults }: Props) {
           </div>
         </div>
 
-        {/* Topic Insights */}
-        {topicInsights.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Key Insights</p>
-            {topicInsights.map((t) => (
-              <div
-                key={t.topic}
-                className="flex items-center gap-2 p-2 rounded bg-amber-50 text-sm text-amber-800"
-              >
-                <span>
-                  You spend too much time on{" "}
-                  <strong>{t.topic}</strong> (avg {t.avgTime.toFixed(1)}s) but
-                  accuracy is only {Math.round(t.accuracy)}%
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
         {/* Time Distribution */}
         <div className="space-y-1.5">
           <p className="text-sm font-medium">Time per Question</p>
           <div className="flex flex-wrap gap-1">
-            {questionResults.map((q, i) => {
+            {questionDetails.map((q, i) => {
               const ratio = q.timeSpent / avgTime;
               let color = "bg-green-400";
               if (ratio > 2) color = q.isCorrect ? "bg-blue-400" : "bg-red-400";
@@ -146,7 +89,7 @@ export default function TimeAnalysis({ questionResults }: Props) {
                 <div
                   key={i}
                   className={`w-5 h-5 rounded-sm ${color} cursor-default`}
-                  title={`Q${i + 1}: ${q.timeSpent.toFixed(0)}s — ${q.isCorrect ? "Correct" : q.selectedAnswer === null ? "Skipped" : "Wrong"}`}
+                  title={`Q${i + 1}: ${q.timeSpent.toFixed(0)}s -- ${q.isCorrect ? "Correct" : q.selectedAnswer === null ? "Skipped" : "Wrong"}`}
                 />
               );
             })}

@@ -7,22 +7,22 @@ import { CheckCircle2, XCircle, MinusCircle, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { fetchResult } from "@/lib/api/results";
-import type { TestResult, QuestionResult } from "@/lib/api/types";
+import { fetchReview } from "@/lib/api/results";
+import type { ReviewResponse, ReviewItem } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 
-function StatusIcon({ result }: { result: QuestionResult }) {
-  if (result.selectedAnswer === null)
+function StatusIcon({ item }: { item: ReviewItem }) {
+  if (item.selectedAnswer === null)
     return <MinusCircle className="h-5 w-5 text-gray-400" />;
-  if (result.isCorrect)
+  if (item.selectedAnswer === item.correctAnswer)
     return <CheckCircle2 className="h-5 w-5 text-green-500" />;
   return <XCircle className="h-5 w-5 text-red-500" />;
 }
 
 export default function ReviewPage() {
   const params = useParams();
-  const resultId = params.testId as string;
-  const [result, setResult] = useState<TestResult | null>(null);
+  const attemptId = params.testId as string;
+  const [reviewData, setReviewData] = useState<ReviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "wrong" | "skipped">("all");
 
@@ -30,8 +30,8 @@ export default function ReviewPage() {
     async function load() {
       setLoading(true);
       try {
-        const data = await fetchResult(resultId);
-        setResult(data);
+        const data = await fetchReview(attemptId);
+        setReviewData(data);
       } catch {
         // API not ready
       } finally {
@@ -39,7 +39,7 @@ export default function ReviewPage() {
       }
     }
     load();
-  }, [resultId]);
+  }, [attemptId]);
 
   if (loading) {
     return (
@@ -49,7 +49,7 @@ export default function ReviewPage() {
     );
   }
 
-  if (!result) {
+  if (!reviewData) {
     return (
       <div className="text-center py-20">
         <p className="text-muted-foreground">Result not found.</p>
@@ -57,9 +57,10 @@ export default function ReviewPage() {
     );
   }
 
-  const filtered = result.questionResults.filter((q) => {
-    if (filter === "wrong") return !q.isCorrect && q.selectedAnswer !== null;
-    if (filter === "skipped") return q.selectedAnswer === null;
+  const filtered = reviewData.review.filter((item) => {
+    if (filter === "wrong")
+      return item.selectedAnswer !== item.correctAnswer && item.selectedAnswer !== null;
+    if (filter === "skipped") return item.selectedAnswer === null;
     return true;
   });
 
@@ -67,12 +68,12 @@ export default function ReviewPage() {
     <div className="space-y-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
-          <Button variant="ghost" size="sm" className="mb-2" render={<Link href={`/results/${resultId}`} />}>
+          <Button variant="ghost" size="sm" className="mb-2" render={<Link href={`/results/${attemptId}`} />}>
               <ArrowLeft className="mr-1 h-4 w-4" /> Back to Results
           </Button>
           <h1 className="text-2xl font-bold">Answer Review</h1>
           <p className="text-muted-foreground text-sm">
-            {result.testTitle} — {result.questionResults.length} questions
+            Score: {reviewData.score}/{reviewData.totalQuestions} ({Math.round(reviewData.percentage)}%) -- {reviewData.review.length} questions
           </p>
         </div>
       </div>
@@ -87,47 +88,45 @@ export default function ReviewPage() {
             onClick={() => setFilter(f)}
           >
             {f === "all"
-              ? `All (${result.questionResults.length})`
+              ? `All (${reviewData.review.length})`
               : f === "wrong"
-              ? `Wrong (${result.questionResults.filter((q) => !q.isCorrect && q.selectedAnswer !== null).length})`
-              : `Skipped (${result.questionResults.filter((q) => q.selectedAnswer === null).length})`}
+              ? `Wrong (${reviewData.review.filter((item) => item.selectedAnswer !== item.correctAnswer && item.selectedAnswer !== null).length})`
+              : `Skipped (${reviewData.review.filter((item) => item.selectedAnswer === null).length})`}
           </Button>
         ))}
       </div>
 
       {/* Questions */}
       <div className="space-y-4">
-        {filtered.map((q, index) => {
+        {filtered.map((item, index) => {
           const optionLabels = "ABCD";
+          const globalIndex = reviewData.review.indexOf(item);
           return (
-            <Card key={q.questionId}>
+            <Card key={item.question._id}>
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    <StatusIcon result={q} />
+                    <StatusIcon item={item} />
                     <CardTitle className="text-sm">
-                      Question{" "}
-                      {result.questionResults.findIndex(
-                        (r) => r.questionId === q.questionId
-                      ) + 1}
+                      Question {globalIndex + 1}
                     </CardTitle>
                   </div>
                   <div className="flex gap-1.5">
                     <Badge variant="outline" className="text-xs">
-                      {q.topic}
+                      {item.question.topic}
                     </Badge>
                     <Badge variant="outline" className="text-xs">
-                      {Math.round(q.timeSpent)}s
+                      {Math.round(item.timeSpent)}s
                     </Badge>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm whitespace-pre-wrap">{q.text}</p>
+                <p className="text-sm whitespace-pre-wrap">{item.question.text}</p>
                 <div className="space-y-2">
-                  {q.options.map((opt, i) => {
-                    const isCorrect = i === q.correctAnswer;
-                    const isSelected = i === q.selectedAnswer;
+                  {item.question.options.map((opt, i) => {
+                    const isCorrect = i === item.correctAnswer;
+                    const isSelected = i === item.selectedAnswer;
                     const isWrongSelected = isSelected && !isCorrect;
 
                     return (
@@ -158,10 +157,10 @@ export default function ReviewPage() {
                     );
                   })}
                 </div>
-                {q.explanation && (
+                {item.question.explanation && (
                   <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-sm text-blue-800">
                     <span className="font-medium">Explanation: </span>
-                    {q.explanation}
+                    {item.question.explanation}
                   </div>
                 )}
               </CardContent>

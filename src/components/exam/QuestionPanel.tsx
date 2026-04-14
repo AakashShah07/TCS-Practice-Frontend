@@ -4,39 +4,78 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTestStore } from "@/stores/test-store";
+import {
+  saveAnswer,
+  clearResponse,
+  markForReview,
+  navigate,
+} from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
 
 export default function QuestionPanel() {
   const {
+    attemptId,
     questions,
     currentQuestionIndex,
-    answers,
-    markedForReview,
+    responses,
     setAnswer,
     clearAnswer,
-    markForReview,
+    markForReview: storeMarkForReview,
     nextQuestion,
     prevQuestion,
+    goToQuestion,
   } = useTestStore();
 
   const question = questions[currentQuestionIndex];
   if (!question) return null;
 
-  const currentAnswer = answers[question.id];
-  const selectedOption = currentAnswer?.selectedOption ?? null;
-  const isMarked = markedForReview[question.id] || false;
+  const currentResponse = responses[currentQuestionIndex];
+  const selectedOption = currentResponse?.selectedAnswer ?? null;
+  const isMarked = currentResponse?.status === "marked_for_review";
 
   function handleOptionClick(optionIndex: number) {
-    setAnswer(question.id, optionIndex);
+    storeSetAnswer(optionIndex);
   }
 
-  function handleClearResponse() {
-    clearAnswer(question.id);
+  async function storeSetAnswer(optionIndex: number) {
+    setAnswer(currentQuestionIndex, optionIndex);
+    if (attemptId) {
+      saveAnswer(attemptId, currentQuestionIndex, optionIndex, currentResponse?.timeSpent ?? 0).catch(() => {});
+    }
   }
 
-  function handleMarkAndNext() {
-    if (!isMarked) markForReview(question.id);
-    nextQuestion();
+  async function handleClearResponse() {
+    clearAnswer(currentQuestionIndex);
+    if (attemptId) {
+      clearResponse(attemptId, currentQuestionIndex).catch(() => {});
+    }
+  }
+
+  async function handleMarkAndNext() {
+    if (!isMarked) {
+      storeMarkForReview(currentQuestionIndex);
+      if (attemptId) {
+        markForReview(attemptId, currentQuestionIndex).catch(() => {});
+      }
+    }
+    const timeSpent = nextQuestion();
+    if (attemptId) {
+      navigate(attemptId, currentQuestionIndex + 1, currentQuestionIndex, timeSpent, question.section).catch(() => {});
+    }
+  }
+
+  function handlePrev() {
+    const timeSpent = prevQuestion();
+    if (attemptId) {
+      navigate(attemptId, currentQuestionIndex - 1, currentQuestionIndex, timeSpent, question.section).catch(() => {});
+    }
+  }
+
+  function handleNext() {
+    const timeSpent = nextQuestion();
+    if (attemptId) {
+      navigate(attemptId, currentQuestionIndex + 1, currentQuestionIndex, timeSpent, question.section).catch(() => {});
+    }
   }
 
   return (
@@ -134,14 +173,14 @@ export default function QuestionPanel() {
             <Button
               variant="outline"
               size="sm"
-              onClick={prevQuestion}
+              onClick={handlePrev}
               disabled={currentQuestionIndex === 0}
             >
               Previous
             </Button>
             <Button
               size="sm"
-              onClick={nextQuestion}
+              onClick={handleNext}
               disabled={currentQuestionIndex === questions.length - 1}
             >
               Next

@@ -1,41 +1,48 @@
 "use client";
 
 import { useTestStore } from "@/stores/test-store";
+import { navigate } from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
 import type { Section } from "@/lib/api/types";
 
 const sectionLabels: Record<string, string> = {
   numerical: "Numerical",
-  logical: "Logical",
+  reasoning: "Reasoning",
   verbal: "Verbal",
   advanced: "Advanced",
 };
 
 export default function SectionPanel() {
-  const { sections, currentSection, setSection, questions, answers } =
+  const { attemptId, sections, currentSection, setSection, questions, responses, currentQuestionIndex } =
     useTestStore();
 
   if (sections.length <= 1) return null;
+
+  function handleSetSection(name: Section) {
+    const timeSpent = setSection(name);
+    const sectionInfo = sections.find((s) => s.name === name);
+    if (attemptId && sectionInfo) {
+      navigate(attemptId, sectionInfo.startIndex, currentQuestionIndex, timeSpent, name).catch(() => {});
+    }
+  }
 
   return (
     <div className="border-b bg-muted/30">
       <div className="flex overflow-x-auto">
         {sections.map((sec) => {
           const isActive = sec.name === currentSection;
-          const sectionQuestions = questions.slice(
+          const sectionResponses = responses.slice(
             sec.startIndex,
             sec.endIndex + 1
           );
-          const answered = sectionQuestions.filter(
-            (q) =>
-              answers[q.id]?.selectedOption !== null &&
-              answers[q.id]?.selectedOption !== undefined
+          const answered = sectionResponses.filter(
+            (r) => r.status === "answered"
           ).length;
 
           return (
             <button
               key={sec.name}
-              onClick={() => setSection(sec.name)}
+              onClick={() => handleSetSection(sec.name)}
               className={cn(
                 "flex items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors",
                 isActive
@@ -50,7 +57,7 @@ export default function SectionPanel() {
                   isActive ? "bg-primary/10" : "bg-muted"
                 )}
               >
-                {answered}/{sectionQuestions.length}
+                {answered}/{sectionResponses.length}
               </span>
             </button>
           );

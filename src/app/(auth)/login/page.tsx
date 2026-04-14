@@ -30,8 +30,8 @@ export default function LoginPage() {
     }
     setLoading(true);
     try {
-      const { user, token } = await login(email, password);
-      storeLogin(user, token);
+      const response = await login(email, password);
+      storeLogin(response.data, response.accessToken, response.refreshToken);
       toast.success("Welcome back!");
       router.push("/dashboard");
     } catch {

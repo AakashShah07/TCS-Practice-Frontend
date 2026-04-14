@@ -13,8 +13,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { fetchTestsByType } from "@/lib/api/tests";
-import type { TestListItem } from "@/lib/api/types";
+import { fetchTests } from "@/lib/api/tests";
+import type { Test } from "@/lib/api/types";
 
 const examRules = [
   "Total 79 questions across Foundation (65) and Advanced (14) sections",
@@ -27,14 +27,14 @@ const examRules = [
 ];
 
 export default function MockTestPage() {
-  const [tests, setTests] = useState<TestListItem[]>([]);
+  const [tests, setTests] = useState<Test[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
       try {
-        const data = await fetchTestsByType("mock");
+        const data = await fetchTests({ type: "full_mock" });
         setTests(data);
       } catch {
         // API not ready
@@ -86,7 +86,7 @@ export default function MockTestPage() {
 
           <div className="flex flex-wrap gap-2 justify-center">
             <Badge>Numerical (20 Qs)</Badge>
-            <Badge>Logical (20 Qs)</Badge>
+            <Badge>Reasoning (20 Qs)</Badge>
             <Badge>Verbal (25 Qs)</Badge>
             <Badge variant="secondary">Advanced (14 Qs)</Badge>
           </div>
@@ -117,7 +117,7 @@ export default function MockTestPage() {
           ) : tests.length > 0 ? (
             <div className="space-y-3">
               {tests.map((test) => (
-                <Button key={test.id} className="w-full" size="lg" render={<Link href={`/exam/${test.id}`} />}>
+                <Button key={test._id} className="w-full" size="lg" render={<Link href={`/exam/${test._id}`} />}>
                     Start {test.title}{" "}
                     <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>

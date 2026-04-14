@@ -23,7 +23,6 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import SectionAnalysis from "@/components/results/SectionAnalysis";
-import TimeAnalysis from "@/components/results/TimeAnalysis";
 import { fetchResult } from "@/lib/api/results";
 import type { TestResult } from "@/lib/api/types";
 
@@ -49,7 +48,7 @@ function formatTime(seconds: number) {
 
 export default function ResultPage() {
   const params = useParams();
-  const resultId = params.testId as string;
+  const attemptId = params.testId as string;
   const [result, setResult] = useState<TestResult | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,7 +56,7 @@ export default function ResultPage() {
     async function load() {
       setLoading(true);
       try {
-        const data = await fetchResult(resultId);
+        const data = await fetchResult(attemptId);
         setResult(data);
       } catch {
         // API not ready
@@ -66,7 +65,7 @@ export default function ResultPage() {
       }
     }
     load();
-  }, [resultId]);
+  }, [attemptId]);
 
   if (loading) {
     return (
@@ -93,7 +92,7 @@ export default function ResultPage() {
           <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-2">
             <Trophy className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl">{result.testTitle}</CardTitle>
+          <CardTitle className="text-2xl">{result.test.title}</CardTitle>
           <CardDescription>Test completed</CardDescription>
         </CardHeader>
         <CardContent className="text-center space-y-4">
@@ -160,16 +159,11 @@ export default function ResultPage() {
         <SectionAnalysis sections={result.sectionWise} />
       )}
 
-      {/* Time Analysis */}
-      {result.questionResults && result.questionResults.length > 0 && (
-        <TimeAnalysis questionResults={result.questionResults} />
-      )}
-
       <Separator />
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3 justify-center">
-        <Button render={<Link href={`/results/${resultId}/review`} />}>
+        <Button render={<Link href={`/results/${attemptId}/review`} />}>
             Review Answers <ArrowRight className="ml-1 h-4 w-4" />
         </Button>
         <Button variant="outline" render={<Link href="/analytics" />}>View Analytics</Button>

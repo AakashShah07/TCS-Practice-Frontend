@@ -16,9 +16,9 @@ interface Props {
   topicStats: TopicStat[];
 }
 
-const confidenceStyles = {
+const confidenceStyles: Record<string, string> = {
   strong: "bg-green-50 text-green-700 border-green-200",
-  moderate: "bg-amber-50 text-amber-700 border-amber-200",
+  medium: "bg-amber-50 text-amber-700 border-amber-200",
   weak: "bg-red-50 text-red-700 border-red-200",
 };
 
@@ -40,8 +40,8 @@ export default function TopicIntelligence({ topicStats }: Props) {
               <tr className="border-b">
                 <th className="text-left py-2 font-medium">Topic</th>
                 <th className="text-left py-2 font-medium">Accuracy</th>
+                <th className="text-center py-2 font-medium">Correct/Total</th>
                 <th className="text-center py-2 font-medium">Attempts</th>
-                <th className="text-center py-2 font-medium">Avg Time</th>
                 <th className="text-center py-2 font-medium">Confidence</th>
               </tr>
             </thead>
@@ -49,12 +49,7 @@ export default function TopicIntelligence({ topicStats }: Props) {
               {sorted.map((topic) => (
                 <tr key={topic.topic} className="border-b last:border-0">
                   <td className="py-3">
-                    <div>
-                      <p className="font-medium">{topic.topic}</p>
-                      <p className="text-xs text-muted-foreground capitalize">
-                        {topic.section}
-                      </p>
-                    </div>
+                    <p className="font-medium">{topic.topic}</p>
                   </td>
                   <td className="py-3">
                     <div className="flex items-center gap-2 min-w-32">
@@ -67,16 +62,16 @@ export default function TopicIntelligence({ topicStats }: Props) {
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 text-center">{topic.attempts}</td>
                   <td className="py-3 text-center">
-                    {topic.avgTime.toFixed(1)}s
+                    {topic.correct}/{topic.total}
                   </td>
+                  <td className="py-3 text-center">{topic.attempts}</td>
                   <td className="py-3 text-center">
                     <Badge
                       variant="outline"
                       className={cn(
                         "capitalize text-xs",
-                        confidenceStyles[topic.confidence]
+                        confidenceStyles[topic.confidence] || confidenceStyles.medium
                       )}
                     >
                       {topic.confidence}
