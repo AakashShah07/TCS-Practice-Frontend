@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, AlertTriangle } from "lucide-react";
+import { Clock, AlertTriangle, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { useTestStore } from "@/stores/test-store";
 import { cn } from "@/lib/utils";
 
@@ -26,65 +26,75 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
     timer,
     questions,
     currentQuestionIndex,
-    currentSection,
     getAnsweredCount,
   } = useTestStore();
 
   const minutes = Math.floor(timer / 60);
   const seconds = timer % 60;
-  const isLowTime = timer <= 300; // 5 minutes
+  const isLowTime = timer <= 300;
   const isCriticalTime = timer <= 60;
 
   const answeredCount = getAnsweredCount();
   const unattempted = questions.length - answeredCount;
-
-  const sectionLabels: Record<string, string> = {
-    numerical: "Numerical Ability",
-    reasoning: "Reasoning Ability",
-    verbal: "Verbal Ability",
-    advanced: "Advanced",
-  };
+  const progressPercent =
+    questions.length > 0 ? (answeredCount / questions.length) * 100 : 0;
 
   return (
     <>
-      <div className="sticky top-0 z-50 bg-background border-b shadow-sm">
-        <div className="flex items-center justify-between px-4 h-14">
-          <div className="flex items-center gap-4">
-            <span className="font-bold text-sm hidden sm:block">
+      <div className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b shadow-sm">
+        <div className="flex items-center justify-between px-5 h-12">
+          {/* Left: Title + Question */}
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-sm text-indigo-700 dark:text-indigo-400 hidden sm:block">
               {testTitle}
             </span>
-            <Badge variant="outline">
-              {sectionLabels[currentSection] || currentSection}
-            </Badge>
-            <span className="text-sm text-muted-foreground">
-              Q {currentQuestionIndex + 1} of {questions.length}
+            <div className="hidden sm:block w-px h-5 bg-border" />
+            <span className="text-xs text-muted-foreground font-medium">
+              Q {currentQuestionIndex + 1}/{questions.length}
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
+          {/* Right: Progress + Timer + Submit */}
+          <div className="flex items-center gap-3">
+            {/* Answered progress */}
+            <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
+              <span className="font-medium text-green-600">{answeredCount}</span>
+              <span>/</span>
+              <span>{questions.length}</span>
+            </div>
+
+            {/* Timer */}
             <div
               className={cn(
-                "flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono text-sm font-bold",
+                "flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-sm font-bold tracking-wider transition-all",
                 isCriticalTime
-                  ? "bg-red-100 text-red-700 animate-pulse"
+                  ? "bg-red-500 text-white animate-pulse shadow-lg shadow-red-200"
                   : isLowTime
-                  ? "bg-amber-100 text-amber-700"
-                  : "bg-muted"
+                  ? "bg-amber-500 text-white"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200"
               )}
             >
-              <Clock className="h-4 w-4" />
-              {String(minutes).padStart(2, "0")}:
-              {String(seconds).padStart(2, "0")}
+              <Clock className="h-3.5 w-3.5" />
+              {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
             </div>
+
+            {/* Submit */}
             <Button
-              variant="destructive"
               size="sm"
               onClick={() => setShowConfirm(true)}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 rounded-lg shadow-sm transition-all hover:shadow-md active:scale-95"
             >
-              Submit Test
+              <Send className="h-3.5 w-3.5 mr-1.5" />
+              Submit
             </Button>
           </div>
         </div>
+
+        {/* Progress bar under top bar */}
+        <Progress
+          value={progressPercent}
+          className="h-0.5 rounded-none [&>div]:bg-indigo-500"
+        />
       </div>
 
       <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
@@ -92,42 +102,42 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
           <DialogHeader>
             <DialogTitle>Submit Test?</DialogTitle>
             <DialogDescription>
-              Are you sure you want to submit your test?
+              Are you sure you want to submit? You cannot change answers after.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 py-2">
-            <div className="flex justify-between text-sm">
-              <span>Total Questions</span>
-              <span className="font-medium">{questions.length}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Answered</span>
-              <span className="font-medium text-green-600">
-                {answeredCount}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Unattempted</span>
-              <span className="font-medium text-red-600">{unattempted}</span>
+          <div className="space-y-3 py-3">
+            <div className="grid grid-cols-3 gap-3 text-center">
+              <div className="rounded-xl bg-green-50 dark:bg-green-950 p-3">
+                <p className="text-2xl font-bold text-green-600">{answeredCount}</p>
+                <p className="text-xs text-green-600/70">Answered</p>
+              </div>
+              <div className="rounded-xl bg-red-50 dark:bg-red-950 p-3">
+                <p className="text-2xl font-bold text-red-600">{unattempted}</p>
+                <p className="text-xs text-red-600/70">Unattempted</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3">
+                <p className="text-2xl font-bold text-slate-600 dark:text-slate-300">{questions.length}</p>
+                <p className="text-xs text-slate-500">Total</p>
+              </div>
             </div>
             {unattempted > 0 && (
-              <div className="flex items-center gap-2 text-amber-600 text-sm bg-amber-50 p-2 rounded">
-                <AlertTriangle className="h-4 w-4" />
+              <div className="flex items-center gap-2 text-amber-700 text-sm bg-amber-50 dark:bg-amber-950 p-3 rounded-xl">
+                <AlertTriangle className="h-4 w-4 shrink-0" />
                 You have {unattempted} unattempted question
-                {unattempted !== 1 ? "s" : ""}
+                {unattempted !== 1 ? "s" : ""}. Are you sure?
               </div>
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowConfirm(false)}>
+            <Button variant="outline" onClick={() => setShowConfirm(false)} className="rounded-lg">
               Continue Test
             </Button>
             <Button
-              variant="destructive"
               onClick={() => {
                 setShowConfirm(false);
                 onSubmit();
               }}
+              className="bg-red-600 hover:bg-red-700 text-white rounded-lg"
             >
               Submit Now
             </Button>

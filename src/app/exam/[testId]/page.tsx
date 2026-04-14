@@ -16,6 +16,7 @@ import {
   recordTabSwitch,
 } from "@/lib/api/exam";
 import type { Section } from "@/lib/api/types";
+import { cn } from "@/lib/utils";
 
 export default function ExamPage() {
   const params = useParams();
@@ -60,6 +61,8 @@ export default function ExamPage() {
   useEffect(() => {
     async function load() {
       setLoading(true);
+      // Clear any previous test state
+      resetTest();
       try {
         // Start a new attempt
         const attempt = await startAttempt(testId);
@@ -105,6 +108,7 @@ export default function ExamPage() {
           responses,
           currentQuestion: state.currentQuestion,
           tabSwitchCount: state.tabSwitchCount,
+          sectionLocked: state.test.sectionLocked ?? false,
         });
       } catch {
         setError("Failed to load test. Please try again.");
@@ -163,14 +167,25 @@ export default function ExamPage() {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [isSubmitted, incrementTabSwitch, tabSwitchCount, attemptId]);
 
-  // Fullscreen suggestion
+  // Auto fullscreen on test load
   useEffect(() => {
-    if (!loading && questions.length > 0) {
-      toast.info("For the best experience, press F11 for fullscreen", {
-        duration: 5000,
-      });
+    if (!loading && questions.length > 0 && !isSubmitted) {
+      const el = document.documentElement;
+      if (el.requestFullscreen && !document.fullscreenElement) {
+        el.requestFullscreen().catch(() => {
+          // Fullscreen blocked by browser — show fallback
+          toast.info("Press F11 for fullscreen mode", { duration: 4000 });
+        });
+      }
     }
-  }, [loading, questions.length]);
+
+    // Exit fullscreen on cleanup (test submit or unmount)
+    return () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    };
+  }, [loading, questions.length, isSubmitted]);
 
   if (loading) {
     return (
@@ -195,20 +210,31 @@ export default function ExamPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-slate-50 dark:bg-gray-950">
       <ExamTopBar testTitle={testTitle || "TCS NQT Test"} onSubmit={handleSubmit} />
       <SectionPanel />
-      <div className="flex flex-1 overflow-hidden">
-        <QuestionPanel />
+      <div className="flex flex-1 min-h-0">
+        {/* Question area — takes remaining space */}
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <QuestionPanel onSubmitTest={handleSubmit} />
+        </div>
+
         {/* Toggle palette on mobile */}
         <button
           onClick={() => setShowPalette(!showPalette)}
-          className="md:hidden fixed bottom-20 right-4 z-40 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center shadow-lg text-xs font-bold"
+          className="md:hidden fixed bottom-20 right-4 z-40 bg-indigo-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-indigo-200 text-xs font-bold transition-all active:scale-90 hover:bg-indigo-700"
         >
-          {showPalette ? "X" : "#"}
+          {showPalette ? "\u2715" : "#"}
         </button>
+
+        {/* Palette — fixed width, no overlap */}
         <div
-          className={`${showPalette ? "block" : "hidden"} md:block fixed md:relative right-0 top-0 md:top-auto h-full z-30 md:z-auto`}
+          className={cn(
+            "shrink-0",
+            showPalette ? "block" : "hidden",
+            "md:block",
+            "max-md:fixed max-md:right-0 max-md:top-0 max-md:h-full max-md:z-30 max-md:shadow-xl"
+          )}
         >
           <QuestionPalette />
         </div>
