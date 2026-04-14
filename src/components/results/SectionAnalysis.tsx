@@ -1,0 +1,84 @@
+"use client";
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import type { SectionResult } from "@/lib/api/types";
+
+const sectionLabels: Record<string, string> = {
+  numerical: "Numerical Ability",
+  logical: "Logical Reasoning",
+  verbal: "Verbal Ability",
+  advanced: "Advanced",
+};
+
+interface Props {
+  sections: SectionResult[];
+}
+
+export default function SectionAnalysis({ sections }: Props) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Section-wise Analysis</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {sections.map((section) => (
+          <div key={section.section} className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium">
+                {sectionLabels[section.section] || section.section}
+              </h4>
+              <Badge
+                variant={section.accuracy >= 70 ? "default" : "secondary"}
+              >
+                {Math.round(section.accuracy)}% accuracy
+              </Badge>
+            </div>
+
+            <Progress value={section.accuracy} className="h-2" />
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+              <div>
+                <p className="text-muted-foreground">Correct</p>
+                <p className="font-medium text-green-600">{section.correct}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Wrong</p>
+                <p className="font-medium text-red-600">{section.wrong}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Skipped</p>
+                <p className="font-medium text-gray-500">{section.skipped}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Avg Time/Q</p>
+                <p className="font-medium">
+                  {section.avgTimePerQuestion.toFixed(1)}s
+                </p>
+              </div>
+            </div>
+
+            {section.weakTopics.length > 0 && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-muted-foreground">
+                  Weak areas:
+                </span>
+                {section.weakTopics.map((topic) => (
+                  <Badge key={topic} variant="outline" className="text-xs text-red-600">
+                    {topic}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
