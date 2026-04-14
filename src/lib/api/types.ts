@@ -162,6 +162,7 @@ export interface ReviewResponse {
 
 export interface HistoryItem {
   _id: string;
+  attempt: string;
   test: {
     _id: string;
     title: string;

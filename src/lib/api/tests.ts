@@ -19,12 +19,3 @@ export async function fetchTestById(testId: string): Promise<Test> {
   const { data } = await apiClient.get<ApiResponse<Test>>(`/tests/${testId}`);
   return data.data;
 }
-
-export async function fetchTopicsBySection(
-  section: string
-): Promise<string[]> {
-  const { data } = await apiClient.get<ApiResponse<string[]>>(
-    `/tests/topics/${section}`
-  );
-  return data.data;
-}

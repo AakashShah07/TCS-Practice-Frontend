@@ -48,7 +48,7 @@ function formatTime(seconds: number) {
 
 export default function ResultPage() {
   const params = useParams();
-  const attemptId = params.testId as string;
+  const resultId = params.testId as string;
   const [result, setResult] = useState<TestResult | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -56,7 +56,7 @@ export default function ResultPage() {
     async function load() {
       setLoading(true);
       try {
-        const data = await fetchResult(attemptId);
+        const data = await fetchResult(resultId);
         setResult(data);
       } catch {
         // API not ready
@@ -65,7 +65,7 @@ export default function ResultPage() {
       }
     }
     load();
-  }, [attemptId]);
+  }, [resultId]);
 
   if (loading) {
     return (
@@ -163,7 +163,7 @@ export default function ResultPage() {
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3 justify-center">
-        <Button render={<Link href={`/results/${attemptId}/review`} />}>
+        <Button render={<Link href={`/results/${resultId}/review`} />}>
             Review Answers <ArrowRight className="ml-1 h-4 w-4" />
         </Button>
         <Button variant="outline" render={<Link href="/analytics" />}>View Analytics</Button>

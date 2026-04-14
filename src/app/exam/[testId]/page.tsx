@@ -50,7 +50,7 @@ export default function ExamPage() {
     if (timerRef.current) clearInterval(timerRef.current);
 
     try {
-      const result = await submitAttempt(attemptId);
+      await submitAttempt(attemptId);
       router.push(`/results/${attemptId}`);
     } catch {
       toast.error("Failed to submit test. Please try again.");

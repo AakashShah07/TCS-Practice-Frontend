@@ -21,7 +21,7 @@ function StatusIcon({ item }: { item: ReviewItem }) {
 
 export default function ReviewPage() {
   const params = useParams();
-  const attemptId = params.testId as string;
+  const resultId = params.testId as string;
   const [reviewData, setReviewData] = useState<ReviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "wrong" | "skipped">("all");
@@ -30,7 +30,7 @@ export default function ReviewPage() {
     async function load() {
       setLoading(true);
       try {
-        const data = await fetchReview(attemptId);
+        const data = await fetchReview(resultId);
         setReviewData(data);
       } catch {
         // API not ready
@@ -39,7 +39,7 @@ export default function ReviewPage() {
       }
     }
     load();
-  }, [attemptId]);
+  }, [resultId]);
 
   if (loading) {
     return (
@@ -68,7 +68,7 @@ export default function ReviewPage() {
     <div className="space-y-6 max-w-3xl mx-auto">
       <div className="flex items-center justify-between">
         <div>
-          <Button variant="ghost" size="sm" className="mb-2" render={<Link href={`/results/${attemptId}`} />}>
+          <Button variant="ghost" size="sm" className="mb-2" render={<Link href={`/results/${resultId}`} />}>
               <ArrowLeft className="mr-1 h-4 w-4" /> Back to Results
           </Button>
           <h1 className="text-2xl font-bold">Answer Review</h1>

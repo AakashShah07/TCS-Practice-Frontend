@@ -249,7 +249,7 @@ export default function DashboardPage() {
               {history.map((item) => (
                 <Link
                   key={item._id}
-                  href={`/results/${item._id}`}
+                  href={`/results/${item.attempt}`}
                   className="flex items-center justify-between p-3 rounded-lg hover:bg-accent transition-colors"
                 >
                   <div>
