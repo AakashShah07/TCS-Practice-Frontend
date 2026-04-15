@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://nqtprep.vercel.app";
+const siteUrl = "https://cracknqt.vercel.app";
 
 export const metadata: Metadata = {
   title: {

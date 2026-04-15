@@ -6,4 +6,4 @@ Disallow: /results
 Disallow: /analytics
 Disallow: /api
 
-Sitemap: https://nqtprep.vercel.app/sitemap.xml
+Sitemap: https://cracknqt.vercel.app/sitemap.xml
