@@ -25,10 +25,16 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Try refresh token on 401
+    // Skip refresh logic for auth endpoints (login, register, refresh)
+    const isAuthRequest = originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/register") ||
+      originalRequest.url?.includes("/auth/refresh");
+
+    // Try refresh token on 401 (but not for auth requests)
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
+      !isAuthRequest &&
       typeof window !== "undefined"
     ) {
       originalRequest._retry = true;

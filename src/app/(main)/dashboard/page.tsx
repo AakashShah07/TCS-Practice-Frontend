@@ -30,7 +30,7 @@ import { fetchHistory } from "@/lib/api/results";
 const testSections = [
   {
     title: "Numerical Ability",
-    description: "20 Questions \u2022 25 Minutes",
+    description: "20 Questions • 25 Minutes",
     icon: Calculator,
     href: "/tests/foundation?section=numerical",
     color: "text-blue-600",
@@ -38,7 +38,7 @@ const testSections = [
   },
   {
     title: "Reasoning Ability",
-    description: "20 Questions \u2022 25 Minutes",
+    description: "20 Questions • 25 Minutes",
     icon: Brain,
     href: "/tests/foundation?section=reasoning",
     color: "text-purple-600",
@@ -46,7 +46,7 @@ const testSections = [
   },
   {
     title: "Verbal Ability",
-    description: "25 Questions \u2022 25 Minutes",
+    description: "25 Questions • 25 Minutes",
     icon: BookOpen,
     href: "/tests/foundation?section=verbal",
     color: "text-green-600",
@@ -54,7 +54,7 @@ const testSections = [
   },
   {
     title: "Advanced Reasoning",
-    description: "14 Questions \u2022 25 Minutes",
+    description: "14 Questions • 25 Minutes",
     icon: Zap,
     href: "/tests/advanced",
     color: "text-orange-600",
@@ -197,7 +197,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle className="text-xl">Full Mock Test</CardTitle>
           <CardDescription className="text-primary-foreground/80">
-            Complete TCS NQT simulation — 79 Questions \u2022 120 Minutes
+            Complete TCS NQT simulation — 79 Questions • 120 Minutes
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -218,14 +218,14 @@ export default function DashboardPage() {
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium">Foundation Section</span>
-                <span className="text-muted-foreground">65 Qs \u2022 75 mins</span>
+                <span className="text-muted-foreground">65 Qs • 75 mins</span>
               </div>
               <Progress value={82} className="h-2" />
             </div>
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium">Advanced Section</span>
-                <span className="text-muted-foreground">14 Qs \u2022 25 mins</span>
+                <span className="text-muted-foreground">14 Qs • 25 mins</span>
               </div>
               <Progress value={18} className="h-2" />
             </div>
