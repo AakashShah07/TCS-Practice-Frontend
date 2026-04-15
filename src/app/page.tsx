@@ -9,9 +9,6 @@ import {
   Layers,
   CheckCircle2,
   Zap,
-  PenTool,
-  Pencil,
-  PenLine,
   GraduationCap,
   HelpCircle,
   FileText,
@@ -86,21 +83,17 @@ export default function HomePage() {
 
       {/* ── Hero ── */}
       <section className="pt-20 pb-16 sm:pt-28 sm:pb-24 relative overflow-hidden hero-gradient">
-        {/* Animated blur blob behind heading */}
-        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full landing-blob pointer-events-none" />
+        {/* Animated blue glow blob — centered behind text */}
+        <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-500 opacity-20 rounded-full blur-[120px] animate-pulse pointer-events-none" />
 
-        {/* Floating pens background — low opacity, alive UI */}
+        {/* Floating soft shapes — subtle dots */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <PenTool className="absolute top-[12%] left-[6%] w-10 h-10 text-blue-400/[0.07] landing-pen-1" />
-          <Pencil className="absolute top-[20%] right-[10%] w-9 h-9 text-indigo-400/[0.06] landing-pen-2" />
-          <PenLine className="absolute bottom-[28%] left-[12%] w-8 h-8 text-blue-500/[0.05] landing-pen-3" />
-          <PenTool className="absolute top-[55%] right-[6%] w-11 h-11 text-blue-400/[0.05] landing-pen-4" />
-          <Pencil className="absolute top-[8%] right-[32%] w-7 h-7 text-indigo-400/[0.08] landing-pen-5" />
-          <PenLine className="absolute bottom-[18%] right-[22%] w-8 h-8 text-blue-400/[0.06] landing-pen-6" />
-          <PenTool className="absolute bottom-[12%] left-[28%] w-7 h-7 text-indigo-400/[0.05] landing-pen-2" />
-          <Pencil className="absolute top-[42%] left-[4%] w-9 h-9 text-blue-500/[0.04] landing-pen-4" />
-          <PenLine className="absolute top-[35%] left-[42%] w-6 h-6 text-indigo-300/[0.06] landing-pen-1" />
-          <PenTool className="absolute bottom-[35%] right-[38%] w-6 h-6 text-blue-300/[0.07] landing-pen-6" />
+          <div className="absolute top-[15%] left-[10%] w-3 h-3 bg-blue-400 rounded-full opacity-20 landing-dot-1" />
+          <div className="absolute top-[22%] right-[14%] w-2.5 h-2.5 bg-indigo-400 rounded-full opacity-15 landing-dot-2" />
+          <div className="absolute bottom-[30%] left-[18%] w-2 h-2 bg-blue-500 rounded-full opacity-20 landing-dot-3" />
+          <div className="absolute top-[55%] right-[8%] w-3.5 h-3.5 bg-blue-400 rounded-full opacity-10 landing-dot-4" />
+          <div className="absolute top-[10%] right-[35%] w-2 h-2 bg-indigo-400 rounded-full opacity-15 landing-dot-5" />
+          <div className="absolute bottom-[20%] right-[28%] w-3 h-3 bg-violet-400 rounded-full opacity-10 landing-dot-6" />
         </div>
 
         <div className="max-w-[1140px] mx-auto px-6 text-center relative z-10">
@@ -397,10 +390,6 @@ export default function HomePage() {
       <section className="py-20 sm:py-24 bg-gradient-to-br from-[#1E40AF] via-[#2563EB] to-[#3B82F6] relative overflow-hidden">
         <div className="absolute top-[-20%] right-[-10%] w-[400px] h-[400px] rounded-full bg-white/5 blur-3xl auth-bg-glow" />
         <div className="absolute bottom-[-20%] left-[-10%] w-[350px] h-[350px] rounded-full bg-white/5 blur-3xl auth-bg-glow-2" />
-
-        <PenTool className="absolute top-[20%] left-[10%] w-7 h-7 text-white/10 landing-pen-1" />
-        <Pencil className="absolute bottom-[25%] right-[12%] w-6 h-6 text-white/8 landing-pen-3" />
-        <PenLine className="absolute top-[30%] right-[20%] w-8 h-8 text-white/6 landing-pen-5" />
 
         <div className="relative z-10 max-w-[1140px] mx-auto px-6 text-center">
           <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
