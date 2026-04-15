@@ -1,9 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /dashboard
-Disallow: /exam
-Disallow: /results
-Disallow: /analytics
-Disallow: /api
 
 Sitemap: https://cracknqt.vercel.app/sitemap.xml
