@@ -288,6 +288,42 @@
   70% { transform: translateY(-22px) rotate(8deg); opacity: 0.25; }
 }
 
+/* Hero gradient background */
+.hero-gradient {
+  background: linear-gradient(to bottom, #f8fafc, #eef2ff);
+}
+
+/* Animated blur blob behind heading */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(-50%, 0) scale(1); opacity: 0.12; }
+  33% { transform: translate(-45%, -15px) scale(1.05); opacity: 0.18; }
+  66% { transform: translate(-55%, 10px) scale(0.97); opacity: 0.1; }
+}
+.landing-blob {
+  background: radial-gradient(circle, rgba(37,99,235,0.15), rgba(99,102,241,0.08), transparent 70%);
+  filter: blur(80px);
+  animation: blob-drift 10s ease-in-out infinite;
+}
+
+/* Text gradient for "With Confidence" */
+.landing-text-gradient {
+  background: linear-gradient(135deg, #2563EB 0%, #7C3AED 50%, #2563EB 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 6s linear infinite;
+}
+@keyframes text-shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* CTA glow */
+.landing-cta-glow {
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+}
+
 .landing-pen-1 { animation: pen-float-1 8s ease-in-out infinite; }
 .landing-pen-2 { animation: pen-float-2 10s ease-in-out infinite 0.5s; }
 .landing-pen-3 { animation: pen-float-3 9s ease-in-out infinite 1s; }
