@@ -197,7 +197,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle className="text-xl">Full Mock Test</CardTitle>
           <CardDescription className="text-primary-foreground/80">
-            Complete TCS NQT simulation — 25 Questions per section • 30 Minutes each
+            Complete TCS NQT simulation — 79 Questions • 120 Minutes
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -218,22 +218,22 @@ export default function DashboardPage() {
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium">Foundation Section</span>
-                <span className="text-muted-foreground">25 Qs • 30 mins each</span>
+                <span className="text-muted-foreground">65 Qs • 75 mins</span>
               </div>
               <Progress value={82} className="h-2" />
             </div>
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="font-medium">Advanced Section</span>
-                <span className="text-muted-foreground">25 Qs • 30 mins</span>
+                <span className="text-muted-foreground">14 Qs • 25 mins</span>
               </div>
               <Progress value={18} className="h-2" />
             </div>
           </div>
           <div className="flex flex-wrap gap-2 pt-2">
             <Badge variant="outline">No Negative Marking (Foundation)</Badge>
-            <Badge variant="outline">25 Questions per test</Badge>
-            <Badge variant="outline">Duration: 30 Minutes each</Badge>
+            <Badge variant="outline">Total: 79 Questions</Badge>
+            <Badge variant="outline">Duration: 120 Minutes</Badge>
           </div>
         </CardContent>
       </Card>

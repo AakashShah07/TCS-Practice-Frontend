@@ -107,8 +107,8 @@ export default function TestsPage() {
         </CardHeader>
         <CardContent className="flex items-center justify-between">
           <div className="flex gap-3">
-            <Badge variant="secondary">25 Qs per section</Badge>
-            <Badge variant="secondary">30 Min each</Badge>
+            <Badge variant="secondary">79 Questions</Badge>
+            <Badge variant="secondary">120 Minutes</Badge>
             <Badge variant="secondary">All Sections</Badge>
           </div>
           <Button variant="secondary" render={<Link href="/tests/mock" />}>
