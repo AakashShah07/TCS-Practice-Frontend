@@ -247,14 +247,130 @@
   transform: scale(0.97) translateY(0);
 }
 
-/* ── Landing page animations ── */
+/* ── Landing page load animations (hero only) ── */
+
+/* Fade up */
 .landing-fade-up {
   animation: auth-fade-up 700ms cubic-bezier(0.4, 0, 0.2, 1) both;
 }
+
+/* Blur in — text starts blurred */
+@keyframes landing-blur-in {
+  from { opacity: 0; filter: blur(12px); transform: translateY(10px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+.landing-blur-in {
+  animation: landing-blur-in 800ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Scale in — pops from center */
+@keyframes landing-scale-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+.landing-scale-in {
+  animation: landing-scale-in 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Bounce in — overshoots then settles */
+@keyframes landing-bounce-in {
+  0% { opacity: 0; transform: translateY(30px); }
+  60% { opacity: 1; transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+.landing-bounce-in {
+  animation: landing-bounce-in 800ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Slide down — nav entrance */
+@keyframes landing-slide-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.landing-slide-down {
+  animation: landing-slide-down 500ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Scale Y — stat dividers grow */
+@keyframes landing-scale-y {
+  from { opacity: 0; transform: scaleY(0); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+.landing-scale-y {
+  animation: landing-scale-y 500ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  transform-origin: center;
+}
+
+/* CTA pulse ring */
+@keyframes cta-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.3); }
+  70% { box-shadow: 0 0 0 12px rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+.landing-cta-pulse {
+  animation: cta-pulse-ring 2.5s ease-out infinite 1s;
+}
+
+/* Stagger delays */
 .landing-delay-100 { animation-delay: 100ms; }
 .landing-delay-200 { animation-delay: 200ms; }
 .landing-delay-300 { animation-delay: 300ms; }
 .landing-delay-400 { animation-delay: 400ms; }
+
+/* ── Scroll-triggered reveal animations ── */
+
+/* Elements start hidden */
+[data-reveal] {
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
+              transform 600ms cubic-bezier(0.4, 0, 0.2, 1),
+              filter 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade up on reveal */
+.reveal-fade-up {
+  transform: translateY(24px);
+}
+.reveal-fade-up.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Slide in from left */
+.reveal-slide-left {
+  transform: translateX(-40px);
+}
+.reveal-slide-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Slide in from right */
+.reveal-slide-right {
+  transform: translateX(40px);
+}
+.reveal-slide-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Scale up from center */
+.reveal-scale-up {
+  transform: scale(0.9);
+}
+.reveal-scale-up.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Flip up (3D) */
+.reveal-flip-up {
+  transform: perspective(800px) rotateX(8deg) translateY(20px);
+}
+.reveal-flip-up.revealed {
+  opacity: 1;
+  transform: perspective(800px) rotateX(0deg) translateY(0);
+}
 
 
 /* Hero gradient background */
