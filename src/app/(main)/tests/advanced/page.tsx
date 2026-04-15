@@ -39,8 +39,7 @@ export default function AdvancedPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Advanced Section</h1>
         <p className="text-muted-foreground mt-1">
-          Higher-level quantitative and reasoning problems — 14 Questions in 25
-          Minutes
+          Higher-level quantitative and reasoning problems — 25 Questions • 30 Minutes per test
         </p>
       </div>
 
@@ -66,9 +65,9 @@ export default function AdvancedPage() {
             <Badge variant="outline">Pattern Recognition</Badge>
           </div>
           <div className="flex gap-3 text-sm text-muted-foreground">
-            <span>14 Questions</span>
+            <span>25 Questions</span>
             <span>&bull;</span>
-            <span>25 Minutes</span>
+            <span>30 Minutes</span>
             <span>&bull;</span>
             <span>Negative Marking Applies</span>
           </div>
@@ -87,8 +86,7 @@ export default function AdvancedPage() {
                   <div>
                     <p className="font-medium">{test.title}</p>
                     <p className="text-sm text-muted-foreground">
-                      {test.totalQuestions} Questions{" "}
-                      {Math.floor(test.duration / 60)} Minutes
+                      {test.totalQuestions} Questions • {Math.floor(test.duration / 60)} Minutes
                     </p>
                   </div>
                   <Button render={<Link href={`/exam/${test._id}`} target="_blank" />}>

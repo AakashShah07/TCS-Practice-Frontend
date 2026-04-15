@@ -23,14 +23,14 @@ const testCategories = [
   {
     title: "Foundation Section",
     description: "Core aptitude tests covering numerical, reasoning, and verbal abilities",
-    badge: "65 Questions • 75 Minutes",
+    badge: "25 Questions • 30 Minutes per test",
     tests: [
       {
         title: "Numerical Ability",
         description:
           "Percentages, Ratios, Time-Speed-Distance, Algebra, Geometry, Averages, Profit-Loss, Number Systems",
-        questions: 20,
-        duration: 25,
+        questions: 25,
+        duration: 30,
         icon: Calculator,
         color: "text-blue-600",
         bg: "bg-blue-50",
@@ -40,8 +40,8 @@ const testCategories = [
         title: "Logical Reasoning",
         description:
           "Series, Blood Relations, Coding-Decoding, Syllogisms, Puzzles, Data Interpretation",
-        questions: 20,
-        duration: 25,
+        questions: 25,
+        duration: 30,
         icon: Brain,
         color: "text-purple-600",
         bg: "bg-purple-50",
@@ -52,7 +52,7 @@ const testCategories = [
         description:
           "Reading Comprehension, Grammar, Vocabulary, Sentence Correction",
         questions: 25,
-        duration: 25,
+        duration: 30,
         icon: BookOpen,
         color: "text-green-600",
         bg: "bg-green-50",
@@ -63,14 +63,14 @@ const testCategories = [
   {
     title: "Advanced Section",
     description: "Higher-level quantitative and reasoning problems",
-    badge: "14 Questions • 25 Minutes",
+    badge: "25 Questions • 30 Minutes",
     tests: [
       {
         title: "Advanced Quantitative & Reasoning",
         description:
           "Advanced level questions combining quantitative aptitude with complex reasoning",
-        questions: 14,
-        duration: 25,
+        questions: 25,
+        duration: 30,
         icon: Zap,
         color: "text-orange-600",
         bg: "bg-orange-50",
@@ -107,8 +107,8 @@ export default function TestsPage() {
         </CardHeader>
         <CardContent className="flex items-center justify-between">
           <div className="flex gap-3">
-            <Badge variant="secondary">79 Questions</Badge>
-            <Badge variant="secondary">120 Minutes</Badge>
+            <Badge variant="secondary">25 Qs per section</Badge>
+            <Badge variant="secondary">30 Min each</Badge>
             <Badge variant="secondary">All Sections</Badge>
           </div>
           <Button variant="secondary" render={<Link href="/tests/mock" />}>

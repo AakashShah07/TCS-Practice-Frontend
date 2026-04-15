@@ -102,7 +102,7 @@ function FoundationContent() {
           Foundation Section
         </h1>
         <p className="text-muted-foreground mt-1">
-          Core aptitude tests — 65 Questions in 75 Minutes
+          Core aptitude tests — 25 Questions • 30 Minutes per test
         </p>
       </div>
 
@@ -160,8 +160,7 @@ function FoundationContent() {
                           <div>
                             <p className="font-medium">{test.title}</p>
                             <p className="text-sm text-muted-foreground">
-                              {test.totalQuestions} Questions{" "}
-                              {Math.floor(test.duration / 60)} Minutes
+                              {test.totalQuestions} Questions • {Math.floor(test.duration / 60)} Minutes
                             </p>
                           </div>
                           <Button render={<Link href={`/exam/${test._id}`} target="_blank" />}>

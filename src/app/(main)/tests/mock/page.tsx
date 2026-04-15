@@ -71,12 +71,12 @@ export default function MockTestPage() {
         <CardContent className="space-y-6">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-2xl font-bold">79</p>
-              <p className="text-sm text-muted-foreground">Questions</p>
+              <p className="text-2xl font-bold">25</p>
+              <p className="text-sm text-muted-foreground">Qs / Section</p>
             </div>
             <div>
-              <p className="text-2xl font-bold">120</p>
-              <p className="text-sm text-muted-foreground">Minutes</p>
+              <p className="text-2xl font-bold">30</p>
+              <p className="text-sm text-muted-foreground">Min / Section</p>
             </div>
             <div>
               <p className="text-2xl font-bold">4</p>
@@ -85,10 +85,10 @@ export default function MockTestPage() {
           </div>
 
           <div className="flex flex-wrap gap-2 justify-center">
-            <Badge>Numerical (20 Qs)</Badge>
-            <Badge>Reasoning (20 Qs)</Badge>
+            <Badge>Numerical (25 Qs)</Badge>
+            <Badge>Reasoning (25 Qs)</Badge>
             <Badge>Verbal (25 Qs)</Badge>
-            <Badge variant="secondary">Advanced (14 Qs)</Badge>
+            <Badge variant="secondary">Advanced (25 Qs)</Badge>
           </div>
 
           <Separator />
