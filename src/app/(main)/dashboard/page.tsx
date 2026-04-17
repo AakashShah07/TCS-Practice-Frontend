@@ -246,7 +246,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {history.map((item) => (
+              {history.filter((item) => item.test).map((item) => (
                 <Link
                   key={item._id}
                   href={`/results/${item.attempt}`}
