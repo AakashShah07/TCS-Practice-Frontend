@@ -29,6 +29,217 @@ import {
 } from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
 
+/**
+ * Formats question text so that coded-relation definitions, multi-line setups,
+ * and the final question each appear on their own line.
+ */
+function QuestionText({ text }: { text: string }) {
+  // 1. "Given:" or "In a code/coded language:" prefix
+  const hasGivenPrefix = /^(Given|In a code[d]? language|In a coded relation)\s*:/i.test(text);
+
+  // 2. Symbol-means definitions: "A + B means ...; A - B means ..." or "% means mother, & means father"
+  const hasSymbolMeans = /\bmeans\b/i.test(text) && (
+    /[+\-*×÷/@#$%&★●■▲←→↔]\s*[A-Z]\s+means\b/i.test(text) ||
+    /[A-Z]\s*[+\-*×÷/@#$%&★●■▲←→↔]\s*[A-Z]\s+means\b/i.test(text) ||
+    /^(?:If\s+)?[A-Z]\s*[+\-*×÷/@#$%&★●■▲←→↔]/i.test(text) ||
+    /[%&#@$#★●■▲]\s+means\b/i.test(text)
+  );
+
+  // 3. Arrow-based definitions: "A → B means ..." or "P − Q → P is father"
+  const hasArrowDefs = /[→←↔]\s*[A-Z]\s+(?:is|means)\s+/i.test(text);
+
+  // 4. Relation chain: "A is father of B. B is mother of C."
+  const hasRelationChain = /\b[A-Z]\s+is\s+(father|mother|brother|sister|son|daughter|husband|wife|parent|spouse|married|sibling)\b/i.test(text);
+
+  if (hasGivenPrefix || hasSymbolMeans || hasArrowDefs) {
+    return <FormattedCodedQuestion text={text} />;
+  }
+
+  if (hasRelationChain) {
+    return <FormattedRelationChain text={text} />;
+  }
+
+  // Default: render as-is
+  return (
+    <p className="text-[17px] leading-[1.8] text-foreground font-medium whitespace-pre-wrap">
+      {text}
+    </p>
+  );
+}
+
+/** Handles coded/symbol definition questions */
+function FormattedCodedQuestion({ text }: { text: string }) {
+  // Try to extract a prefix like "Given:", "In a coded language:", "In a coded relation:"
+  const prefixMatch = text.match(/^(Given|In a code[d]? language|In a coded relation)\s*:\s*/i);
+
+  // Also handle "If A + B means ... " — strip leading "If " for definitions
+  const ifPrefixMatch = !prefixMatch ? text.match(/^If\s+/i) : null;
+
+  const prefix = prefixMatch
+    ? prefixMatch[0].trim().replace(/:$/, "")
+    : "Coded Relations";
+  const rest = prefixMatch
+    ? text.slice(prefixMatch[0].length)
+    : ifPrefixMatch
+      ? text.slice(ifPrefixMatch[0].length)
+      : text;
+
+  // Find the question part — the last sentence that asks something
+  // Look for patterns like "How is", "What is", "If P + Q", "which of the following", etc.
+  // We want to find the LAST definition separator before the actual question
+  let definitions = "";
+  let questionPart = "";
+
+  // Strategy: find the question by looking for known question starters after a ". " or "; "
+  const questionPatterns = [
+    /[.;]\s*((?:Question\s*:\s*)?How is\b[\s\S]*)/i,
+    /[.;]\s*((?:Question\s*:\s*)?What is\b[\s\S]*)/i,
+    /[.;]\s*((?:Question\s*:\s*)?Who is\b[\s\S]*)/i,
+    /[.;]\s*((?:Question\s*:\s*)?Which of\b[\s\S]*)/i,
+    /[.;]\s*((?:Question\s*:\s*)?Find\b[\s\S]*)/i,
+    /[.;]\s*((?:Question\s*:\s*)?Determine\b[\s\S]*)/i,
+    /[.;]\s*(If\s+[A-Z]\s*[+\-*×÷/@#$%&★●■▲←→↔][\s\S]*\?[\s\S]*)/i,
+  ];
+
+  let splitIndex = -1;
+  let matchedQuestion = "";
+  for (const pattern of questionPatterns) {
+    const m = rest.match(pattern);
+    if (m && m.index !== undefined) {
+      const idx = m.index;
+      if (splitIndex === -1 || idx > splitIndex) {
+        // We want the last match that's a natural split
+      }
+      // Actually take the first match — it separates defs from question
+      if (splitIndex === -1) {
+        splitIndex = idx;
+        matchedQuestion = m[1];
+      }
+    }
+  }
+
+  if (splitIndex > 0) {
+    definitions = rest.substring(0, splitIndex).trim();
+    questionPart = matchedQuestion.trim();
+  } else {
+    // Fallback: split on last ". " before "?"
+    const lastQMark = rest.lastIndexOf("?");
+    if (lastQMark > 0) {
+      const beforeQ = rest.substring(0, lastQMark);
+      const lastPeriod = Math.max(beforeQ.lastIndexOf(". "), beforeQ.lastIndexOf("; "));
+      if (lastPeriod > 0) {
+        definitions = rest.substring(0, lastPeriod).trim();
+        questionPart = rest.substring(lastPeriod + 2).trim();
+      } else {
+        definitions = rest;
+        questionPart = "";
+      }
+    } else {
+      definitions = rest;
+      questionPart = "";
+    }
+  }
+
+  // Split definitions into individual rules
+  // Try splitting by ". " first (period-separated), then by "; ", then by ", "
+  let defLines: string[];
+
+  // Try period-separated first: "A + B means X. A - B means Y."
+  const periodSplit = definitions
+    .split(/\.\s+/)
+    .map((d) => d.replace(/\.$/, "").trim())
+    .filter(Boolean);
+
+  if (periodSplit.length > 1) {
+    defLines = periodSplit;
+  } else {
+    // Try semicolon-separated: "A + B means X; A - B means Y"
+    const semiSplit = definitions
+      .split(/;\s*/)
+      .map((d) => d.trim())
+      .filter(Boolean);
+
+    if (semiSplit.length > 1) {
+      defLines = semiSplit;
+    } else {
+      // Try comma-separated: "% means mother, & means father"
+      const commaSplit = definitions
+        .split(/,\s*/)
+        .map((d) => d.trim())
+        .filter(Boolean);
+
+      defLines = commaSplit.length > 1 ? commaSplit : [definitions];
+    }
+  }
+
+  return (
+    <div className="text-[17px] leading-[1.8] text-foreground font-medium space-y-3">
+      <p className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-wide">
+        {prefix}
+      </p>
+      <div className="space-y-1.5 pl-1">
+        {defLines.map((line, i) => (
+          <div key={i} className="flex items-start gap-2">
+            <span className="mt-[10px] h-1.5 w-1.5 rounded-full bg-indigo-400 shrink-0" />
+            <span>{line}</span>
+          </div>
+        ))}
+      </div>
+      {questionPart && (
+        <p className="pt-2 border-t border-slate-200 dark:border-slate-700 text-foreground font-semibold">
+          {questionPart}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** Handles "A is father of B. B is mother of C. How is A related to C?" style */
+function FormattedRelationChain({ text }: { text: string }) {
+  // Split into statement sentences and question
+  // Find the question sentence (starts with How/What/Who or contains ?)
+  const questionPatterns = /(?:How is|What is|Who is|How are|Find |Determine |What relation)/i;
+  const match = text.match(questionPatterns);
+
+  if (!match || match.index === undefined) {
+    return <p className="text-[17px] leading-[1.8] text-foreground font-medium whitespace-pre-wrap">{text}</p>;
+  }
+
+  // Find the start of the question sentence
+  const beforeQuestion = text.substring(0, match.index);
+  const questionPart = text.substring(match.index);
+
+  // Split the setup statements by ". " (each relation statement)
+  const statements = beforeQuestion
+    .split(/\.\s+/)
+    .map((s) => s.replace(/\.$/, "").trim())
+    .filter((s) => s.length > 0);
+
+  // Check for a "Pointing to" or context intro
+  const introPattern = /^(Pointing to|Looking at|Showing|Introducing|A man said|A woman said|.*?\bsays?\b\s*:)/i;
+  const hasIntro = statements.length > 0 && introPattern.test(statements[0]);
+
+  return (
+    <div className="text-[17px] leading-[1.8] text-foreground font-medium space-y-3">
+      {hasIntro && statements.length === 1 ? (
+        <p>{statements[0]}.</p>
+      ) : (
+        <div className="space-y-1.5">
+          {statements.map((stmt, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <span className="mt-[10px] h-1.5 w-1.5 rounded-full bg-indigo-400 shrink-0" />
+              <span>{stmt}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <p className="pt-2 border-t border-slate-200 dark:border-slate-700 text-foreground font-semibold">
+        {questionPart}
+      </p>
+    </div>
+  );
+}
+
 const sectionLabels: Record<string, string> = {
   numerical: "Numerical",
   reasoning: "Reasoning",
@@ -176,9 +387,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
           <div className="relative">
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-full" />
             <div className="pl-5 py-1">
-              <p className="text-[17px] leading-[1.8] text-foreground font-medium whitespace-pre-wrap">
-                {question.text}
-              </p>
+              <QuestionText text={question.text} />
             </div>
           </div>
 
@@ -233,70 +442,65 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
       </div>
 
       {/* Navigation Bar */}
-      <div className="sticky bottom-0 border-t bg-white dark:bg-gray-950 px-5 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.04)]">
+      <div className="sticky bottom-0 border-t bg-white dark:bg-gray-950 px-6 py-4 shadow-[0_-2px_10px_rgba(0,0,0,0.04)]">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               variant="outline"
-              size="sm"
               onClick={handleClearResponse}
               disabled={selectedOption === null}
-              className="rounded-lg text-slate-600 gap-1.5 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40"
+              className="rounded-xl text-slate-600 gap-2 h-11 px-5 text-sm font-medium transition-all hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-[1.03] active:scale-95 disabled:opacity-40"
             >
-              <Eraser className="h-3.5 w-3.5" />
+              <Eraser className="h-4 w-4" />
               Clear
             </Button>
             <Button
               variant="outline"
-              size="sm"
               onClick={handleMarkAndNext}
               className={cn(
-                "rounded-lg gap-1.5 transition-all",
+                "rounded-xl gap-2 h-11 px-5 text-sm font-medium transition-all hover:scale-[1.03] active:scale-95",
                 isMarked
                   ? "border-amber-400 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-950 dark:border-amber-600 dark:text-amber-400"
                   : "text-slate-600 hover:border-amber-300 hover:text-amber-700 hover:bg-amber-50"
               )}
             >
-              {isMarked ? <BookmarkCheck className="h-3.5 w-3.5" /> : <Bookmark className="h-3.5 w-3.5" />}
+              {isMarked ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
               {isMarked ? "Flagged" : "Flag"} & Next
             </Button>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               variant="outline"
-              size="sm"
               onClick={handlePrev}
               disabled={currentQuestionIndex === (sectionInfo?.startIndex ?? 0) && sectionLocked}
-              className="rounded-lg gap-1 transition-all hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40"
+              className="rounded-xl gap-1.5 h-11 px-5 text-sm font-medium transition-all hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-[1.03] active:scale-95 disabled:opacity-40"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4.5 w-4.5 transition-transform group-hover:-translate-x-0.5" />
               Prev
             </Button>
 
             {/* Submit Section / Submit Test button when at last question */}
             {isLastInSection ? (
               <Button
-                size="sm"
                 onClick={() => setShowSectionSubmit(true)}
                 className={cn(
-                  "rounded-lg gap-1.5 text-white font-semibold px-4 transition-all active:scale-95",
+                  "rounded-xl gap-2 text-white font-semibold h-11 px-6 text-sm transition-all hover:scale-[1.03] active:scale-95",
                   isLastSection
                     ? "bg-red-600 hover:bg-red-700"
                     : "bg-emerald-600 hover:bg-emerald-700"
                 )}
               >
-                <CheckCircle className="h-3.5 w-3.5" />
+                <CheckCircle className="h-4 w-4" />
                 {isLastSection ? "Submit Test" : `Submit ${sectionLabels[currentSection] || "Section"}`}
               </Button>
             ) : (
               <Button
-                size="sm"
                 onClick={handleNext}
                 disabled={currentQuestionIndex === questions.length - 1}
-                className="rounded-lg gap-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 transition-all active:scale-95 disabled:opacity-40"
+                className="group rounded-xl gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold h-11 px-6 text-sm transition-all hover:scale-[1.03] active:scale-95 disabled:opacity-40"
               >
                 Next
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4.5 w-4.5 transition-transform group-hover:translate-x-0.5 group-hover:animate-[nudge-right_0.6s_ease-in-out_infinite]" />
               </Button>
             )}
           </div>

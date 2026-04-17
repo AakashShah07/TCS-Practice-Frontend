@@ -423,6 +423,11 @@
   50% { transform: translateY(-10px); }
 }
 
+@keyframes nudge-right {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
 .landing-dot-1 { animation: dot-float-1 4s ease-in-out infinite; }
 .landing-dot-2 { animation: dot-float-2 5s ease-in-out infinite 0.5s; }
 .landing-dot-3 { animation: dot-float-3 4.5s ease-in-out infinite 1s; }

@@ -60,9 +60,9 @@ export default function QuestionPalette() {
   }
 
   return (
-    <div className="w-60 flex flex-col h-full overflow-hidden border-l bg-white dark:bg-slate-950">
+    <div className="w-72 flex flex-col h-full overflow-hidden border-l bg-white dark:bg-slate-950">
       {/* Header with section name + progress */}
-      <div className="px-3 pt-3 pb-2 border-b">
+      <div className="px-5 pt-3 pb-2 border-b">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-bold text-xs text-slate-800 dark:text-slate-200">
             {sectionLabels[currentSection] || currentSection}
@@ -75,7 +75,7 @@ export default function QuestionPalette() {
       </div>
 
       {/* Legend — single row */}
-      <div className="px-3 py-2 border-b flex items-center gap-3 text-[10px] text-muted-foreground">
+      <div className="px-5 py-2 border-b flex items-center gap-3 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />
           {sectionAnswered}
@@ -96,7 +96,7 @@ export default function QuestionPalette() {
 
       {/* Flagged in this section */}
       {sectionMarked > 0 && (
-        <div className="px-3 py-2 border-b bg-amber-50/60 dark:bg-amber-950/20">
+        <div className="px-5 py-2 border-b bg-amber-50/60 dark:bg-amber-950/20">
           <div className="flex items-center gap-1 text-[10px] font-bold text-amber-700 dark:text-amber-400 mb-1.5">
             <Bookmark className="h-3 w-3" />
             Flagged ({sectionMarked})
@@ -121,8 +121,8 @@ export default function QuestionPalette() {
       )}
 
       {/* Question Grid — only current section */}
-      <div className="flex-1 overflow-y-auto p-3">
-        <div className="grid grid-cols-5 gap-1.5">
+      <div className="flex-1 overflow-y-auto px-5 py-3">
+        <div className="grid grid-cols-5 gap-2">
           {sectionIndices.map((globalIndex) => {
             const status = getStatus(globalIndex);
             const isCurrent = globalIndex === currentQuestionIndex;
@@ -147,18 +147,18 @@ export default function QuestionPalette() {
       </div>
 
       {/* Footer legend */}
-      <div className="px-3 py-2 border-t bg-slate-50 dark:bg-slate-900 grid grid-cols-2 gap-1 text-[10px] text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-sm bg-emerald-500" /> Answered
+      <div className="px-5 py-3 border-t bg-slate-50 dark:bg-slate-900 grid grid-cols-2 gap-x-4 gap-y-2 text-[11px] font-medium text-muted-foreground">
+        <span className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-emerald-500/30" /> Answered
         </span>
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-sm bg-rose-500" /> Not Answered
+        <span className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded-full bg-rose-500 ring-2 ring-rose-500/30" /> Not Answered
         </span>
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-sm bg-slate-200 dark:bg-slate-700" /> Not Visited
+        <span className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-600 ring-2 ring-slate-300/30 dark:ring-slate-600/30" /> Not Visited
         </span>
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-sm bg-amber-400" /> Flagged
+        <span className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded-full bg-amber-400 ring-2 ring-amber-400/30" /> Flagged
         </span>
       </div>
     </div>
