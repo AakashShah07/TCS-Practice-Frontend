@@ -12,6 +12,7 @@ import {
   Users,
   Flame,
   Sigma,
+  Target,
 } from "lucide-react";
 import {
   Card,
@@ -89,6 +90,7 @@ const testCategories = [
 export default function TestsPage() {
   const [bloodRelationTest, setBloodRelationTest] = useState<Test | null>(null);
   const [simplificationTest, setSimplificationTest] = useState<Test | null>(null);
+  const [approximationTest, setApproximationTest] = useState<Test | null>(null);
 
   useEffect(() => {
     async function loadSpecialTests() {
@@ -98,6 +100,8 @@ export default function TestsPage() {
         if (brTest) setBloodRelationTest(brTest);
         const simpTest = data.find((t) => t.topic === "Simplification");
         if (simpTest) setSimplificationTest(simpTest);
+        const approxTest = data.find((t) => t.topic === "Approximation");
+        if (approxTest) setApproximationTest(approxTest);
       } catch {
         // API not ready
       }
@@ -232,6 +236,54 @@ export default function TestsPage() {
               render={<Link href={`/exam/${simplificationTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Approximation Challenge Card */}
+      {approximationTest && (
+        <Card className="relative overflow-hidden border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 via-teal-50 to-green-50 dark:from-emerald-950/30 dark:via-teal-950/20 dark:to-green-950/20 dark:border-emerald-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-100/40 dark:bg-emerald-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-100/40 dark:bg-teal-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+                <Target className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-emerald-900 dark:text-emerald-100">
+                    Approximation Challenge
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-emerald-500 animate-pulse" />
+                </div>
+                <CardDescription className="text-emerald-700/80 dark:text-emerald-300/80">
+                  Square roots, cube roots, percentages & complex mixed operations — round smartly!
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700">
+                30 Questions
+              </Badge>
+              <Badge className="bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/40 dark:text-teal-200 dark:border-teal-700">
+                40 Minutes
+              </Badge>
+              <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/40 dark:text-green-200 dark:border-green-700">
+                Numerical
+              </Badge>
+              <Badge className="bg-red-100 text-red-800 border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-700">
+                Hard Only
+              </Badge>
+            </div>
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              render={<Link href={`/exam/${approximationTest._id}`} target="_blank" />}
+            >
+              Take Challenge <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </CardContent>
         </Card>
