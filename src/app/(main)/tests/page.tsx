@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Users,
   Flame,
+  Sigma,
 } from "lucide-react";
 import {
   Card,
@@ -87,6 +88,7 @@ const testCategories = [
 
 export default function TestsPage() {
   const [bloodRelationTest, setBloodRelationTest] = useState<Test | null>(null);
+  const [simplificationTest, setSimplificationTest] = useState<Test | null>(null);
 
   useEffect(() => {
     async function loadSpecialTests() {
@@ -94,6 +96,8 @@ export default function TestsPage() {
         const data = await fetchTests({ type: "topic_practice" });
         const brTest = data.find((t) => t.topic === "Blood Relations");
         if (brTest) setBloodRelationTest(brTest);
+        const simpTest = data.find((t) => t.topic === "Simplification");
+        if (simpTest) setSimplificationTest(simpTest);
       } catch {
         // API not ready
       }
@@ -180,6 +184,54 @@ export default function TestsPage() {
               render={<Link href={`/exam/${bloodRelationTest._id}`} target="_blank" />}
             >
               Take Challenge <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Simplification Practice Card */}
+      {simplificationTest && (
+        <Card className="relative overflow-hidden border-2 border-blue-200 bg-gradient-to-r from-blue-50 via-indigo-50 to-cyan-50 dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-cyan-950/20 dark:border-blue-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-100/40 dark:bg-blue-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-100/40 dark:bg-indigo-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                <Sigma className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-blue-900 dark:text-blue-100">
+                    Simplification Practice
+                  </CardTitle>
+                  <Calculator className="h-5 w-5 text-indigo-500 animate-pulse" />
+                </div>
+                <CardDescription className="text-blue-700/80 dark:text-blue-300/80">
+                  BODMAS, fractions, roots, exponents, percentages & algebraic identities
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-700">
+                30 Questions
+              </Badge>
+              <Badge className="bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-700">
+                45 Minutes
+              </Badge>
+              <Badge className="bg-cyan-100 text-cyan-800 border-cyan-200 dark:bg-cyan-900/40 dark:text-cyan-200 dark:border-cyan-700">
+                Numerical
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              render={<Link href={`/exam/${simplificationTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </CardContent>
         </Card>
