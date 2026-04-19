@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Monitor, AlertTriangle, Clock, Eye } from "lucide-react";
 import ExamTopBar from "@/components/exam/ExamTopBar";
 import QuestionPanel from "@/components/exam/QuestionPanel";
 import QuestionPalette from "@/components/exam/QuestionPalette";
@@ -38,7 +39,8 @@ export default function ExamPage() {
     resetTest,
   } = useTestStore();
 
-  const [loading, setLoading] = useState(true);
+  const [started, setStarted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPalette, setShowPalette] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -63,75 +65,69 @@ export default function ExamPage() {
     }
   }, [isSubmitted, attemptId, setSubmitted, router]);
 
-  // Load test
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      // Clear any previous test state
-      resetTest();
+  // Called on "Start Test" button click (user gesture → fullscreen works)
+  const handleStartTest = async () => {
+    // Enter fullscreen immediately on user click
+    const el = document.documentElement;
+    if (el.requestFullscreen && !document.fullscreenElement) {
       try {
-        // Start a new attempt
-        const attempt = await startAttempt(testId);
-
-        // Get the full attempt state with populated questions
-        const state = await getAttemptState(attempt._id);
-
-        // Build sections from questions
-        const sectionMap = new Map<
-          Section,
-          { startIndex: number; endIndex: number }
-        >();
-        const questions = state.responses.map((r) => r.question);
-        questions.forEach((q, i) => {
-          const existing = sectionMap.get(q.section);
-          if (!existing) {
-            sectionMap.set(q.section, { startIndex: i, endIndex: i });
-          } else {
-            existing.endIndex = i;
-          }
-        });
-        const sections = Array.from(sectionMap.entries()).map(
-          ([name, range]) => ({
-            name,
-            ...range,
-          })
-        );
-
-        // Map attempt responses to store response format
-        const responses = state.responses.map((r) => ({
-          selectedAnswer: r.selectedAnswer,
-          status: r.status,
-          timeSpent: r.timeSpent,
-        }));
-
-        initTest({
-          attemptId: attempt._id,
-          testId: state.test._id,
-          testTitle: state.test.title,
-          questions,
-          duration: state.duration,
-          sections,
-          responses,
-          currentQuestion: state.currentQuestion,
-          tabSwitchCount: state.tabSwitchCount,
-          sectionLocked: state.test.sectionLocked ?? false,
-        });
+        await el.requestFullscreen();
       } catch {
-        setError("Failed to load test. Please try again.");
-      } finally {
-        setLoading(false);
+        // Fullscreen denied — continue anyway
       }
     }
-    load();
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [testId]);
+
+    setStarted(true);
+    setLoading(true);
+    resetTest();
+
+    try {
+      // Always start a fresh attempt
+      const attempt = await startAttempt(testId, true);
+
+      // Get the full attempt state with populated questions
+      const state = await getAttemptState(attempt._id);
+
+      // Build sections from questions
+      const sectionMap = new Map<
+        Section,
+        { startIndex: number; endIndex: number }
+      >();
+      const questions = state.responses.map((r) => r.question);
+      questions.forEach((q, i) => {
+        const existing = sectionMap.get(q.section);
+        if (!existing) {
+          sectionMap.set(q.section, { startIndex: i, endIndex: i });
+        } else {
+          existing.endIndex = i;
+        }
+      });
+      const sections = Array.from(sectionMap.entries()).map(
+        ([name, range]) => ({
+          name,
+          ...range,
+        })
+      );
+
+      initTest({
+        attemptId: attempt._id,
+        testId: state.test._id,
+        testTitle: state.test.title,
+        questions,
+        duration: state.duration,
+        sections,
+        sectionLocked: state.test.sectionLocked ?? false,
+      });
+    } catch {
+      setError("Failed to load test. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Timer
   useEffect(() => {
-    if (loading || isSubmitted || questions.length === 0) return;
+    if (loading || !started || isSubmitted || questions.length === 0) return;
 
     timerRef.current = setInterval(() => {
       decrementTimer();
@@ -140,7 +136,7 @@ export default function ExamPage() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [loading, isSubmitted, questions.length, decrementTimer]);
+  }, [loading, started, isSubmitted, questions.length, decrementTimer]);
 
   // Auto-submit and warnings
   useEffect(() => {
@@ -158,6 +154,8 @@ export default function ExamPage() {
 
   // Tab switch detection
   useEffect(() => {
+    if (!started || !attemptId) return;
+
     function handleVisibilityChange() {
       if (document.hidden && !isSubmitted && attemptId) {
         incrementTabSwitch();
@@ -171,27 +169,67 @@ export default function ExamPage() {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [isSubmitted, incrementTabSwitch, tabSwitchCount, attemptId]);
+  }, [started, isSubmitted, incrementTabSwitch, tabSwitchCount, attemptId]);
 
-  // Auto fullscreen on test load
+  // Exit fullscreen on submit or unmount
   useEffect(() => {
-    if (!loading && questions.length > 0 && !isSubmitted) {
-      const el = document.documentElement;
-      if (el.requestFullscreen && !document.fullscreenElement) {
-        el.requestFullscreen().catch(() => {
-          // Fullscreen blocked by browser — show fallback
-          toast.info("Press F11 for fullscreen mode", { duration: 4000 });
-        });
-      }
-    }
-
-    // Exit fullscreen on cleanup (test submit or unmount)
     return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
       if (document.fullscreenElement) {
         document.exitFullscreen().catch(() => {});
       }
     };
-  }, [loading, questions.length, isSubmitted]);
+  }, []);
+
+  // ---------- Pre-start screen ----------
+  if (!started) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-gray-950">
+        <div className="max-w-lg w-full mx-4 p-8 rounded-2xl border border-border bg-white dark:bg-gray-900 shadow-xl space-y-6">
+          <div className="text-center space-y-2">
+            <div className="mx-auto w-14 h-14 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center">
+              <Monitor className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+            </div>
+            <h1 className="text-2xl font-bold">Ready to Begin?</h1>
+            <p className="text-muted-foreground text-sm">
+              The test will start in fullscreen mode
+            </p>
+          </div>
+
+          <div className="space-y-3 text-sm">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+              <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium text-amber-800 dark:text-amber-300">Do not switch tabs</p>
+                <p className="text-amber-700 dark:text-amber-400/80">Tab switches will be recorded and flagged.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+              <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium text-blue-800 dark:text-blue-300">Timer starts immediately</p>
+                <p className="text-blue-700 dark:text-blue-400/80">The countdown begins as soon as you start.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800">
+              <Eye className="w-5 h-5 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-medium text-purple-800 dark:text-purple-300">Fullscreen required</p>
+                <p className="text-purple-700 dark:text-purple-400/80">The test will enter fullscreen mode automatically.</p>
+              </div>
+            </div>
+          </div>
+
+          <Button
+            className="w-full h-12 text-base font-semibold cursor-pointer"
+            onClick={handleStartTest}
+          >
+            Start Test
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

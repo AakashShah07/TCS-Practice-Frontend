@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   Monitor,
   BarChart3,
@@ -15,6 +15,13 @@ import {
   GraduationCap,
   HelpCircle,
   FileText,
+  ChevronDown,
+  Code2,
+  Trophy,
+  Calculator,
+  Brain,
+  MessageSquare,
+  Users,
 } from "lucide-react";
 
 const faqData = [
@@ -53,6 +60,79 @@ const faqJsonLd = {
   })),
 };
 
+// ── Syllabus data ──
+const syllabusData = {
+  foundation: {
+    title: "Foundation Section",
+    duration: "75 mins",
+    questions: "~65 Questions",
+    audience: "All Candidates",
+    icon: BookOpen,
+    color: "blue",
+    sections: [
+      {
+        name: "Numerical Ability",
+        icon: Calculator,
+        questions: "~26 Qs",
+        difficulty: "moderate" as const,
+        topics: ["Number Systems", "LCM & HCF", "Percentages", "Profit & Loss", "Time & Work", "Speed, Time & Distance", "Averages", "Ratios", "Mensuration", "Data Interpretation", "Series"],
+        detail: "Data Interpretation (pie charts, tables, graphs) is a major focus area. Series questions test pattern recognition and number sequences.",
+      },
+      {
+        name: "Verbal Ability",
+        icon: MessageSquare,
+        questions: "~24 Qs",
+        difficulty: "low-moderate" as const,
+        topics: ["Reading Comprehension", "Sentence Completion", "Error Identification", "Synonyms & Antonyms", "Para Jumbles", "Active/Passive Voice"],
+        detail: "Reading Comprehension passages are lengthy. Grammar-based questions cover voice, tense, articles, and sentence structure.",
+      },
+      {
+        name: "Reasoning Ability",
+        icon: Brain,
+        questions: "~15 Qs",
+        difficulty: "moderate-hard" as const,
+        topics: ["Seating Arrangements", "Blood Relations", "Coding-Decoding", "Direction Sense", "Syllogism", "Data Sufficiency", "Logical Puzzles"],
+        detail: "Complex puzzles can span 4–5 questions. Seating arrangements frequently combine circular and linear patterns.",
+      },
+    ],
+  },
+  advanced: {
+    title: "Advanced Section",
+    duration: "115 mins",
+    questions: "16–18 Questions",
+    audience: "Shortlisted Candidates",
+    icon: Zap,
+    color: "violet",
+    sections: [
+      {
+        name: "Advanced Quantitative & Reasoning",
+        icon: Brain,
+        questions: "14–16 Qs · 25 mins",
+        difficulty: "hard" as const,
+        topics: ["Permutations & Combinations", "Probability", "Logarithms", "Advanced Puzzles", "Spatial Reasoning"],
+        detail: "Higher-level questions shared between quant and reasoning. Expect multi-step problems requiring deep analytical thinking.",
+      },
+      {
+        name: "Advanced Coding",
+        icon: Code2,
+        questions: "2 Qs · 90 mins",
+        difficulty: "hard" as const,
+        topics: ["Arrays", "Strings", "Stacks", "Queues", "Sorting", "Searching", "Programming Constructs"],
+        detail: "Two coding problems testing Data Structures & Algorithms. At least one fully solved problem is needed for Digital/Prime profiles.",
+        languages: ["C", "C++", "Java", "Python", "Perl"],
+      },
+    ],
+  },
+};
+
+const difficultyConfig: Record<string, { label: string; bg: string; text: string }> = {
+  low: { label: "LOW", bg: "bg-green-100 dark:bg-green-900/50", text: "text-green-700 dark:text-green-300" },
+  moderate: { label: "MODERATE", bg: "bg-amber-100 dark:bg-amber-900/50", text: "text-amber-700 dark:text-amber-300" },
+  hard: { label: "HARD", bg: "bg-red-100 dark:bg-red-900/50", text: "text-red-700 dark:text-red-300" },
+  "low-moderate": { label: "LOW–MODERATE", bg: "bg-green-100 dark:bg-green-900/50", text: "text-green-700 dark:text-green-300" },
+  "moderate-hard": { label: "MODERATE–HARD", bg: "bg-orange-100 dark:bg-orange-900/50", text: "text-orange-700 dark:text-orange-300" },
+};
+
 // Intersection Observer hook for scroll animations
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -84,6 +164,18 @@ function useScrollReveal() {
 
 export default function HomePage() {
   const scrollRef = useScrollReveal();
+  const [foundationOpen, setFoundationOpen] = useState(true);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [expandedSubs, setExpandedSubs] = useState<Set<string>>(new Set());
+
+  const toggleSub = useCallback((key: string) => {
+    setExpandedSubs((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-gray-950" ref={scrollRef}>
@@ -321,10 +413,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── TCS NQT Details — reveal sections ── */}
+      {/* ── TCS NQT Details — interactive syllabus ── */}
       <section className="py-20 sm:py-24 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
         <div className="max-w-[1140px] mx-auto px-6">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
+            {/* What is TCS NQT? */}
             <div className="flex items-center gap-3 mb-6 reveal-slide-left" data-reveal>
               <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-[#2563EB] dark:text-blue-400" />
@@ -333,55 +426,238 @@ export default function HomePage() {
                 What is TCS NQT?
               </h2>
             </div>
-            <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed mb-10 reveal-fade-up" data-reveal>
-              TCS NQT (National Qualifier Test) is a recruitment exam conducted by
-              Tata Consultancy Services to hire freshers across India. It tests
-              candidates on core aptitude skills including Numerical Ability,
-              Reasoning Ability, and Verbal Ability. Qualifying TCS NQT opens doors
-              to roles at TCS and other companies that accept NQT scores.{" "}
+            <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed mb-12 reveal-fade-up" data-reveal>
+              TCS NQT 2026 (National Qualifier Test) is a recruitment exam conducted by
+              Tata Consultancy Services to hire freshers across India. The exam has two mandatory rounds —
+              the <strong className="text-[#111827] dark:text-white">Foundation Section</strong> (aptitude) and
+              the <strong className="text-[#111827] dark:text-white">Advanced Section</strong> (quantitative reasoning + coding).
+              There is <strong className="text-[#111827] dark:text-white">no negative marking</strong> in either round.
+              Qualifying opens doors to TCS Ninja, Digital, and Prime roles.{" "}
               <Link href="/register" className="text-[#2563EB] dark:text-blue-400 font-bold hover:underline">
                 Start practicing for free on CrackNQT
               </Link>.
             </p>
 
-            <div className="flex items-center gap-3 mb-6 reveal-slide-right" data-reveal>
+            {/* TCS NQT 2026 Syllabus */}
+            <div className="flex items-center gap-3 mb-8 reveal-slide-right" data-reveal>
               <div className="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-950 flex items-center justify-center">
                 <FileText className="w-6 h-6 text-violet-600 dark:text-violet-400" />
               </div>
               <h3 className="text-2xl font-black text-[#111827] dark:text-white tracking-tight">
-                TCS NQT Syllabus
+                TCS NQT 2026 Syllabus
               </h3>
             </div>
-            <div className="grid sm:grid-cols-3 gap-4">
-              {[
-                {
-                  title: "Numerical Ability",
-                  topics: ["Percentages", "Profit & Loss", "Time & Work", "Ratios & Averages", "Algebra & Geometry"],
-                },
-                {
-                  title: "Reasoning Ability",
-                  topics: ["Coding-Decoding", "Series & Patterns", "Puzzles & Seating", "Blood Relations", "Syllogisms"],
-                },
-                {
-                  title: "Verbal Ability",
-                  topics: ["Grammar & Vocabulary", "Reading Comprehension", "Sentence Correction", "Error Spotting", "Para Jumbles"],
-                },
-              ].map((card, i) => (
-                <div
-                  key={card.title}
-                  className="bg-[#F9FAFB] dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-300 reveal-scale-up"
-                  data-reveal
-                  style={{ transitionDelay: `${i * 100}ms` }}
-                >
-                  <h4 className="font-black text-[#111827] dark:text-white mb-3">{card.title}</h4>
-                  <ul className="space-y-1.5 text-sm text-[#6B7280] dark:text-gray-400">
-                    {card.topics.map((t) => <li key={t}>{t}</li>)}
-                  </ul>
-                  <Link href="/practice" className="text-xs font-bold text-[#2563EB] dark:text-blue-400 hover:underline mt-3 inline-flex items-center gap-1">
-                    Practice {card.title.split(" ")[0]} <ArrowRight className="w-3 h-3" />
-                  </Link>
+
+            <div className="space-y-5 reveal-fade-up" data-reveal>
+              {/* Foundation Section */}
+              {(() => {
+                const fd = syllabusData.foundation;
+                return (
+                  <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-[#F9FAFB] dark:bg-gray-800/50 overflow-hidden">
+                    <button
+                      onClick={() => setFoundationOpen(!foundationOpen)}
+                      className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center shrink-0">
+                          <BookOpen className="w-5 h-5 text-[#2563EB] dark:text-blue-400" />
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="font-black text-[#111827] dark:text-white text-lg">{fd.title}</h4>
+                          <div className="flex flex-wrap items-center gap-2 mt-1">
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400"><Clock className="w-3 h-3" />{fd.duration}</span>
+                            <span className="text-gray-300 dark:text-gray-600">|</span>
+                            <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">{fd.questions}</span>
+                            <span className="text-gray-300 dark:text-gray-600">|</span>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400"><Users className="w-3 h-3" />{fd.audience}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-gray-400 dark:text-gray-500 shrink-0 transition-transform duration-300 ${foundationOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    <div className={`transition-all duration-300 ease-in-out ${foundationOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
+                      <div className="px-6 pb-6 space-y-4">
+                        {fd.sections.map((sub) => {
+                          const SubIcon = sub.icon;
+                          const diff = difficultyConfig[sub.difficulty];
+                          const isOpen = expandedSubs.has(sub.name);
+                          return (
+                            <div key={sub.name} className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+                              <button
+                                onClick={() => toggleSub(sub.name)}
+                                className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <SubIcon className="w-4.5 h-4.5 text-[#2563EB] dark:text-blue-400 shrink-0" />
+                                  <span className="font-bold text-[#111827] dark:text-white text-sm">{sub.name}</span>
+                                  <span className="text-xs text-[#9CA3AF] dark:text-gray-500 font-medium hidden sm:inline">{sub.questions}</span>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${diff.bg} ${diff.text}`}>{diff.label}</span>
+                                  <ChevronDown className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                                </div>
+                              </button>
+
+                              <div className={`transition-all duration-200 ease-in-out ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
+                                <div className="px-5 pb-4 space-y-3">
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {sub.topics.map((t) => (
+                                      <span key={t} className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs font-medium text-[#374151] dark:text-gray-300">{t}</span>
+                                    ))}
+                                  </div>
+                                  <p className="text-xs text-[#6B7280] dark:text-gray-400 leading-relaxed bg-blue-50/50 dark:bg-blue-950/30 rounded-lg px-3 py-2 border border-blue-100/50 dark:border-blue-900/30">
+                                    {sub.detail}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Advanced Section */}
+              {(() => {
+                const ad = syllabusData.advanced;
+                return (
+                  <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-[#F9FAFB] dark:bg-gray-800/50 overflow-hidden">
+                    <button
+                      onClick={() => setAdvancedOpen(!advancedOpen)}
+                      className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950 flex items-center justify-center shrink-0">
+                          <Zap className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="font-black text-[#111827] dark:text-white text-lg">{ad.title}</h4>
+                          <div className="flex flex-wrap items-center gap-2 mt-1">
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400"><Clock className="w-3 h-3" />{ad.duration}</span>
+                            <span className="text-gray-300 dark:text-gray-600">|</span>
+                            <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">{ad.questions}</span>
+                            <span className="text-gray-300 dark:text-gray-600">|</span>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400"><Users className="w-3 h-3" />{ad.audience}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-gray-400 dark:text-gray-500 shrink-0 transition-transform duration-300 ${advancedOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    <div className={`transition-all duration-300 ease-in-out ${advancedOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
+                      <div className="px-6 pb-6 space-y-4">
+                        {ad.sections.map((sub) => {
+                          const SubIcon = sub.icon;
+                          const diff = difficultyConfig[sub.difficulty];
+                          const isOpen = expandedSubs.has(sub.name);
+                          return (
+                            <div key={sub.name} className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+                              <button
+                                onClick={() => toggleSub(sub.name)}
+                                className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <SubIcon className="w-4.5 h-4.5 text-violet-600 dark:text-violet-400 shrink-0" />
+                                  <span className="font-bold text-[#111827] dark:text-white text-sm">{sub.name}</span>
+                                  <span className="text-xs text-[#9CA3AF] dark:text-gray-500 font-medium hidden sm:inline">{sub.questions}</span>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${diff.bg} ${diff.text}`}>{diff.label}</span>
+                                  <ChevronDown className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                                </div>
+                              </button>
+
+                              <div className={`transition-all duration-200 ease-in-out ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
+                                <div className="px-5 pb-4 space-y-3">
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {sub.topics.map((t) => (
+                                      <span key={t} className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs font-medium text-[#374151] dark:text-gray-300">{t}</span>
+                                    ))}
+                                  </div>
+                                  {"languages" in sub && sub.languages && (
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">Languages:</span>
+                                      <div className="flex flex-wrap gap-1.5">
+                                        {sub.languages.map((lang) => (
+                                          <span key={lang} className="px-2 py-0.5 rounded bg-violet-50 dark:bg-violet-950 text-xs font-bold text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800">{lang}</span>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                  <p className="text-xs text-[#6B7280] dark:text-gray-400 leading-relaxed bg-violet-50/50 dark:bg-violet-950/30 rounded-lg px-3 py-2 border border-violet-100/50 dark:border-violet-900/30">
+                                    {sub.detail}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Summary Table */}
+            <div className="mt-10 reveal-fade-up" data-reveal>
+              <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-gray-50 dark:bg-gray-800">
+                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">Section</th>
+                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">Duration</th>
+                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">Questions</th>
+                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">Key Topics</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-800/50">
+                    <tr className="border-t border-gray-100 dark:border-gray-700">
+                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">Foundation</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">75 mins</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">~65</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">Numerical, Verbal, Reasoning</td>
+                    </tr>
+                    <tr className="border-t border-gray-100 dark:border-gray-700">
+                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">Advanced (MCQ)</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">25 mins</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">14–16</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">Advanced Quant, Reasoning, Puzzles</td>
+                    </tr>
+                    <tr className="border-t border-gray-100 dark:border-gray-700">
+                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">Advanced (Coding)</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">90 mins</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">2</td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">DSA, Arrays, Strings, Algorithms</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Eligibility & Cut-offs */}
+            <div className="mt-8 rounded-2xl border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 p-6 reveal-scale-up" data-reveal>
+              <div className="flex items-center gap-3 mb-4">
+                <Trophy className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                <h4 className="font-black text-[#111827] dark:text-white text-lg">Eligibility & Cut-offs</h4>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                  <p className="text-sm text-[#374151] dark:text-gray-300"><strong className="text-[#111827] dark:text-white">Eligibility:</strong> Minimum 60% aggregate with no active backlogs</p>
                 </div>
-              ))}
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 dark:text-blue-400 mt-0.5 shrink-0" />
+                  <p className="text-sm text-[#374151] dark:text-gray-300"><strong className="text-[#111827] dark:text-white">TCS Ninja:</strong> Score 40–45 out of 65 in Foundation round</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-violet-500 dark:text-violet-400 mt-0.5 shrink-0" />
+                  <p className="text-sm text-[#374151] dark:text-gray-300"><strong className="text-[#111827] dark:text-white">Digital / Prime:</strong> Clear Advanced section with at least 1 fully solved coding problem</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

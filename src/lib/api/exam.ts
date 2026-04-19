@@ -1,9 +1,13 @@
 import apiClient from "./client";
 import type { ApiResponse, Attempt, AttemptState } from "./types";
 
-export async function startAttempt(testId: string): Promise<Attempt> {
+export async function startAttempt(
+  testId: string,
+  forceNew = false
+): Promise<Attempt> {
   const { data } = await apiClient.post<ApiResponse<Attempt>>(
-    `/attempts/start/${testId}`
+    `/attempts/start/${testId}`,
+    { forceNew }
   );
   return data.data;
 }
