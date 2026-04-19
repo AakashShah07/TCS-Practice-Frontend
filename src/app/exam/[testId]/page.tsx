@@ -228,7 +228,7 @@ export default function ExamPage() {
         {/* Toggle palette on mobile */}
         <button
           onClick={() => setShowPalette(!showPalette)}
-          className="md:hidden fixed bottom-20 right-4 z-40 bg-indigo-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-indigo-200 text-xs font-bold transition-all active:scale-90 hover:bg-indigo-700"
+          className="md:hidden fixed bottom-20 right-4 z-40 bg-indigo-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-indigo-900 text-xs font-bold transition-all active:scale-90 hover:bg-indigo-700"
         >
           {showPalette ? "\u2715" : "#"}
         </button>

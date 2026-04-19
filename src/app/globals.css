@@ -235,6 +235,9 @@
   transform: perspective(1000px) rotateX(1.5deg) rotateY(-1.5deg) translateY(-2px);
   box-shadow: 0 12px 50px rgb(0 0 0 / 0.08);
 }
+.dark .auth-card:hover {
+  box-shadow: 0 12px 50px rgb(0 0 0 / 0.4);
+}
 
 /* Button hover lift */
 .auth-btn {
@@ -377,6 +380,9 @@
 .hero-gradient {
   background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 50%, #ffffff 100%);
 }
+.dark .hero-gradient {
+  background: linear-gradient(180deg, #030712 0%, #0c0a1f 40%, #111027 55%, #030712 100%);
+}
 
 /* Text gradient for "With Confidence" */
 .landing-text-gradient {
@@ -387,6 +393,13 @@
   background-clip: text;
   animation: text-shimmer 6s linear infinite;
 }
+.dark .landing-text-gradient {
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #60a5fa 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 @keyframes text-shimmer {
   0% { background-position: 0% center; }
   100% { background-position: 200% center; }
@@ -395,6 +408,9 @@
 /* CTA glow */
 .landing-cta-glow {
   box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+}
+.dark .landing-cta-glow {
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
 }
 
 /* Floating dot animations */

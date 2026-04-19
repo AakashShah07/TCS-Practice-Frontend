@@ -30,7 +30,7 @@ export default function TopicStrengths({ strongTopics, weakTopics }: Props) {
               {strongTopics.map((topic) => (
                 <Badge
                   key={topic}
-                  className="bg-green-50 text-green-700 hover:bg-green-100 border-green-200"
+                  className="bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900 border-green-200 dark:border-green-800"
                 >
                   {topic}
                 </Badge>
@@ -47,7 +47,7 @@ export default function TopicStrengths({ strongTopics, weakTopics }: Props) {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <TrendingDown className="h-5 w-5 text-red-500" />
+            <TrendingDown className="h-5 w-5 text-red-500 dark:text-red-400" />
             <CardTitle className="text-base">Needs Improvement</CardTitle>
           </div>
         </CardHeader>
@@ -58,7 +58,7 @@ export default function TopicStrengths({ strongTopics, weakTopics }: Props) {
                 <Badge
                   key={topic}
                   variant="outline"
-                  className="bg-red-50 text-red-700 border-red-200"
+                  className="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"
                 >
                   {topic}
                 </Badge>

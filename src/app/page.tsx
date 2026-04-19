@@ -86,29 +86,29 @@ export default function HomePage() {
   const scrollRef = useScrollReveal();
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB]" ref={scrollRef}>
+    <div className="min-h-screen bg-[#F9FAFB] dark:bg-gray-950" ref={scrollRef}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       {/* ── Nav ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 landing-slide-down">
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 landing-slide-down">
         <div className="max-w-[1140px] mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
             <Image src="/llog.png" alt="CrackNQT" width={32} height={32} className="rounded-lg" />
-            <span className="text-xl font-black text-[#111827] tracking-tight">CrackNQT</span>
+            <span className="text-xl font-black text-[#111827] dark:text-white tracking-tight">CrackNQT</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="text-sm font-semibold text-[#374151] hover:text-[#111827] transition-colors px-3 py-2"
+              className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-3 py-2"
             >
               Sign in
             </Link>
             <Link
               href="/register"
-              className="auth-btn text-sm font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition-all"
+              className="auth-btn text-sm font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-blue-500 dark:hover:bg-blue-600 px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 dark:shadow-blue-500/10 transition-all"
             >
               Get Started
             </Link>
@@ -119,49 +119,49 @@ export default function HomePage() {
       {/* ── Hero ── */}
       <section className="pt-20 pb-16 sm:pt-28 sm:pb-24 relative overflow-hidden hero-gradient">
         {/* Animated blue glow blob */}
-        <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-500 opacity-20 rounded-full blur-[120px] animate-pulse pointer-events-none" />
+        <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-500 opacity-20 dark:opacity-[0.08] rounded-full blur-[120px] animate-pulse pointer-events-none" />
 
         {/* Floating soft dots */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-[15%] left-[10%] w-3 h-3 bg-blue-400 rounded-full opacity-20 landing-dot-1" />
-          <div className="absolute top-[22%] right-[14%] w-2.5 h-2.5 bg-indigo-400 rounded-full opacity-15 landing-dot-2" />
-          <div className="absolute bottom-[30%] left-[18%] w-2 h-2 bg-blue-500 rounded-full opacity-20 landing-dot-3" />
-          <div className="absolute top-[55%] right-[8%] w-3.5 h-3.5 bg-blue-400 rounded-full opacity-10 landing-dot-4" />
-          <div className="absolute top-[10%] right-[35%] w-2 h-2 bg-indigo-400 rounded-full opacity-15 landing-dot-5" />
-          <div className="absolute bottom-[20%] right-[28%] w-3 h-3 bg-violet-400 rounded-full opacity-10 landing-dot-6" />
+          <div className="absolute top-[15%] left-[10%] w-3 h-3 bg-blue-400 rounded-full opacity-20 dark:opacity-10 landing-dot-1" />
+          <div className="absolute top-[22%] right-[14%] w-2.5 h-2.5 bg-indigo-400 rounded-full opacity-15 dark:opacity-[0.08] landing-dot-2" />
+          <div className="absolute bottom-[30%] left-[18%] w-2 h-2 bg-blue-500 rounded-full opacity-20 dark:opacity-10 landing-dot-3" />
+          <div className="absolute top-[55%] right-[8%] w-3.5 h-3.5 bg-blue-400 rounded-full opacity-10 dark:opacity-[0.06] landing-dot-4" />
+          <div className="absolute top-[10%] right-[35%] w-2 h-2 bg-indigo-400 rounded-full opacity-15 dark:opacity-[0.08] landing-dot-5" />
+          <div className="absolute bottom-[20%] right-[28%] w-3 h-3 bg-violet-400 rounded-full opacity-10 dark:opacity-[0.06] landing-dot-6" />
         </div>
 
         <div className="max-w-[1140px] mx-auto px-6 text-center relative z-10">
           {/* Trust pill — pop in */}
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-50/80 backdrop-blur-sm border border-blue-100 text-xs font-bold text-[#2563EB] mb-8 landing-scale-in tracking-wide uppercase">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-50/80 dark:bg-blue-950/60 backdrop-blur-sm border border-blue-100 dark:border-blue-800 text-xs font-bold text-[#2563EB] dark:text-blue-400 mb-8 landing-scale-in tracking-wide uppercase">
             <Zap className="w-3.5 h-3.5" />
             100% Free &bull; No Ads &bull; Student Focused
           </div>
 
           {/* Heading — blur in */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#111827] tracking-tighter leading-[1.05] max-w-4xl mx-auto landing-blur-in landing-delay-100">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#111827] dark:text-white tracking-tighter leading-[1.05] max-w-4xl mx-auto landing-blur-in landing-delay-100">
             Crack TCS NQT
             <br />
             <span className="landing-text-gradient">With Confidence</span>
           </h1>
 
           {/* Subtitle — fade up */}
-          <p className="mt-7 text-lg sm:text-xl text-[#6B7280] max-w-2xl mx-auto leading-relaxed font-medium landing-fade-up landing-delay-200">
-            Practice real exam-level questions, take mock tests, and track your performance — <span className="text-[#111827] font-bold">completely free, forever.</span>
+          <p className="mt-7 text-lg sm:text-xl text-[#6B7280] dark:text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium landing-fade-up landing-delay-200">
+            Practice real exam-level questions, take mock tests, and track your performance — <span className="text-[#111827] dark:text-white font-bold">completely free, forever.</span>
           </p>
 
           {/* Buttons — slide up with bounce */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 landing-bounce-in landing-delay-300">
             <Link
               href="/register"
-              className="auth-btn landing-cta-pulse inline-flex items-center gap-2.5 px-8 py-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-base rounded-2xl landing-cta-glow hover:shadow-[0_14px_40px_rgba(37,99,235,0.35)] transition-all"
+              className="auth-btn landing-cta-pulse inline-flex items-center gap-2.5 px-8 py-4 bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold text-base rounded-2xl landing-cta-glow hover:shadow-[0_14px_40px_rgba(37,99,235,0.35)] transition-all"
             >
               Start Free Test
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               href="/login"
-              className="auth-btn inline-flex items-center gap-2 px-8 py-4 bg-white/80 backdrop-blur-sm hover:bg-white text-[#111827] font-bold text-base rounded-2xl border-2 border-gray-200 hover:border-gray-300 transition-all"
+              className="auth-btn inline-flex items-center gap-2 px-8 py-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 text-[#111827] dark:text-white font-bold text-base rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
             >
               Explore Practice
             </Link>
@@ -170,18 +170,18 @@ export default function HomePage() {
           {/* Stats — count up style with stagger */}
           <div className="flex items-center justify-center gap-10 sm:gap-16 mt-16">
             <div className="text-center landing-fade-up landing-delay-400">
-              <p className="text-3xl sm:text-4xl font-black text-[#111827] landing-counter">1000+</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] mt-1 font-semibold uppercase tracking-wide">Questions</p>
+              <p className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white landing-counter">1000+</p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Questions</p>
             </div>
-            <div className="w-px h-12 bg-gray-200 landing-scale-y landing-delay-400" />
+            <div className="w-px h-12 bg-gray-200 dark:bg-gray-700 landing-scale-y landing-delay-400" />
             <div className="text-center landing-fade-up" style={{ animationDelay: "500ms" }}>
-              <p className="text-3xl sm:text-4xl font-black text-[#111827]">4</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] mt-1 font-semibold uppercase tracking-wide">Sections</p>
+              <p className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white">4</p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Sections</p>
             </div>
-            <div className="w-px h-12 bg-gray-200 landing-scale-y" style={{ animationDelay: "500ms" }} />
+            <div className="w-px h-12 bg-gray-200 dark:bg-gray-700 landing-scale-y" style={{ animationDelay: "500ms" }} />
             <div className="text-center landing-fade-up" style={{ animationDelay: "600ms" }}>
-              <p className="text-3xl sm:text-4xl font-black text-[#2563EB]">100%</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] mt-1 font-semibold uppercase tracking-wide">Free</p>
+              <p className="text-3xl sm:text-4xl font-black text-[#2563EB] dark:text-blue-400">100%</p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Free</p>
             </div>
           </div>
         </div>
@@ -190,10 +190,10 @@ export default function HomePage() {
       {/* ── Features — slide in from sides ── */}
       <section className="py-20 sm:py-24">
         <div className="max-w-[1140px] mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight text-center mb-4 reveal-fade-up" data-reveal>
+          <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight text-center mb-4 reveal-fade-up" data-reveal>
             Everything You Need
           </h2>
-          <p className="text-[#6B7280] text-center mb-14 text-base font-medium reveal-fade-up" data-reveal>
+          <p className="text-[#6B7280] dark:text-gray-400 text-center mb-14 text-base font-medium reveal-fade-up" data-reveal>
             One platform, zero cost.
           </p>
 
@@ -203,38 +203,38 @@ export default function HomePage() {
                 icon: Monitor,
                 title: "Real Exam Simulation",
                 desc: "Timed tests with section locking, tab-switch detection, and an interface that mirrors the actual TCS NQT exam.",
-                color: "bg-blue-50",
-                iconColor: "text-[#2563EB]",
+                color: "bg-blue-50 dark:bg-blue-950",
+                iconColor: "text-[#2563EB] dark:text-blue-400",
                 anim: "reveal-slide-left",
               },
               {
                 icon: BarChart3,
                 title: "Smart Analytics",
                 desc: "Track accuracy, speed, and weak areas with detailed section-wise and topic-wise breakdowns after every test.",
-                color: "bg-emerald-50",
-                iconColor: "text-emerald-600",
+                color: "bg-emerald-50 dark:bg-emerald-950",
+                iconColor: "text-emerald-600 dark:text-emerald-400",
                 anim: "reveal-scale-up",
               },
               {
                 icon: BookOpen,
                 title: "Topic-wise Practice",
                 desc: "Practice by topic — Percentages, Reasoning, Grammar, and more. New questions every attempt, never repeated.",
-                color: "bg-violet-50",
-                iconColor: "text-violet-600",
+                color: "bg-violet-50 dark:bg-violet-950",
+                iconColor: "text-violet-600 dark:text-violet-400",
                 anim: "reveal-slide-right",
               },
             ].map((f, i) => (
               <div
                 key={f.title}
-                className={`group bg-white rounded-2xl border border-gray-100 p-8 hover:shadow-xl hover:shadow-gray-100/80 hover:border-gray-200 hover:-translate-y-1 transition-all duration-300 ${f.anim}`}
+                className={`group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-8 hover:shadow-xl hover:shadow-gray-100/80 dark:hover:shadow-black/30 hover:border-gray-200 dark:hover:border-gray-700 hover:-translate-y-1 transition-all duration-300 ${f.anim}`}
                 data-reveal
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
                 <div className={`w-12 h-12 rounded-2xl ${f.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                   <f.icon className={`w-6 h-6 ${f.iconColor}`} />
                 </div>
-                <h3 className="text-lg font-black text-[#111827] mb-2">{f.title}</h3>
-                <p className="text-sm text-[#6B7280] leading-relaxed">{f.desc}</p>
+                <h3 className="text-lg font-black text-[#111827] dark:text-white mb-2">{f.title}</h3>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -242,50 +242,50 @@ export default function HomePage() {
       </section>
 
       {/* ── Test Preview — cards flip in ── */}
-      <section className="py-20 sm:py-24 bg-white border-y border-gray-100">
+      <section className="py-20 sm:py-24 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight reveal-fade-up" data-reveal>
+            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up" data-reveal>
               Jump Right In
             </h2>
-            <p className="text-[#6B7280] mt-3 text-base font-medium reveal-fade-up" data-reveal>
+            <p className="text-[#6B7280] dark:text-gray-400 mt-3 text-base font-medium reveal-fade-up" data-reveal>
               Pick a section or take the full mock — no signup required to browse.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <div className="group rounded-2xl border-2 border-gray-100 bg-[#F9FAFB] p-7 flex flex-col justify-between hover:border-[#2563EB]/40 hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-300 reveal-flip-up" data-reveal>
+            <div className="group rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-[#F9FAFB] dark:bg-gray-800 p-7 flex flex-col justify-between hover:border-[#2563EB]/40 dark:hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-300 reveal-flip-up" data-reveal>
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                    <Layers className="w-5 h-5 text-[#2563EB]" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <Layers className="w-5 h-5 text-[#2563EB] dark:text-blue-400" />
                   </div>
-                  <h3 className="text-lg font-black text-[#111827]">Numerical Ability</h3>
+                  <h3 className="text-lg font-black text-[#111827] dark:text-white">Numerical Ability</h3>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-[#9CA3AF] font-semibold mb-6">
+                <div className="flex items-center gap-4 text-sm text-[#9CA3AF] dark:text-gray-500 font-semibold mb-6">
                   <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4" />25 Qs</span>
                   <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />30 Min</span>
                 </div>
               </div>
-              <Link href="/register" className="text-sm font-bold text-[#2563EB] hover:text-blue-700 flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+              <Link href="/register" className="text-sm font-bold text-[#2563EB] dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
                 Start Test <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
-            <div className="group rounded-2xl border-2 border-gray-100 bg-[#F9FAFB] p-7 flex flex-col justify-between hover:border-indigo-300/50 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 reveal-flip-up" data-reveal style={{ transitionDelay: "150ms" }}>
+            <div className="group rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-[#F9FAFB] dark:bg-gray-800 p-7 flex flex-col justify-between hover:border-indigo-300/50 dark:hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 reveal-flip-up" data-reveal style={{ transitionDelay: "150ms" }}>
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-300">
-                    <Monitor className="w-5 h-5 text-indigo-600" />
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-300">
+                    <Monitor className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   </div>
-                  <h3 className="text-lg font-black text-[#111827]">Full Mock Test</h3>
+                  <h3 className="text-lg font-black text-[#111827] dark:text-white">Full Mock Test</h3>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-[#9CA3AF] font-semibold mb-6">
+                <div className="flex items-center gap-4 text-sm text-[#9CA3AF] dark:text-gray-500 font-semibold mb-6">
                   <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4" />79 Qs</span>
                   <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />120 Min</span>
                 </div>
               </div>
-              <Link href="/register" className="text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+              <Link href="/register" className="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
                 Start Test <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -297,7 +297,7 @@ export default function HomePage() {
       <section className="py-20 sm:py-24">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="max-w-xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight mb-10 reveal-fade-up" data-reveal>
+            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight mb-10 reveal-fade-up" data-reveal>
               Why CrackNQT?
             </h2>
             <div className="space-y-4 text-left">
@@ -308,12 +308,12 @@ export default function HomePage() {
               ].map((text, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-4 bg-white rounded-2xl border border-gray-100 px-6 py-5 hover:border-emerald-200 hover:shadow-md transition-all duration-300 reveal-slide-left"
+                  className="flex items-start gap-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 px-6 py-5 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-md transition-all duration-300 reveal-slide-left"
                   data-reveal
                   style={{ transitionDelay: `${i * 120}ms` }}
                 >
                   <CheckCircle2 className="w-6 h-6 text-emerald-500 mt-0.5 shrink-0" />
-                  <p className="text-[15px] text-[#374151] leading-relaxed font-medium">{text}</p>
+                  <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed font-medium">{text}</p>
                 </div>
               ))}
             </div>
@@ -322,33 +322,33 @@ export default function HomePage() {
       </section>
 
       {/* ── TCS NQT Details — reveal sections ── */}
-      <section className="py-20 sm:py-24 bg-white border-y border-gray-100">
+      <section className="py-20 sm:py-24 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="max-w-3xl mx-auto">
             <div className="flex items-center gap-3 mb-6 reveal-slide-left" data-reveal>
-              <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-[#2563EB]" />
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center">
+                <GraduationCap className="w-6 h-6 text-[#2563EB] dark:text-blue-400" />
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight">
+              <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight">
                 What is TCS NQT?
               </h2>
             </div>
-            <p className="text-[15px] text-[#374151] leading-relaxed mb-10 reveal-fade-up" data-reveal>
+            <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed mb-10 reveal-fade-up" data-reveal>
               TCS NQT (National Qualifier Test) is a recruitment exam conducted by
               Tata Consultancy Services to hire freshers across India. It tests
               candidates on core aptitude skills including Numerical Ability,
               Reasoning Ability, and Verbal Ability. Qualifying TCS NQT opens doors
               to roles at TCS and other companies that accept NQT scores.{" "}
-              <Link href="/register" className="text-[#2563EB] font-bold hover:underline">
+              <Link href="/register" className="text-[#2563EB] dark:text-blue-400 font-bold hover:underline">
                 Start practicing for free on CrackNQT
               </Link>.
             </p>
 
             <div className="flex items-center gap-3 mb-6 reveal-slide-right" data-reveal>
-              <div className="w-12 h-12 rounded-2xl bg-violet-50 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-violet-600" />
+              <div className="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-950 flex items-center justify-center">
+                <FileText className="w-6 h-6 text-violet-600 dark:text-violet-400" />
               </div>
-              <h3 className="text-2xl font-black text-[#111827] tracking-tight">
+              <h3 className="text-2xl font-black text-[#111827] dark:text-white tracking-tight">
                 TCS NQT Syllabus
               </h3>
             </div>
@@ -369,15 +369,15 @@ export default function HomePage() {
               ].map((card, i) => (
                 <div
                   key={card.title}
-                  className="bg-[#F9FAFB] rounded-2xl p-5 border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all duration-300 reveal-scale-up"
+                  className="bg-[#F9FAFB] dark:bg-gray-800 rounded-2xl p-5 border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-300 reveal-scale-up"
                   data-reveal
                   style={{ transitionDelay: `${i * 100}ms` }}
                 >
-                  <h4 className="font-black text-[#111827] mb-3">{card.title}</h4>
-                  <ul className="space-y-1.5 text-sm text-[#6B7280]">
+                  <h4 className="font-black text-[#111827] dark:text-white mb-3">{card.title}</h4>
+                  <ul className="space-y-1.5 text-sm text-[#6B7280] dark:text-gray-400">
                     {card.topics.map((t) => <li key={t}>{t}</li>)}
                   </ul>
-                  <Link href="/practice" className="text-xs font-bold text-[#2563EB] hover:underline mt-3 inline-flex items-center gap-1">
+                  <Link href="/practice" className="text-xs font-bold text-[#2563EB] dark:text-blue-400 hover:underline mt-3 inline-flex items-center gap-1">
                     Practice {card.title.split(" ")[0]} <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
@@ -392,8 +392,8 @@ export default function HomePage() {
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="max-w-2xl mx-auto">
             <div className="flex items-center justify-center gap-3 mb-10 reveal-fade-up" data-reveal>
-              <HelpCircle className="w-7 h-7 text-[#2563EB]" />
-              <h2 className="text-3xl sm:text-4xl font-black text-[#111827] tracking-tight">
+              <HelpCircle className="w-7 h-7 text-[#2563EB] dark:text-blue-400" />
+              <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight">
                 Frequently Asked Questions
               </h2>
             </div>
@@ -401,12 +401,12 @@ export default function HomePage() {
               {faqData.map((item, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl border border-gray-100 px-6 py-5 hover:border-blue-200 hover:shadow-md transition-all duration-300 reveal-slide-right"
+                  className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 px-6 py-5 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-300 reveal-slide-right"
                   data-reveal
                   style={{ transitionDelay: `${i * 80}ms` }}
                 >
-                  <h3 className="font-black text-[#111827] text-[15px] mb-2">{item.q}</h3>
-                  <p className="text-sm text-[#6B7280] leading-relaxed">{item.a}</p>
+                  <h3 className="font-black text-[#111827] dark:text-white text-[15px] mb-2">{item.q}</h3>
+                  <p className="text-sm text-[#6B7280] dark:text-gray-400 leading-relaxed">{item.a}</p>
                 </div>
               ))}
             </div>
@@ -445,7 +445,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#111827] text-white py-14">
+      <footer className="bg-[#111827] dark:bg-black text-white py-14">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="grid sm:grid-cols-4 gap-10 mb-10">
             <div className="sm:col-span-1">
@@ -483,7 +483,7 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="border-t border-gray-800 dark:border-gray-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-gray-500">
               &copy; {new Date().getFullYear()} CrackNQT. All rights reserved. Not affiliated with TCS.
             </p>

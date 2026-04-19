@@ -21,10 +21,10 @@ const sectionMeta: Record<
   string,
   { icon: typeof Calculator; color: string; bg: string; label: string }
 > = {
-  numerical: { icon: Calculator, color: "text-blue-600", bg: "bg-blue-50", label: "Numerical" },
-  reasoning: { icon: Brain, color: "text-purple-600", bg: "bg-purple-50", label: "Reasoning" },
-  verbal: { icon: BookOpen, color: "text-green-600", bg: "bg-green-50", label: "Verbal" },
-  advanced: { icon: Target, color: "text-orange-600", bg: "bg-orange-50", label: "Advanced" },
+  numerical: { icon: Calculator, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-950", label: "Numerical" },
+  reasoning: { icon: Brain, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-950", label: "Reasoning" },
+  verbal: { icon: BookOpen, color: "text-green-600 dark:text-green-400", bg: "bg-green-50 dark:bg-green-950", label: "Verbal" },
+  advanced: { icon: Target, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-50 dark:bg-orange-950", label: "Advanced" },
 };
 
 function difficultyBar(easy: number, medium: number, hard: number, total: number) {

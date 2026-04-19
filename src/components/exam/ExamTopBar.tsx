@@ -68,7 +68,7 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
               className={cn(
                 "flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-sm font-bold tracking-wider transition-all",
                 isCriticalTime
-                  ? "bg-red-500 text-white animate-pulse shadow-lg shadow-red-200"
+                  ? "bg-red-500 text-white animate-pulse shadow-lg shadow-red-200 dark:shadow-red-900"
                   : isLowTime
                   ? "bg-amber-500 text-white"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200"

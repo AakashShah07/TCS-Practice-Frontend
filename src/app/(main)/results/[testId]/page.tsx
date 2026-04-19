@@ -35,9 +35,9 @@ function getPerformanceMessage(percentage: number) {
 }
 
 function getPerformanceColor(percentage: number) {
-  if (percentage >= 75) return "text-green-600";
-  if (percentage >= 50) return "text-amber-600";
-  return "text-red-600";
+  if (percentage >= 75) return "text-green-600 dark:text-green-400";
+  if (percentage >= 50) return "text-amber-600 dark:text-amber-400";
+  return "text-red-600 dark:text-red-400";
 }
 
 function formatTime(seconds: number) {
@@ -124,29 +124,29 @@ export default function ResultPage() {
       <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
         <Card>
           <CardContent className="pt-6 text-center">
-            <CheckCircle2 className="h-6 w-6 text-green-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-green-600">{result.correct}</p>
+            <CheckCircle2 className="h-6 w-6 text-green-500 dark:text-green-400 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-green-600 dark:text-green-400">{result.correct}</p>
             <p className="text-xs text-muted-foreground">Correct</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <XCircle className="h-6 w-6 text-red-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-red-600">{result.wrong}</p>
+            <XCircle className="h-6 w-6 text-red-500 dark:text-red-400 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-red-600 dark:text-red-400">{result.wrong}</p>
             <p className="text-xs text-muted-foreground">Wrong</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <MinusCircle className="h-6 w-6 text-gray-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-gray-500">{result.skipped}</p>
+            <MinusCircle className="h-6 w-6 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-gray-500 dark:text-gray-400">{result.skipped}</p>
             <p className="text-xs text-muted-foreground">Skipped</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6 text-center">
-            <Clock className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-blue-600">
+            <Clock className="h-6 w-6 text-blue-500 dark:text-blue-400 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {formatTime(result.timeTaken)}
             </p>
             <p className="text-xs text-muted-foreground">Time Taken</p>

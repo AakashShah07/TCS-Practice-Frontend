@@ -17,9 +17,9 @@ interface Props {
 }
 
 const confidenceStyles: Record<string, string> = {
-  strong: "bg-green-50 text-green-700 border-green-200",
-  medium: "bg-amber-50 text-amber-700 border-amber-200",
-  weak: "bg-red-50 text-red-700 border-red-200",
+  strong: "bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800",
+  medium: "bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800",
+  weak: "bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800",
 };
 
 export default function TopicIntelligence({ topicStats }: Props) {

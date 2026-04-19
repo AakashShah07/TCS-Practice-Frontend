@@ -13,10 +13,10 @@ import { cn } from "@/lib/utils";
 
 function StatusIcon({ item }: { item: ReviewItem }) {
   if (item.selectedAnswer === null)
-    return <MinusCircle className="h-5 w-5 text-gray-400" />;
+    return <MinusCircle className="h-5 w-5 text-gray-400 dark:text-gray-500" />;
   if (item.selectedAnswer === item.correctAnswer)
-    return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-  return <XCircle className="h-5 w-5 text-red-500" />;
+    return <CheckCircle2 className="h-5 w-5 text-green-500 dark:text-green-400" />;
+  return <XCircle className="h-5 w-5 text-red-500 dark:text-red-400" />;
 }
 
 export default function ReviewPage() {
@@ -135,9 +135,9 @@ export default function ReviewPage() {
                         className={cn(
                           "flex items-start gap-2 p-2.5 rounded-lg text-sm border",
                           isCorrect &&
-                            "bg-green-50 border-green-200 text-green-800",
+                            "bg-green-50 border-green-200 text-green-800 dark:bg-green-950 dark:border-green-800 dark:text-green-200",
                           isWrongSelected &&
-                            "bg-red-50 border-red-200 text-red-800",
+                            "bg-red-50 border-red-200 text-red-800 dark:bg-red-950 dark:border-red-800 dark:text-red-200",
                           !isCorrect &&
                             !isWrongSelected &&
                             "border-transparent"
@@ -148,17 +148,17 @@ export default function ReviewPage() {
                         </span>
                         <span>{opt}</span>
                         {isCorrect && (
-                          <CheckCircle2 className="h-4 w-4 text-green-600 ml-auto shrink-0" />
+                          <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 ml-auto shrink-0" />
                         )}
                         {isWrongSelected && (
-                          <XCircle className="h-4 w-4 text-red-600 ml-auto shrink-0" />
+                          <XCircle className="h-4 w-4 text-red-600 dark:text-red-400 ml-auto shrink-0" />
                         )}
                       </div>
                     );
                   })}
                 </div>
                 {item.question.explanation && (
-                  <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-sm text-blue-800">
+                  <div className="bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-200">
                     <span className="font-medium">Explanation: </span>
                     {item.question.explanation}
                   </div>

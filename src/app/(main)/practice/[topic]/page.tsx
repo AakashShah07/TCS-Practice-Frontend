@@ -157,19 +157,19 @@ export default function TopicPracticePage() {
             <CardContent>
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div className="rounded-xl bg-green-50 dark:bg-green-950 p-3">
-                  <Leaf className="h-4 w-4 text-green-600 mx-auto mb-1" />
-                  <p className="text-xl font-bold text-green-600">{topicInfo.easy}</p>
-                  <p className="text-[10px] text-green-600/70">Easy</p>
+                  <Leaf className="h-4 w-4 text-green-600 dark:text-green-400 mx-auto mb-1" />
+                  <p className="text-xl font-bold text-green-600 dark:text-green-400">{topicInfo.easy}</p>
+                  <p className="text-[10px] text-green-600/70 dark:text-green-400/70">Easy</p>
                 </div>
                 <div className="rounded-xl bg-amber-50 dark:bg-amber-950 p-3">
-                  <Zap className="h-4 w-4 text-amber-600 mx-auto mb-1" />
-                  <p className="text-xl font-bold text-amber-600">{topicInfo.medium}</p>
-                  <p className="text-[10px] text-amber-600/70">Medium</p>
+                  <Zap className="h-4 w-4 text-amber-600 dark:text-amber-400 mx-auto mb-1" />
+                  <p className="text-xl font-bold text-amber-600 dark:text-amber-400">{topicInfo.medium}</p>
+                  <p className="text-[10px] text-amber-600/70 dark:text-amber-400/70">Medium</p>
                 </div>
                 <div className="rounded-xl bg-red-50 dark:bg-red-950 p-3">
-                  <Flame className="h-4 w-4 text-red-600 mx-auto mb-1" />
-                  <p className="text-xl font-bold text-red-600">{topicInfo.hard}</p>
-                  <p className="text-[10px] text-red-600/70">Hard</p>
+                  <Flame className="h-4 w-4 text-red-600 dark:text-red-400 mx-auto mb-1" />
+                  <p className="text-xl font-bold text-red-600 dark:text-red-400">{topicInfo.hard}</p>
+                  <p className="text-[10px] text-red-600/70 dark:text-red-400/70">Hard</p>
                 </div>
               </div>
             </CardContent>

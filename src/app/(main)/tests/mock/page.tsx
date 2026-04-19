@@ -95,13 +95,13 @@ export default function MockTestPage() {
 
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm font-medium">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <AlertTriangle className="h-4 w-4 text-amber-500 dark:text-amber-400" />
               Exam Rules & Instructions
             </div>
             <ul className="space-y-2">
               {examRules.map((rule) => (
                 <li key={rule} className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-green-500 dark:text-green-400 mt-0.5 shrink-0" />
                   {rule}
                 </li>
               ))}

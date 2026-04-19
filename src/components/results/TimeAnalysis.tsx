@@ -42,32 +42,32 @@ export default function TimeAnalysis({ questionDetails }: Props) {
       <CardContent className="space-y-4">
         {/* Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="p-3 rounded-lg bg-red-50 border border-red-100">
-            <p className="text-sm font-medium text-red-800">Overthinking</p>
-            <p className="text-2xl font-bold text-red-600">
+          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950 border border-red-100 dark:border-red-800">
+            <p className="text-sm font-medium text-red-800 dark:text-red-200">Overthinking</p>
+            <p className="text-2xl font-bold text-red-600 dark:text-red-400">
               {overthinking.length}
             </p>
-            <p className="text-xs text-red-600/70">
+            <p className="text-xs text-red-600/70 dark:text-red-400/70">
               Slow + wrong answers
             </p>
           </div>
-          <div className="p-3 rounded-lg bg-amber-50 border border-amber-100">
-            <p className="text-sm font-medium text-amber-800">
+          <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950 border border-amber-100 dark:border-amber-800">
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
               Likely Guessing
             </p>
-            <p className="text-2xl font-bold text-amber-600">
+            <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
               {guessing.length}
             </p>
-            <p className="text-xs text-amber-600/70">
+            <p className="text-xs text-amber-600/70 dark:text-amber-400/70">
               Too fast + wrong answers
             </p>
           </div>
-          <div className="p-3 rounded-lg bg-blue-50 border border-blue-100">
-            <p className="text-sm font-medium text-blue-800">Slow but Correct</p>
-            <p className="text-2xl font-bold text-blue-600">
+          <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800">
+            <p className="text-sm font-medium text-blue-800 dark:text-blue-200">Slow but Correct</p>
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {slowCorrect.length}
             </p>
-            <p className="text-xs text-blue-600/70">
+            <p className="text-xs text-blue-600/70 dark:text-blue-400/70">
               Needs speed improvement
             </p>
           </div>

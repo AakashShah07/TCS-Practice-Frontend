@@ -46,15 +46,15 @@ export default function SectionAnalysis({ sections }: Props) {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
               <div>
                 <p className="text-muted-foreground">Correct</p>
-                <p className="font-medium text-green-600">{section.correct}</p>
+                <p className="font-medium text-green-600 dark:text-green-400">{section.correct}</p>
               </div>
               <div>
                 <p className="text-muted-foreground">Wrong</p>
-                <p className="font-medium text-red-600">{section.wrong}</p>
+                <p className="font-medium text-red-600 dark:text-red-400">{section.wrong}</p>
               </div>
               <div>
                 <p className="text-muted-foreground">Skipped</p>
-                <p className="font-medium text-gray-500">{section.skipped}</p>
+                <p className="font-medium text-gray-500 dark:text-gray-400">{section.skipped}</p>
               </div>
               <div>
                 <p className="text-muted-foreground">Avg Time/Q</p>

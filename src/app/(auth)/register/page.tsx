@@ -92,8 +92,8 @@ export default function RegisterPage() {
   }
 
   const inputClass =
-    "w-full h-12 px-4 pl-11 rounded-xl border bg-white text-sm text-[#111827] outline-none transition-colors duration-200 placeholder:text-gray-400";
-  const inputNormal = "border-gray-200 focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20";
+    "w-full h-12 px-4 pl-11 rounded-xl border bg-white dark:bg-gray-800 text-sm text-[#111827] dark:text-white outline-none transition-colors duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+  const inputNormal = "border-gray-200 dark:border-gray-700 focus:border-[#2563EB] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#2563EB]/20";
   const inputErrorStyle = "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20";
 
   const strength = getPasswordStrength(password);
@@ -191,18 +191,18 @@ export default function RegisterPage() {
       </div>
 
       {/* ── Right white panel ── */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-8 bg-[#F9FAFB] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-white via-blue-50/30 to-white" />
-        <div className="absolute top-[-20%] right-[-15%] w-[300px] h-[300px] rounded-full bg-blue-50/40 blur-3xl auth-bg-glow-2" />
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-8 bg-[#F9FAFB] dark:bg-gray-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-blue-50/30 to-white dark:from-gray-950 dark:via-blue-950/20 dark:to-gray-950" />
+        <div className="absolute top-[-20%] right-[-15%] w-[300px] h-[300px] rounded-full bg-blue-50/40 dark:bg-blue-950/30 blur-3xl auth-bg-glow-2" />
 
         <div className="relative z-10 w-full max-w-[420px]">
-          <div className="auth-card auth-fade-up auth-delay-100 bg-white/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.06)] border border-white/60 p-8 sm:p-10">
+          <div className="auth-card auth-fade-up auth-delay-100 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.3)] border border-white/60 dark:border-gray-800 p-8 sm:p-10">
             {/* Logo */}
             <div className="flex items-center justify-center mb-6 auth-fade-up auth-delay-200">
               <div className="flex items-center gap-2.5">
                 <Image src="/llog.png" alt="NQT Prep logo" width={40} height={40} className="rounded-xl shadow-md shadow-blue-500/20" />
                 <div>
-                  <h1 className="text-lg font-bold text-[#111827] leading-none">NQT Prep</h1>
+                  <h1 className="text-lg font-bold text-[#111827] dark:text-white leading-none">NQT Prep</h1>
                   <p className="text-[10px] text-gray-400 font-medium tracking-wide uppercase">by TCS</p>
                 </div>
               </div>
@@ -210,15 +210,15 @@ export default function RegisterPage() {
 
             {/* Heading */}
             <div className="text-center mb-8 auth-fade-up auth-delay-300">
-              <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Create your account</h2>
-              <p className="text-sm text-gray-500 mt-1.5">Start your TCS NQT preparation journey</p>
+              <h2 className="text-2xl font-bold text-[#111827] dark:text-white tracking-tight">Create your account</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">Start your TCS NQT preparation journey</p>
             </div>
 
             {/* Register form */}
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
               {/* Name field */}
               <div className="space-y-1.5 auth-fade-up auth-delay-400">
-                <label htmlFor="name" className="block text-sm font-medium text-[#374151]">
+                <label htmlFor="name" className="block text-sm font-medium text-[#374151] dark:text-gray-300">
                   Full name
                 </label>
                 <div className="relative">
@@ -244,7 +244,7 @@ export default function RegisterPage() {
                   />
                 </div>
                 {nameError && nameTouched && (
-                  <p id="name-error" className="text-xs text-red-500 ml-1" role="alert">
+                  <p id="name-error" className="text-xs text-red-500 dark:text-red-400 ml-1" role="alert">
                     {nameError}
                   </p>
                 )}
@@ -252,7 +252,7 @@ export default function RegisterPage() {
 
               {/* Email field */}
               <div className="space-y-1.5 auth-fade-up auth-delay-500">
-                <label htmlFor="email" className="block text-sm font-medium text-[#374151]">
+                <label htmlFor="email" className="block text-sm font-medium text-[#374151] dark:text-gray-300">
                   Email address
                 </label>
                 <div className="relative">
@@ -278,7 +278,7 @@ export default function RegisterPage() {
                   />
                 </div>
                 {emailError && emailTouched && (
-                  <p id="email-error" className="text-xs text-red-500 ml-1" role="alert">
+                  <p id="email-error" className="text-xs text-red-500 dark:text-red-400 ml-1" role="alert">
                     {emailError}
                   </p>
                 )}
@@ -286,7 +286,7 @@ export default function RegisterPage() {
 
               {/* Password field */}
               <div className="space-y-1.5 auth-fade-up auth-delay-600">
-                <label htmlFor="password" className="block text-sm font-medium text-[#374151]">
+                <label htmlFor="password" className="block text-sm font-medium text-[#374151] dark:text-gray-300">
                   Password
                 </label>
                 <div className="relative">
@@ -313,7 +313,7 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                     tabIndex={-1}
                   >
@@ -321,14 +321,14 @@ export default function RegisterPage() {
                   </button>
                 </div>
                 {passwordError && passwordTouched && (
-                  <p id="password-error" className="text-xs text-red-500 ml-1" role="alert">
+                  <p id="password-error" className="text-xs text-red-500 dark:text-red-400 ml-1" role="alert">
                     {passwordError}
                   </p>
                 )}
                 {/* Password strength meter */}
                 {password && (
                   <div className="ml-1">
-                    <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ease-out ${strength.color}`}
                         style={{ width: strength.width }}
@@ -344,7 +344,7 @@ export default function RegisterPage() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="auth-btn w-full h-11 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-sm shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 cursor-pointer"
+                  className="auth-btn w-full h-11 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold text-sm shadow-md shadow-blue-500/20 dark:shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/30 cursor-pointer"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -367,11 +367,11 @@ export default function RegisterPage() {
             </p>
 
             {/* Sign in link */}
-            <p className="text-center text-sm text-gray-500 mt-5 auth-fade-up auth-delay-800">
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-5 auth-fade-up auth-delay-800">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="font-semibold text-[#2563EB] hover:text-blue-700 transition-colors"
+                className="font-semibold text-[#2563EB] dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
               >
                 Sign in
               </Link>
@@ -384,15 +384,15 @@ export default function RegisterPage() {
               Crack TCS NQT with confidence — completely free, forever.
             </p>
             <div className="flex items-center justify-center gap-3 mt-4 auth-fade-up auth-delay-900">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-700">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block auth-badge-dot" />
                 No Ads
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-semibold text-blue-700">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 text-xs font-semibold text-blue-700 dark:text-blue-400">
                 <span className="w-2 h-2 rounded-full bg-blue-500 inline-block auth-badge-dot-2" />
                 100% Free
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-50 border border-violet-200 text-xs font-semibold text-violet-700">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-50 dark:bg-violet-950 border border-violet-200 dark:border-violet-800 text-xs font-semibold text-violet-700 dark:text-violet-400">
                 <span className="w-2 h-2 rounded-full bg-violet-500 inline-block auth-badge-dot-3" />
                 Student Focused
               </span>

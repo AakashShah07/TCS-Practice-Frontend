@@ -43,9 +43,9 @@ function formatTime(seconds: number) {
 }
 
 const priorityColors: Record<string, string> = {
-  high: "border-red-200 bg-red-50",
-  medium: "border-amber-200 bg-amber-50",
-  low: "border-blue-200 bg-blue-50",
+  high: "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950",
+  medium: "border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950",
+  low: "border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950",
 };
 
 const typeLabels: Record<string, string> = {
@@ -216,7 +216,7 @@ export default function AnalyticsPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Lightbulb className="h-5 w-5 text-amber-500" />
+              <Lightbulb className="h-5 w-5 text-amber-500 dark:text-amber-400" />
               <CardTitle>Smart Recommendations</CardTitle>
             </div>
             <CardDescription>

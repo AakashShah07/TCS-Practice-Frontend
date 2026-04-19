@@ -46,8 +46,8 @@ export default function AdvancedPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-lg bg-orange-50 flex items-center justify-center">
-              <Zap className="h-6 w-6 text-orange-600" />
+            <div className="w-12 h-12 rounded-lg bg-orange-50 dark:bg-orange-950 flex items-center justify-center">
+              <Zap className="h-6 w-6 text-orange-600 dark:text-orange-400" />
             </div>
             <div>
               <CardTitle>Advanced Quantitative & Reasoning</CardTitle>

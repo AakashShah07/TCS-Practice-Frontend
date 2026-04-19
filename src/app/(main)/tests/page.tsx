@@ -39,8 +39,8 @@ const testCategories = [
         questions: 25,
         duration: 30,
         icon: Calculator,
-        color: "text-blue-600",
-        bg: "bg-blue-50",
+        color: "text-blue-600 dark:text-blue-400",
+        bg: "bg-blue-50 dark:bg-blue-950",
         href: "/tests/foundation?section=numerical",
       },
       {
@@ -50,8 +50,8 @@ const testCategories = [
         questions: 25,
         duration: 30,
         icon: Brain,
-        color: "text-purple-600",
-        bg: "bg-purple-50",
+        color: "text-purple-600 dark:text-purple-400",
+        bg: "bg-purple-50 dark:bg-purple-950",
         href: "/tests/foundation?section=reasoning",
       },
       {
@@ -61,8 +61,8 @@ const testCategories = [
         questions: 25,
         duration: 30,
         icon: BookOpen,
-        color: "text-green-600",
-        bg: "bg-green-50",
+        color: "text-green-600 dark:text-green-400",
+        bg: "bg-green-50 dark:bg-green-950",
         href: "/tests/foundation?section=verbal",
       },
     ],
@@ -79,8 +79,8 @@ const testCategories = [
         questions: 25,
         duration: 30,
         icon: Zap,
-        color: "text-orange-600",
-        bg: "bg-orange-50",
+        color: "text-orange-600 dark:text-orange-400",
+        bg: "bg-orange-50 dark:bg-orange-950",
         href: "/tests/advanced",
       },
     ],
@@ -160,7 +160,7 @@ export default function TestsPage() {
                   <CardTitle className="text-xl text-red-900 dark:text-red-100">
                     Blood Relations Challenge
                   </CardTitle>
-                  <Flame className="h-5 w-5 text-orange-500 animate-pulse" />
+                  <Flame className="h-5 w-5 text-orange-500 dark:text-orange-400 animate-pulse" />
                 </div>
                 <CardDescription className="text-red-700/80 dark:text-red-300/80">
                   Master family tree puzzles — coded relations, generation chains, gender traps & more
@@ -208,7 +208,7 @@ export default function TestsPage() {
                   <CardTitle className="text-xl text-blue-900 dark:text-blue-100">
                     Simplification Practice
                   </CardTitle>
-                  <Calculator className="h-5 w-5 text-indigo-500 animate-pulse" />
+                  <Calculator className="h-5 w-5 text-indigo-500 dark:text-indigo-400 animate-pulse" />
                 </div>
                 <CardDescription className="text-blue-700/80 dark:text-blue-300/80">
                   BODMAS, fractions, roots, exponents, percentages & algebraic identities
@@ -256,7 +256,7 @@ export default function TestsPage() {
                   <CardTitle className="text-xl text-emerald-900 dark:text-emerald-100">
                     Approximation Challenge
                   </CardTitle>
-                  <Flame className="h-5 w-5 text-emerald-500 animate-pulse" />
+                  <Flame className="h-5 w-5 text-emerald-500 dark:text-emerald-400 animate-pulse" />
                 </div>
                 <CardDescription className="text-emerald-700/80 dark:text-emerald-300/80">
                   Square roots, cube roots, percentages & complex mixed operations — round smartly!

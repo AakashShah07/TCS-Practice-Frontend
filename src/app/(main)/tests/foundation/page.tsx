@@ -21,8 +21,8 @@ const sectionInfo = {
   numerical: {
     title: "Numerical Ability",
     icon: Calculator,
-    color: "text-blue-600",
-    bg: "bg-blue-50",
+    color: "text-blue-600 dark:text-blue-400",
+    bg: "bg-blue-50 dark:bg-blue-950",
     topics: [
       "Percentages",
       "Ratios",
@@ -37,8 +37,8 @@ const sectionInfo = {
   reasoning: {
     title: "Reasoning Ability",
     icon: Brain,
-    color: "text-purple-600",
-    bg: "bg-purple-50",
+    color: "text-purple-600 dark:text-purple-400",
+    bg: "bg-purple-50 dark:bg-purple-950",
     topics: [
       "Series",
       "Blood Relations",
@@ -51,8 +51,8 @@ const sectionInfo = {
   verbal: {
     title: "Verbal Ability",
     icon: BookOpen,
-    color: "text-green-600",
-    bg: "bg-green-50",
+    color: "text-green-600 dark:text-green-400",
+    bg: "bg-green-50 dark:bg-green-950",
     topics: [
       "Reading Comprehension",
       "Grammar",
