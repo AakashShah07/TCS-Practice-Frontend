@@ -51,11 +51,11 @@ export default function ExamPage() {
   const handleSubmit = useCallback(async () => {
     if (isSubmitted || !attemptId) return;
 
-    setSubmitted();
     if (timerRef.current) clearInterval(timerRef.current);
 
     try {
       await submitAttempt(attemptId);
+      setSubmitted();
       // Navigate to results — if opened in new window, open results in opener and close
       if (window.opener && !window.opener.closed) {
         window.opener.location.href = `/results/${attemptId}`;
@@ -63,10 +63,19 @@ export default function ExamPage() {
       } else {
         router.push(`/results/${attemptId}`);
       }
-    } catch {
-      toast.error("Failed to submit test. Please try again.");
+    } catch (err) {
+      // Restart timer if submit failed so user can retry
+      if (!isPaused && questions.length > 0) {
+        timerRef.current = setInterval(() => {
+          decrementTimer();
+        }, 1000);
+      }
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to submit test. Please try again.";
+      toast.error(message);
     }
-  }, [isSubmitted, attemptId, setSubmitted, router]);
+  }, [isSubmitted, attemptId, setSubmitted, router, isPaused, questions.length, decrementTimer]);
 
   // Called on "Start Test" button click (user gesture → fullscreen works)
   const handleStartTest = async () => {

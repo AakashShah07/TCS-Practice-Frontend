@@ -10,6 +10,7 @@ import {
   CheckCircle,
   AlertTriangle,
 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -292,17 +293,28 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   const sectionAnswered = sectionResponses.filter((r) => r.status === "answered").length;
   const sectionUnanswered = sectionResponses.length - sectionAnswered;
 
+  function handleApiError(err: unknown) {
+    const message =
+      (err as { response?: { data?: { message?: string } } })?.response?.data
+        ?.message || "";
+    if (message) {
+      toast.error(message);
+    } else {
+      toast.error("Failed to sync with server. Your progress may not be saved.");
+    }
+  }
+
   async function handleOptionClick(optionIndex: number) {
     setAnswer(currentQuestionIndex, optionIndex);
     if (attemptId) {
-      saveAnswer(attemptId, currentQuestionIndex, optionIndex, currentResponse?.timeSpent ?? 0).catch(() => {});
+      saveAnswer(attemptId, currentQuestionIndex, optionIndex, currentResponse?.timeSpent ?? 0).catch(handleApiError);
     }
   }
 
   async function handleClearResponse() {
     clearAnswer(currentQuestionIndex);
     if (attemptId) {
-      clearResponse(attemptId, currentQuestionIndex).catch(() => {});
+      clearResponse(attemptId, currentQuestionIndex).catch(handleApiError);
     }
   }
 
@@ -310,19 +322,19 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
     if (!isMarked) {
       storeMarkForReview(currentQuestionIndex);
       if (attemptId) {
-        markForReview(attemptId, currentQuestionIndex).catch(() => {});
+        markForReview(attemptId, currentQuestionIndex).catch(handleApiError);
       }
     }
     const timeSpent = nextQuestion();
     if (attemptId && timeSpent >= 0) {
-      navigate(attemptId, currentQuestionIndex + 1, currentQuestionIndex, timeSpent, question.section).catch(() => {});
+      navigate(attemptId, currentQuestionIndex + 1, currentQuestionIndex, timeSpent, question.section).catch(handleApiError);
     }
   }
 
   function handlePrev() {
     const timeSpent = prevQuestion();
     if (attemptId) {
-      navigate(attemptId, currentQuestionIndex - 1, currentQuestionIndex, timeSpent, question.section).catch(() => {});
+      navigate(attemptId, currentQuestionIndex - 1, currentQuestionIndex, timeSpent, question.section).catch(handleApiError);
     }
   }
 
@@ -334,7 +346,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
     }
     const timeSpent = nextQuestion();
     if (attemptId) {
-      navigate(attemptId, currentQuestionIndex + 1, currentQuestionIndex, timeSpent, question.section).catch(() => {});
+      navigate(attemptId, currentQuestionIndex + 1, currentQuestionIndex, timeSpent, question.section).catch(handleApiError);
     }
   }
 
