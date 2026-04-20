@@ -171,13 +171,13 @@ export default function TestsPage() {
           <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               <Badge className="bg-red-100 text-red-800 border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-700">
-                50 Questions
+                {bloodRelationTest.totalQuestions} Questions
               </Badge>
               <Badge className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/40 dark:text-orange-200 dark:border-orange-700">
-                60 Minutes
+                {Math.round(bloodRelationTest.duration / 60)} Minutes
               </Badge>
               <Badge className="bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700">
-                Reasoning
+                {bloodRelationTest.section ? bloodRelationTest.section.charAt(0).toUpperCase() + bloodRelationTest.section.slice(1) : "Reasoning"}
               </Badge>
               <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
                 Easy to Hard
@@ -219,13 +219,13 @@ export default function TestsPage() {
           <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-700">
-                30 Questions
+                {simplificationTest.totalQuestions} Questions
               </Badge>
               <Badge className="bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-700">
-                45 Minutes
+                {Math.round(simplificationTest.duration / 60)} Minutes
               </Badge>
               <Badge className="bg-cyan-100 text-cyan-800 border-cyan-200 dark:bg-cyan-900/40 dark:text-cyan-200 dark:border-cyan-700">
-                Numerical
+                {simplificationTest.section ? simplificationTest.section.charAt(0).toUpperCase() + simplificationTest.section.slice(1) : "Numerical"}
               </Badge>
               <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
                 Easy to Hard
@@ -267,13 +267,13 @@ export default function TestsPage() {
           <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700">
-                30 Questions
+                {approximationTest.totalQuestions} Questions
               </Badge>
               <Badge className="bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/40 dark:text-teal-200 dark:border-teal-700">
-                40 Minutes
+                {Math.round(approximationTest.duration / 60)} Minutes
               </Badge>
               <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/40 dark:text-green-200 dark:border-green-700">
-                Numerical
+                {approximationTest.section ? approximationTest.section.charAt(0).toUpperCase() + approximationTest.section.slice(1) : "Numerical"}
               </Badge>
               <Badge className="bg-red-100 text-red-800 border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-700">
                 Hard Only
