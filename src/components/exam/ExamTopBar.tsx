@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, AlertTriangle, Send } from "lucide-react";
+import { Clock, AlertTriangle, Send, Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,6 +26,8 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
     timer,
     questions,
     currentQuestionIndex,
+    isPaused,
+    togglePause,
     getAnsweredCount,
   } = useTestStore();
 
@@ -77,6 +79,21 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
               <Clock className="h-3.5 w-3.5" />
               {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
             </div>
+
+            {/* Pause/Resume */}
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={togglePause}
+              className="rounded-lg px-3 font-semibold transition-all active:scale-95"
+            >
+              {isPaused ? (
+                <Play className="h-3.5 w-3.5 mr-1.5" />
+              ) : (
+                <Pause className="h-3.5 w-3.5 mr-1.5" />
+              )}
+              {isPaused ? "Resume" : "Pause"}
+            </Button>
 
             {/* Submit */}
             <Button

@@ -30,6 +30,7 @@ interface TestState {
   isSubmitted: boolean;
   tabSwitchCount: number;
   questionEnteredAt: number;
+  isPaused: boolean;
   sectionLocked: boolean; // whether sections are locked (full mock = true)
   submittedSections: Section[]; // sections that have been submitted
 
@@ -63,6 +64,7 @@ interface TestState {
   incrementTabSwitch: () => void;
   getStatus: (index: number) => QuestionStatus;
   getAnsweredCount: () => number;
+  togglePause: () => void;
   resetTest: () => void;
 }
 
@@ -81,6 +83,7 @@ const initialState = {
   isSubmitted: false,
   tabSwitchCount: 0,
   questionEnteredAt: Date.now(),
+  isPaused: false,
   sectionLocked: false,
   submittedSections: [] as Section[],
 };
@@ -311,6 +314,8 @@ export const useTestStore = create<TestState>((set, get) => ({
   getAnsweredCount: () => {
     return get().responses.filter((r) => r.status === "answered").length;
   },
+
+  togglePause: () => set({ isPaused: !get().isPaused }),
 
   resetTest: () => set(initialState),
 }));

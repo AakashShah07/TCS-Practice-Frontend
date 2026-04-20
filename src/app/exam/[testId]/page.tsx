@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Monitor, AlertTriangle, Clock, Eye } from "lucide-react";
+import { Monitor, AlertTriangle, Clock, Eye, Pause, Play } from "lucide-react";
 import ExamTopBar from "@/components/exam/ExamTopBar";
 import QuestionPanel from "@/components/exam/QuestionPanel";
 import QuestionPalette from "@/components/exam/QuestionPalette";
@@ -30,10 +30,12 @@ export default function ExamPage() {
     timer,
     currentQuestionIndex,
     isSubmitted,
+    isPaused,
     tabSwitchCount,
     testTitle,
     initTest,
     decrementTimer,
+    togglePause,
     setSubmitted,
     incrementTabSwitch,
     resetTest,
@@ -44,6 +46,7 @@ export default function ExamPage() {
   const [error, setError] = useState<string | null>(null);
   const [showPalette, setShowPalette] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
   const handleSubmit = useCallback(async () => {
     if (isSubmitted || !attemptId) return;
@@ -125,9 +128,9 @@ export default function ExamPage() {
     }
   };
 
-  // Timer
+  // Timer — pauses when isPaused is true
   useEffect(() => {
-    if (loading || !started || isSubmitted || questions.length === 0) return;
+    if (loading || !started || isSubmitted || isPaused || questions.length === 0) return;
 
     timerRef.current = setInterval(() => {
       decrementTimer();
@@ -136,7 +139,7 @@ export default function ExamPage() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [loading, started, isSubmitted, questions.length, decrementTimer]);
+  }, [loading, started, isSubmitted, isPaused, questions.length, decrementTimer]);
 
   // Auto-submit and warnings
   useEffect(() => {
@@ -170,6 +173,43 @@ export default function ExamPage() {
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
   }, [started, isSubmitted, incrementTabSwitch, tabSwitchCount, attemptId]);
+
+  // Wake Lock — prevent screen from sleeping during the test
+  useEffect(() => {
+    if (!started || isSubmitted) return;
+
+    let active = true;
+
+    async function requestWakeLock() {
+      try {
+        if ("wakeLock" in navigator) {
+          wakeLockRef.current = await navigator.wakeLock.request("screen");
+        }
+      } catch {
+        // Wake Lock request failed (e.g. low battery) — continue without it
+      }
+    }
+
+    requestWakeLock();
+
+    // Re-acquire wake lock when tab becomes visible again (browsers release it on hide)
+    function handleVisibilityForWakeLock() {
+      if (document.visibilityState === "visible" && active) {
+        requestWakeLock();
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityForWakeLock);
+
+    return () => {
+      active = false;
+      document.removeEventListener("visibilitychange", handleVisibilityForWakeLock);
+      if (wakeLockRef.current) {
+        wakeLockRef.current.release().catch(() => {});
+        wakeLockRef.current = null;
+      }
+    };
+  }, [started, isSubmitted]);
 
   // Exit fullscreen on submit or unmount
   useEffect(() => {
@@ -254,7 +294,7 @@ export default function ExamPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 dark:bg-gray-950">
+    <div className="flex flex-col h-screen bg-slate-50 dark:bg-gray-950 relative">
       <ExamTopBar testTitle={testTitle || "TCS NQT Test"} onSubmit={handleSubmit} />
       <SectionPanel />
       <div className="flex flex-1 min-h-0">
@@ -283,6 +323,29 @@ export default function ExamPage() {
           <QuestionPalette />
         </div>
       </div>
+
+      {/* Pause overlay */}
+      {isPaused && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-gray-950/90 backdrop-blur-md">
+          <div className="text-center space-y-6">
+            <div className="mx-auto w-20 h-20 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center">
+              <Pause className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold">Test Paused</h2>
+              <p className="text-muted-foreground">The timer has been paused. Your progress is saved.</p>
+            </div>
+            <Button
+              size="lg"
+              onClick={togglePause}
+              className="px-8 font-semibold cursor-pointer"
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Resume Test
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
