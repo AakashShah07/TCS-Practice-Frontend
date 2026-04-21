@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { register } from "@/lib/api/auth";
 import Image from "next/image";
 import { Eye, EyeOff, Mail, Lock, Loader2, User, BookOpen, Code, Target } from "lucide-react";
+import AuthParticles from "@/components/auth/AuthParticles";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -25,6 +26,21 @@ export default function RegisterPage() {
   const [nameTouched, setNameTouched] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
+  const [cardTransform, setCardTransform] = useState("");
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleCardMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setCardTransform(`perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) scale3d(1.02,1.02,1.02)`);
+  }, []);
+
+  const handleCardMouseLeave = useCallback(() => {
+    setCardTransform("");
+  }, []);
 
   function validateName(value: string) {
     if (!value.trim()) return "Full name is required";
@@ -102,6 +118,7 @@ export default function RegisterPage() {
     <>
       {/* ── Left blue panel (desktop) ── */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#1E40AF] via-[#2563EB] to-[#3B82F6] relative overflow-hidden">
+        <AuthParticles variant="blue" />
         <div className="absolute top-[-15%] right-[-10%] w-[400px] h-[400px] rounded-full bg-white/10 blur-3xl auth-bg-glow" />
         <div className="absolute bottom-[-15%] left-[-10%] w-[350px] h-[350px] rounded-full bg-white/8 blur-3xl auth-bg-glow-2" />
         <div className="absolute top-[40%] left-[30%] w-[200px] h-[200px] rounded-full bg-blue-300/10 blur-3xl auth-bg-glow" style={{ animationDelay: "4s" }} />
@@ -193,10 +210,17 @@ export default function RegisterPage() {
       {/* ── Right white panel ── */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-8 bg-[#F9FAFB] dark:bg-gray-950 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-white via-blue-50/30 to-white dark:from-gray-950 dark:via-blue-950/20 dark:to-gray-950" />
+        <AuthParticles variant="subtle" />
         <div className="absolute top-[-20%] right-[-15%] w-[300px] h-[300px] rounded-full bg-blue-50/40 dark:bg-blue-950/30 blur-3xl auth-bg-glow-2" />
 
         <div className="relative z-10 w-full max-w-[420px]">
-          <div className="auth-card auth-fade-up auth-delay-100 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.3)] border border-white/60 dark:border-gray-800 p-8 sm:p-10">
+          <div
+            ref={cardRef}
+            onMouseMove={handleCardMouseMove}
+            onMouseLeave={handleCardMouseLeave}
+            className="auth-fade-up auth-delay-100 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-[0_8px_40px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.3)] border border-white/60 dark:border-gray-800 p-8 sm:p-10 transition-[transform,box-shadow] duration-300 ease-out will-change-transform hover:shadow-[0_20px_60px_rgb(37,99,235,0.12)] dark:hover:shadow-[0_20px_60px_rgb(99,102,241,0.15)]"
+            style={{ transform: cardTransform || undefined }}
+          >
             {/* Logo */}
             <div className="flex items-center justify-center mb-6 auth-fade-up auth-delay-200">
               <div className="flex items-center gap-2.5">

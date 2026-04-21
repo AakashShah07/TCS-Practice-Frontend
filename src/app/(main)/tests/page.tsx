@@ -93,6 +93,7 @@ export default function TestsPage() {
   const [simplificationTest, setSimplificationTest] = useState<Test | null>(null);
   const [approximationTest, setApproximationTest] = useState<Test | null>(null);
   const [percentageTest, setPercentageTest] = useState<Test | null>(null);
+  const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
     async function loadSpecialTests() {
@@ -108,6 +109,8 @@ export default function TestsPage() {
         if (pctTest) setPercentageTest(pctTest);
       } catch {
         // API not ready
+      } finally {
+        setSpecialLoading(false);
       }
     }
     loadSpecialTests();
@@ -149,8 +152,46 @@ export default function TestsPage() {
         </CardContent>
       </Card>
 
+      {/* Loading skeletons for special test cards */}
+      {specialLoading && (
+        <div className="space-y-6">
+          {[
+            { border: "border-red-200 dark:border-red-800", from: "from-red-50 dark:from-red-950/30", via: "via-orange-50 dark:via-orange-950/20", to: "to-amber-50 dark:to-amber-950/20", shimmer: "bg-red-200/60 dark:bg-red-800/40" },
+            { border: "border-blue-200 dark:border-blue-800", from: "from-blue-50 dark:from-blue-950/30", via: "via-indigo-50 dark:via-indigo-950/20", to: "to-cyan-50 dark:to-cyan-950/20", shimmer: "bg-blue-200/60 dark:bg-blue-800/40" },
+            { border: "border-emerald-200 dark:border-emerald-800", from: "from-emerald-50 dark:from-emerald-950/30", via: "via-teal-50 dark:via-teal-950/20", to: "to-green-50 dark:to-green-950/20", shimmer: "bg-emerald-200/60 dark:bg-emerald-800/40" },
+            { border: "border-amber-200 dark:border-amber-800", from: "from-amber-50 dark:from-amber-950/30", via: "via-yellow-50 dark:via-yellow-950/20", to: "to-orange-50 dark:to-orange-950/20", shimmer: "bg-amber-200/60 dark:bg-amber-800/40" },
+          ].map((s, i) => (
+            <Card
+              key={i}
+              className={`relative overflow-hidden border-2 ${s.border} bg-gradient-to-r ${s.from} ${s.via} ${s.to}`}
+              style={{ animationDelay: `${i * 150}ms` }}
+            >
+              {/* Shimmer sweep */}
+              <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.8s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/40 dark:via-white/5 to-transparent" style={{ animationDelay: `${i * 200}ms` }} />
+              <CardHeader className="relative">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 rounded-lg ${s.shimmer} animate-pulse`} />
+                  <div className="flex-1 space-y-2.5">
+                    <div className={`h-5 w-48 rounded-md ${s.shimmer} animate-pulse`} />
+                    <div className={`h-3.5 w-72 rounded-md ${s.shimmer} animate-pulse opacity-60`} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-2">
+                  {[20, 24, 22, 20].map((w, j) => (
+                    <div key={j} className={`h-6 rounded-full ${s.shimmer} animate-pulse`} style={{ width: `${w * 4}px`, animationDelay: `${j * 100}ms` }} />
+                  ))}
+                </div>
+                <div className={`h-9 w-32 rounded-lg ${s.shimmer} animate-pulse`} />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
       {/* Blood Relations Special Card */}
-      {bloodRelationTest && (
+      {!specialLoading && bloodRelationTest && (
         <Card className="relative overflow-hidden border-2 border-red-200 bg-gradient-to-r from-red-50 via-orange-50 to-amber-50 dark:from-red-950/30 dark:via-orange-950/20 dark:to-amber-950/20 dark:border-red-800">
           <div className="absolute top-0 right-0 w-40 h-40 bg-red-100/40 dark:bg-red-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-100/40 dark:bg-orange-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -198,7 +239,7 @@ export default function TestsPage() {
       )}
 
       {/* Simplification Practice Card */}
-      {simplificationTest && (
+      {!specialLoading && simplificationTest && (
         <Card className="relative overflow-hidden border-2 border-blue-200 bg-gradient-to-r from-blue-50 via-indigo-50 to-cyan-50 dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-cyan-950/20 dark:border-blue-800">
           <div className="absolute top-0 right-0 w-40 h-40 bg-blue-100/40 dark:bg-blue-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-indigo-100/40 dark:bg-indigo-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -246,7 +287,7 @@ export default function TestsPage() {
       )}
 
       {/* Approximation Challenge Card */}
-      {approximationTest && (
+      {!specialLoading && approximationTest && (
         <Card className="relative overflow-hidden border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 via-teal-50 to-green-50 dark:from-emerald-950/30 dark:via-teal-950/20 dark:to-green-950/20 dark:border-emerald-800">
           <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-100/40 dark:bg-emerald-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-teal-100/40 dark:bg-teal-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -294,7 +335,7 @@ export default function TestsPage() {
       )}
 
       {/* Percentage Practice Card */}
-      {percentageTest && (
+      {!specialLoading && percentageTest && (
         <Card className="relative overflow-hidden border-2 border-amber-200 bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/30 dark:via-yellow-950/20 dark:to-orange-950/20 dark:border-amber-800">
           <div className="absolute top-0 right-0 w-40 h-40 bg-amber-100/40 dark:bg-amber-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-yellow-100/40 dark:bg-yellow-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
