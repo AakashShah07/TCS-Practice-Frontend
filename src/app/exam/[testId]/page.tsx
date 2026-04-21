@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Monitor, AlertTriangle, Clock, Eye, Pause, Play } from "lucide-react";
+import { Monitor, AlertTriangle, Clock, Eye, Pause, Play, Send } from "lucide-react";
 import ExamTopBar from "@/components/exam/ExamTopBar";
 import QuestionPanel from "@/components/exam/QuestionPanel";
 import QuestionPalette from "@/components/exam/QuestionPalette";
@@ -43,6 +43,7 @@ export default function ExamPage() {
 
   const [started, setStarted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPalette, setShowPalette] = useState(true);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -52,10 +53,13 @@ export default function ExamPage() {
     if (isSubmitted || !attemptId) return;
 
     if (timerRef.current) clearInterval(timerRef.current);
+    setSubmitting(true);
 
     try {
       await submitAttempt(attemptId);
       setSubmitted();
+      // Small delay so the user sees the success state of the animation
+      await new Promise((r) => setTimeout(r, 1800));
       // Navigate to results — if opened in new window, open results in opener and close
       if (window.opener && !window.opener.closed) {
         window.opener.location.href = `/results/${attemptId}`;
@@ -64,6 +68,7 @@ export default function ExamPage() {
         router.push(`/results/${attemptId}`);
       }
     } catch (err) {
+      setSubmitting(false);
       // Restart timer if submit failed so user can retry
       if (!isPaused && questions.length > 0) {
         timerRef.current = setInterval(() => {
@@ -332,6 +337,57 @@ export default function ExamPage() {
           <QuestionPalette />
         </div>
       </div>
+
+      {/* Submitting overlay */}
+      {submitting && (
+        <div className="absolute inset-0 z-[60] flex items-center justify-center bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm">
+          <div className="text-center space-y-8 animate-[fadeIn_0.3s_ease-out]">
+            {/* Animated rings */}
+            <div className="relative mx-auto w-28 h-28">
+              {/* Outer ring */}
+              <div className="absolute inset-0 rounded-full border-4 border-indigo-100 dark:border-indigo-900/50" />
+              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-500 dark:border-t-indigo-400 animate-spin" />
+              {/* Middle ring */}
+              <div className="absolute inset-3 rounded-full border-4 border-indigo-50 dark:border-indigo-900/30" />
+              <div
+                className="absolute inset-3 rounded-full border-4 border-transparent border-t-blue-500 dark:border-t-blue-400"
+                style={{ animation: "spin 1.2s linear infinite reverse" }}
+              />
+              {/* Inner ring */}
+              <div className="absolute inset-6 rounded-full border-4 border-indigo-50 dark:border-indigo-900/20" />
+              <div
+                className="absolute inset-6 rounded-full border-4 border-transparent border-t-violet-500 dark:border-t-violet-400"
+                style={{ animation: "spin 0.8s linear infinite" }}
+              />
+              {/* Center icon */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Send className="w-7 h-7 text-indigo-600 dark:text-indigo-400 animate-pulse" />
+              </div>
+            </div>
+
+            {/* Text */}
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-foreground">Submitting Your Test</h2>
+              <p className="text-muted-foreground text-sm">Calculating your results...</p>
+            </div>
+
+            {/* Progress dots */}
+            <div className="flex items-center justify-center gap-2">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="w-2.5 h-2.5 rounded-full bg-indigo-500 dark:bg-indigo-400"
+                  style={{
+                    animation: "pulse 1.4s ease-in-out infinite",
+                    animationDelay: `${i * 0.15}s`,
+                    opacity: 0.3,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pause overlay */}
       {isPaused && (

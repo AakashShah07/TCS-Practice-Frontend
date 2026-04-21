@@ -486,7 +486,7 @@ export default function HomePage() {
                             <div key={sub.name} className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
                               <button
                                 onClick={() => toggleSub(sub.name)}
-                                className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                                className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                               >
                                 <div className="flex items-center gap-3 min-w-0">
                                   <SubIcon className="w-4.5 h-4.5 text-[#2563EB] dark:text-blue-400 shrink-0" />
@@ -557,7 +557,7 @@ export default function HomePage() {
                             <div key={sub.name} className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
                               <button
                                 onClick={() => toggleSub(sub.name)}
-                                className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+                                className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                               >
                                 <div className="flex items-center gap-3 min-w-0">
                                   <SubIcon className="w-4.5 h-4.5 text-violet-600 dark:text-violet-400 shrink-0" />

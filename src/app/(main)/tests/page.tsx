@@ -13,6 +13,7 @@ import {
   Flame,
   Sigma,
   Target,
+  Percent,
 } from "lucide-react";
 import {
   Card,
@@ -91,6 +92,7 @@ export default function TestsPage() {
   const [bloodRelationTest, setBloodRelationTest] = useState<Test | null>(null);
   const [simplificationTest, setSimplificationTest] = useState<Test | null>(null);
   const [approximationTest, setApproximationTest] = useState<Test | null>(null);
+  const [percentageTest, setPercentageTest] = useState<Test | null>(null);
 
   useEffect(() => {
     async function loadSpecialTests() {
@@ -102,6 +104,8 @@ export default function TestsPage() {
         if (simpTest) setSimplificationTest(simpTest);
         const approxTest = data.find((t) => t.topic === "Approximation");
         if (approxTest) setApproximationTest(approxTest);
+        const pctTest = data.find((t) => t.topic === "Ratio & Percentage");
+        if (pctTest) setPercentageTest(pctTest);
       } catch {
         // API not ready
       }
@@ -284,6 +288,54 @@ export default function TestsPage() {
               render={<Link href={`/exam/${approximationTest._id}`} target="_blank" />}
             >
               Take Challenge <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Percentage Practice Card */}
+      {percentageTest && (
+        <Card className="relative overflow-hidden border-2 border-amber-200 bg-gradient-to-r from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950/30 dark:via-yellow-950/20 dark:to-orange-950/20 dark:border-amber-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-amber-100/40 dark:bg-amber-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-yellow-100/40 dark:bg-yellow-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+                <Percent className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-amber-900 dark:text-amber-100">
+                    Ratio & Percentage Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-yellow-500 dark:text-yellow-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-amber-700/80 dark:text-amber-300/80">
+                  Ratios, proportions, profit & loss, discounts, successive percentage changes & more
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700">
+                {percentageTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-200 dark:border-yellow-700">
+                {Math.round(percentageTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/40 dark:text-orange-200 dark:border-orange-700">
+                {percentageTest.section ? percentageTest.section.charAt(0).toUpperCase() + percentageTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-amber-600 hover:bg-amber-700 text-white"
+              render={<Link href={`/exam/${percentageTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </CardContent>
         </Card>
