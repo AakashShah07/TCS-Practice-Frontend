@@ -20,7 +20,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import PerformanceCharts from "@/components/analytics/PerformanceCharts";
-import TopicIntelligence from "@/components/analytics/TopicIntelligence";
 import TopicStrengths from "@/components/analytics/TopicStrengths";
 import {
   fetchDashboardAnalytics,
@@ -202,11 +201,6 @@ export default function AnalyticsPage() {
         accuracyHistory={accuracyHistory}
         sectionPerformance={sectionPerformance}
       />
-
-      {/* Topic Intelligence */}
-      {topicStats.length > 0 && (
-        <TopicIntelligence topicStats={topicStats} />
-      )}
 
       {/* Strengths & Weaknesses */}
       <TopicStrengths strongTopics={strongTopics} weakTopics={weakTopics} />
