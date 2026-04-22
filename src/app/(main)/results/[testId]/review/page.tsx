@@ -24,7 +24,7 @@ export default function ReviewPage() {
   const resultId = params.testId as string;
   const [reviewData, setReviewData] = useState<ReviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "wrong" | "skipped">("all");
+  const [filter, setFilter] = useState<"all" | "correct" | "wrong" | "skipped">("all");
 
   useEffect(() => {
     async function load() {
@@ -58,8 +58,10 @@ export default function ReviewPage() {
   }
 
   const filtered = reviewData.review.filter((item) => {
+    if (filter === "correct")
+      return item.selectedAnswer !== null && item.selectedAnswer === item.correctAnswer;
     if (filter === "wrong")
-      return item.selectedAnswer !== item.correctAnswer && item.selectedAnswer !== null;
+      return item.selectedAnswer !== null && item.selectedAnswer !== item.correctAnswer;
     if (filter === "skipped") return item.selectedAnswer === null;
     return true;
   });
@@ -80,20 +82,26 @@ export default function ReviewPage() {
 
       {/* Filter */}
       <div className="flex gap-2">
-        {(["all", "wrong", "skipped"] as const).map((f) => (
-          <Button
-            key={f}
-            variant={filter === f ? "default" : "outline"}
-            size="sm"
-            onClick={() => setFilter(f)}
-          >
-            {f === "all"
-              ? `All (${reviewData.review.length})`
+        {(["all", "correct", "wrong", "skipped"] as const).map((f) => {
+          const count =
+            f === "all"
+              ? reviewData.review.length
+              : f === "correct"
+              ? reviewData.review.filter((item) => item.selectedAnswer !== null && item.selectedAnswer === item.correctAnswer).length
               : f === "wrong"
-              ? `Wrong (${reviewData.review.filter((item) => item.selectedAnswer !== item.correctAnswer && item.selectedAnswer !== null).length})`
-              : `Skipped (${reviewData.review.filter((item) => item.selectedAnswer === null).length})`}
-          </Button>
-        ))}
+              ? reviewData.review.filter((item) => item.selectedAnswer !== null && item.selectedAnswer !== item.correctAnswer).length
+              : reviewData.review.filter((item) => item.selectedAnswer === null).length;
+          return (
+            <Button
+              key={f}
+              variant={filter === f ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilter(f)}
+            >
+              {f.charAt(0).toUpperCase() + f.slice(1)} ({count})
+            </Button>
+          );
+        })}
       </div>
 
       {/* Questions */}
