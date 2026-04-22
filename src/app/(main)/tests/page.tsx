@@ -14,6 +14,7 @@ import {
   Sigma,
   Target,
   Percent,
+  Clock,
 } from "lucide-react";
 import {
   Card,
@@ -93,6 +94,7 @@ export default function TestsPage() {
   const [simplificationTest, setSimplificationTest] = useState<Test | null>(null);
   const [approximationTest, setApproximationTest] = useState<Test | null>(null);
   const [percentageTest, setPercentageTest] = useState<Test | null>(null);
+  const [timeWorkTest, setTimeWorkTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -107,6 +109,8 @@ export default function TestsPage() {
         if (approxTest) setApproximationTest(approxTest);
         const pctTest = data.find((t) => t.topic === "Ratio & Percentage");
         if (pctTest) setPercentageTest(pctTest);
+        const twTest = data.find((t) => t.topic === "Time & Work");
+        if (twTest) setTimeWorkTest(twTest);
       } catch {
         // API not ready
       } finally {
@@ -160,6 +164,7 @@ export default function TestsPage() {
             { border: "border-blue-200 dark:border-blue-800", from: "from-blue-50 dark:from-blue-950/30", via: "via-indigo-50 dark:via-indigo-950/20", to: "to-cyan-50 dark:to-cyan-950/20", shimmer: "bg-blue-200/60 dark:bg-blue-800/40" },
             { border: "border-emerald-200 dark:border-emerald-800", from: "from-emerald-50 dark:from-emerald-950/30", via: "via-teal-50 dark:via-teal-950/20", to: "to-green-50 dark:to-green-950/20", shimmer: "bg-emerald-200/60 dark:bg-emerald-800/40" },
             { border: "border-amber-200 dark:border-amber-800", from: "from-amber-50 dark:from-amber-950/30", via: "via-yellow-50 dark:via-yellow-950/20", to: "to-orange-50 dark:to-orange-950/20", shimmer: "bg-amber-200/60 dark:bg-amber-800/40" },
+            { border: "border-violet-200 dark:border-violet-800", from: "from-violet-50 dark:from-violet-950/30", via: "via-purple-50 dark:via-purple-950/20", to: "to-fuchsia-50 dark:to-fuchsia-950/20", shimmer: "bg-violet-200/60 dark:bg-violet-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -375,6 +380,54 @@ export default function TestsPage() {
             <Button
               className="bg-amber-600 hover:bg-amber-700 text-white"
               render={<Link href={`/exam/${percentageTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Time & Work Practice Card */}
+      {!specialLoading && timeWorkTest && (
+        <Card className="relative overflow-hidden border-2 border-violet-200 bg-gradient-to-r from-violet-50 via-purple-50 to-fuchsia-50 dark:from-violet-950/30 dark:via-purple-950/20 dark:to-fuchsia-950/20 dark:border-violet-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-violet-100/40 dark:bg-violet-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-100/40 dark:bg-purple-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
+                <Clock className="h-6 w-6 text-violet-600 dark:text-violet-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-violet-900 dark:text-violet-100">
+                    Time & Work Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-purple-500 dark:text-purple-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-violet-700/80 dark:text-violet-300/80">
+                  Pipes & cisterns, work efficiency, alternate days, combined work rates & more
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700">
+                {timeWorkTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                {Math.round(timeWorkTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200 dark:bg-fuchsia-900/40 dark:text-fuchsia-200 dark:border-fuchsia-700">
+                {timeWorkTest.section ? timeWorkTest.section.charAt(0).toUpperCase() + timeWorkTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-pink-100 text-pink-800 border-pink-200 dark:bg-pink-900/40 dark:text-pink-200 dark:border-pink-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-violet-600 hover:bg-violet-700 text-white"
+              render={<Link href={`/exam/${timeWorkTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
