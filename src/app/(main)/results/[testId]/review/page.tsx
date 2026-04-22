@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, XCircle, MinusCircle, ArrowLeft } from "lucide-react";
+import { CheckCircle2, XCircle, MinusCircle, ArrowLeft, Lightbulb } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -166,9 +166,19 @@ export default function ReviewPage() {
                   })}
                 </div>
                 {item.question.explanation && (
-                  <div className="bg-blue-50 dark:bg-blue-950 border border-blue-100 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-800 dark:text-blue-200">
-                    <span className="font-medium">Explanation: </span>
-                    {item.question.explanation}
+                  <div className="bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl p-4 text-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Lightbulb className="h-4 w-4 text-amber-500 dark:text-amber-400 shrink-0" />
+                      <span className="font-semibold text-amber-800 dark:text-amber-300">Solution</span>
+                    </div>
+                    <div className="space-y-1.5 text-amber-900/90 dark:text-amber-100/85 leading-relaxed">
+                      {item.question.explanation
+                        .split(/(?<=\.)\s+/)
+                        .filter((s: string) => s.trim())
+                        .map((sentence: string, i: number) => (
+                          <p key={i}>{sentence.trim()}</p>
+                        ))}
+                    </div>
                   </div>
                 )}
               </CardContent>
