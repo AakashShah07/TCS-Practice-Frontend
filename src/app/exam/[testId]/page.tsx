@@ -75,10 +75,18 @@ export default function ExamPage() {
           decrementTimer();
         }, 1000);
       }
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Failed to submit test. Please try again.";
-      toast.error(message);
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status === 401) {
+        toast.error(
+          "Session expired. Your answers are saved locally. Please login in a new tab and come back to retry.",
+          { duration: 10000 }
+        );
+      } else {
+        const message =
+          (err as { response?: { data?: { message?: string } } })?.response?.data
+            ?.message || "Failed to submit test. Please try again.";
+        toast.error(message);
+      }
     }
   }, [isSubmitted, attemptId, setSubmitted, router, isPaused, questions.length, decrementTimer]);
 

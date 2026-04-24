@@ -88,6 +88,66 @@ const initialState = {
   submittedSections: [] as Section[],
 };
 
+const EXAM_BACKUP_KEY = "exam_backup";
+
+function backupToLocalStorage(state: {
+  attemptId: string | null;
+  testId: string | null;
+  responses: ResponseState[];
+  currentQuestionIndex: number;
+  currentSection: Section;
+  timer: number;
+  tabSwitchCount: number;
+}) {
+  if (!state.attemptId) return;
+  try {
+    localStorage.setItem(
+      EXAM_BACKUP_KEY,
+      JSON.stringify({
+        attemptId: state.attemptId,
+        testId: state.testId,
+        responses: state.responses,
+        currentQuestionIndex: state.currentQuestionIndex,
+        currentSection: state.currentSection,
+        timer: state.timer,
+        tabSwitchCount: state.tabSwitchCount,
+        savedAt: Date.now(),
+      })
+    );
+  } catch {
+    // localStorage full or unavailable — ignore
+  }
+}
+
+export function getExamBackup() {
+  try {
+    const raw = localStorage.getItem(EXAM_BACKUP_KEY);
+    if (!raw) return null;
+    const backup = JSON.parse(raw) as {
+      attemptId: string;
+      testId: string;
+      responses: ResponseState[];
+      currentQuestionIndex: number;
+      currentSection: Section;
+      timer: number;
+      tabSwitchCount: number;
+      savedAt: number;
+    };
+    // Discard backups older than 4 hours
+    if (Date.now() - backup.savedAt > 4 * 60 * 60 * 1000) {
+      localStorage.removeItem(EXAM_BACKUP_KEY);
+      return null;
+    }
+    return backup;
+  } catch {
+    return null;
+  }
+}
+
+export function clearExamBackup() {
+  localStorage.removeItem(EXAM_BACKUP_KEY);
+}
+
 export const useTestStore = create<TestState>((set, get) => ({
   ...initialState,
 
@@ -131,6 +191,7 @@ export const useTestStore = create<TestState>((set, get) => ({
     if (responses[index]) {
       responses[index] = { ...responses[index], selectedAnswer, status: "answered" };
       set({ responses });
+      backupToLocalStorage(get());
     }
   },
 
@@ -139,6 +200,7 @@ export const useTestStore = create<TestState>((set, get) => ({
     if (responses[index]) {
       responses[index] = { ...responses[index], selectedAnswer: null, status: "not_answered" };
       set({ responses });
+      backupToLocalStorage(get());
     }
   },
 
@@ -147,6 +209,7 @@ export const useTestStore = create<TestState>((set, get) => ({
     if (responses[index]) {
       responses[index] = { ...responses[index], status: "marked_for_review" };
       set({ responses });
+      backupToLocalStorage(get());
     }
   },
 
@@ -184,6 +247,7 @@ export const useTestStore = create<TestState>((set, get) => ({
       questionEnteredAt: Date.now(),
     });
 
+    backupToLocalStorage(get());
     return timeSpent;
   },
 
@@ -303,7 +367,10 @@ export const useTestStore = create<TestState>((set, get) => ({
     if (timer > 0) set({ timer: timer - 1 });
   },
 
-  setSubmitted: () => set({ isSubmitted: true }),
+  setSubmitted: () => {
+    set({ isSubmitted: true });
+    clearExamBackup();
+  },
 
   incrementTabSwitch: () => set({ tabSwitchCount: get().tabSwitchCount + 1 }),
 
@@ -317,5 +384,8 @@ export const useTestStore = create<TestState>((set, get) => ({
 
   togglePause: () => set({ isPaused: !get().isPaused }),
 
-  resetTest: () => set(initialState),
+  resetTest: () => {
+    clearExamBackup();
+    set(initialState);
+  },
 }));
