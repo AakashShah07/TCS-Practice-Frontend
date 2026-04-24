@@ -45,8 +45,33 @@ export default function PracticePage() {
   return (
     <Suspense
       fallback={
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="space-y-6 animate-pulse">
+          <div>
+            <div className="h-8 w-52 bg-muted rounded" />
+            <div className="h-4 w-72 bg-muted rounded mt-2" />
+          </div>
+          <div className="h-10 bg-muted rounded" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="w-8 h-8 bg-muted rounded-lg" />
+                    <div className="h-5 w-12 bg-muted rounded" />
+                  </div>
+                  <div className="h-5 w-32 bg-muted rounded mt-2" />
+                  <div className="h-4 w-40 bg-muted rounded mt-1" />
+                </CardHeader>
+                <CardContent className="pt-0 space-y-2">
+                  <div className="h-1.5 bg-muted rounded-full" />
+                  <div className="flex gap-3">
+                    <div className="h-3 w-14 bg-muted rounded" />
+                    <div className="h-3 w-16 bg-muted rounded" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       }
     >
@@ -117,8 +142,27 @@ function PracticeContent() {
           return (
             <TabsContent key={section} value={section}>
               {loading ? (
-                <div className="flex items-center justify-center py-16">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 animate-pulse">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <Card key={i}>
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <div className="w-8 h-8 bg-muted rounded-lg" />
+                          <div className="h-5 w-12 bg-muted rounded" />
+                        </div>
+                        <div className="h-5 w-32 bg-muted rounded mt-2" />
+                        <div className="h-4 w-40 bg-muted rounded mt-1" />
+                      </CardHeader>
+                      <CardContent className="pt-0 space-y-2">
+                        <div className="h-1.5 bg-muted rounded-full" />
+                        <div className="flex gap-3">
+                          <div className="h-3 w-14 bg-muted rounded" />
+                          <div className="h-3 w-16 bg-muted rounded" />
+                          <div className="h-3 w-12 bg-muted rounded" />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               ) : topics.length > 0 ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -86,8 +86,75 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      <div className="space-y-8 animate-pulse">
+        {/* Header */}
+        <div>
+          <div className="h-8 w-36 bg-muted rounded" />
+          <div className="h-4 w-72 bg-muted rounded mt-2" />
+        </div>
+
+        {/* Stats Cards Skeleton */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="h-4 w-24 bg-muted rounded" />
+                <div className="h-4 w-4 bg-muted rounded" />
+              </CardHeader>
+              <CardContent>
+                <div className="h-7 w-16 bg-muted rounded" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Chart Skeleton */}
+        <Card>
+          <CardHeader>
+            <div className="h-5 w-44 bg-muted rounded" />
+            <div className="h-4 w-56 bg-muted rounded mt-1" />
+          </CardHeader>
+          <CardContent>
+            <div className="h-4 w-48 bg-muted rounded mb-4" />
+            <div className="h-64 bg-muted rounded" />
+          </CardContent>
+        </Card>
+
+        {/* Topic Strengths Skeleton */}
+        <Card>
+          <CardHeader>
+            <div className="h-5 w-48 bg-muted rounded" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="h-6 w-6 bg-muted rounded-full" />
+                <div className="h-4 w-32 bg-muted rounded" />
+                <div className="h-3 flex-1 bg-muted rounded" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Recommendations Skeleton */}
+        <Card>
+          <CardHeader>
+            <div className="h-5 w-52 bg-muted rounded" />
+            <div className="h-4 w-72 bg-muted rounded mt-1" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-muted">
+                <div className="h-5 w-14 bg-muted rounded shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-full bg-muted rounded" />
+                  <div className="h-4 w-2/3 bg-muted rounded" />
+                </div>
+                <div className="h-5 w-12 bg-muted rounded shrink-0" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     );
   }

@@ -99,6 +99,94 @@ export default function DashboardPage() {
       )
     : 0;
 
+  if (isLoading) {
+    return (
+      <div className="space-y-8 animate-pulse">
+        {/* Header */}
+        <div>
+          <div className="h-8 w-36 bg-muted rounded" />
+          <div className="h-4 w-64 bg-muted rounded mt-2" />
+        </div>
+
+        {/* Stats Cards Skeleton */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="h-4 w-28 bg-muted rounded" />
+                <div className="h-4 w-4 bg-muted rounded" />
+              </CardHeader>
+              <CardContent>
+                <div className="h-7 w-14 bg-muted rounded" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Quick Start Skeleton */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <div className="h-6 w-28 bg-muted rounded" />
+            <div className="h-4 w-24 bg-muted rounded" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="pb-3">
+                  <div className="w-10 h-10 bg-muted rounded-lg mb-2" />
+                  <div className="h-5 w-32 bg-muted rounded" />
+                  <div className="h-4 w-40 bg-muted rounded mt-1" />
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Mock Test CTA Skeleton */}
+        <Card>
+          <CardHeader>
+            <div className="h-6 w-36 bg-muted rounded" />
+            <div className="h-4 w-72 bg-muted rounded mt-1" />
+          </CardHeader>
+          <CardContent>
+            <div className="h-10 w-32 bg-muted rounded" />
+          </CardContent>
+        </Card>
+
+        {/* Exam Pattern Skeleton */}
+        <Card>
+          <CardHeader>
+            <div className="h-5 w-40 bg-muted rounded" />
+            <div className="h-4 w-72 bg-muted rounded mt-1" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between mb-1">
+                  <div className="h-4 w-32 bg-muted rounded" />
+                  <div className="h-4 w-24 bg-muted rounded" />
+                </div>
+                <div className="h-2 bg-muted rounded" />
+              </div>
+              <div>
+                <div className="flex justify-between mb-1">
+                  <div className="h-4 w-32 bg-muted rounded" />
+                  <div className="h-4 w-24 bg-muted rounded" />
+                </div>
+                <div className="h-2 bg-muted rounded" />
+              </div>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <div className="h-6 w-44 bg-muted rounded-full" />
+              <div className="h-6 w-32 bg-muted rounded-full" />
+              <div className="h-6 w-36 bg-muted rounded-full" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -117,7 +205,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isLoading ? "\u2014" : (dashboard?.totalTests ?? 0)}
+              {dashboard?.totalTests ?? 0}
             </div>
           </CardContent>
         </Card>
@@ -128,9 +216,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isLoading
-                ? "\u2014"
-                : dashboard?.avgScore
+              {dashboard?.avgScore
                 ? `${Math.round(dashboard.avgScore)}%`
                 : "0%"}
             </div>
@@ -143,7 +229,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isLoading ? "\u2014" : questionsSolved}
+              {questionsSolved}
             </div>
           </CardContent>
         </Card>
@@ -154,9 +240,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {isLoading
-                ? "\u2014"
-                : formatTime(dashboard?.totalTimeSpent ?? 0)}
+              {formatTime(dashboard?.totalTimeSpent ?? 0)}
             </div>
           </CardContent>
         </Card>
