@@ -20,6 +20,21 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+// Queue to prevent multiple simultaneous refresh attempts
+let isRefreshing = false;
+let refreshQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+function processQueue(error: unknown, token: string | null) {
+  refreshQueue.forEach(({ resolve, reject }) => {
+    if (token) resolve(token);
+    else reject(error);
+  });
+  refreshQueue = [];
+}
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -38,9 +53,24 @@ apiClient.interceptors.response.use(
       typeof window !== "undefined"
     ) {
       originalRequest._retry = true;
+
+      // If already refreshing, queue this request
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          refreshQueue.push({
+            resolve: (token: string) => {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              resolve(apiClient(originalRequest));
+            },
+            reject,
+          });
+        });
+      }
+
       const refreshToken = localStorage.getItem("refreshToken");
 
       if (refreshToken) {
+        isRefreshing = true;
         try {
           const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
             refreshToken,
@@ -49,17 +79,26 @@ apiClient.interceptors.response.use(
             localStorage.setItem("accessToken", data.accessToken);
             localStorage.setItem("refreshToken", data.refreshToken);
             originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+            processQueue(null, data.accessToken);
             return apiClient(originalRequest);
           }
-        } catch {
-          // Refresh failed — clear and redirect
+        } catch (refreshError) {
+          processQueue(refreshError, null);
+          // Refresh failed — only redirect if NOT on an exam page
+          // Exam pages handle auth errors gracefully to avoid losing progress
+        } finally {
+          isRefreshing = false;
         }
       }
 
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
+      // Don't force-redirect during an active exam — let the page handle the error
+      const isExamPage = window.location.pathname.startsWith("/exam/");
+      if (!isExamPage) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+      }
     }
 
     return Promise.reject(error);
