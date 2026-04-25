@@ -15,6 +15,7 @@ import {
   Target,
   Percent,
   Clock,
+  Divide,
 } from "lucide-react";
 import {
   Card,
@@ -95,6 +96,7 @@ export default function TestsPage() {
   const [approximationTest, setApproximationTest] = useState<Test | null>(null);
   const [percentageTest, setPercentageTest] = useState<Test | null>(null);
   const [timeWorkTest, setTimeWorkTest] = useState<Test | null>(null);
+  const [lcmHcfTest, setLcmHcfTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -111,6 +113,8 @@ export default function TestsPage() {
         if (pctTest) setPercentageTest(pctTest);
         const twTest = data.find((t) => t.topic === "Time & Work");
         if (twTest) setTimeWorkTest(twTest);
+        const lhTest = data.find((t) => t.topic === "LCM & HCF");
+        if (lhTest) setLcmHcfTest(lhTest);
       } catch {
         // API not ready
       } finally {
@@ -165,6 +169,7 @@ export default function TestsPage() {
             { border: "border-emerald-200 dark:border-emerald-800", from: "from-emerald-50 dark:from-emerald-950/30", via: "via-teal-50 dark:via-teal-950/20", to: "to-green-50 dark:to-green-950/20", shimmer: "bg-emerald-200/60 dark:bg-emerald-800/40" },
             { border: "border-amber-200 dark:border-amber-800", from: "from-amber-50 dark:from-amber-950/30", via: "via-yellow-50 dark:via-yellow-950/20", to: "to-orange-50 dark:to-orange-950/20", shimmer: "bg-amber-200/60 dark:bg-amber-800/40" },
             { border: "border-violet-200 dark:border-violet-800", from: "from-violet-50 dark:from-violet-950/30", via: "via-purple-50 dark:via-purple-950/20", to: "to-fuchsia-50 dark:to-fuchsia-950/20", shimmer: "bg-violet-200/60 dark:bg-violet-800/40" },
+            { border: "border-cyan-200 dark:border-cyan-800", from: "from-cyan-50 dark:from-cyan-950/30", via: "via-sky-50 dark:via-sky-950/20", to: "to-teal-50 dark:to-teal-950/20", shimmer: "bg-cyan-200/60 dark:bg-cyan-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -428,6 +433,54 @@ export default function TestsPage() {
             <Button
               className="bg-violet-600 hover:bg-violet-700 text-white"
               render={<Link href={`/exam/${timeWorkTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* LCM & HCF Practice Card */}
+      {!specialLoading && lcmHcfTest && (
+        <Card className="relative overflow-hidden border-2 border-cyan-200 bg-gradient-to-r from-cyan-50 via-sky-50 to-teal-50 dark:from-cyan-950/30 dark:via-sky-950/20 dark:to-teal-950/20 dark:border-cyan-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-100/40 dark:bg-cyan-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-sky-100/40 dark:bg-sky-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-cyan-100 dark:bg-cyan-900/40 flex items-center justify-center">
+                <Divide className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-cyan-900 dark:text-cyan-100">
+                    LCM & HCF Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-sky-500 dark:text-sky-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-cyan-700/80 dark:text-cyan-300/80">
+                  Least common multiples, highest common factors, prime factorization & word problems
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-cyan-100 text-cyan-800 border-cyan-200 dark:bg-cyan-900/40 dark:text-cyan-200 dark:border-cyan-700">
+                {lcmHcfTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-900/40 dark:text-sky-200 dark:border-sky-700">
+                {Math.round(lcmHcfTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/40 dark:text-teal-200 dark:border-teal-700">
+                {lcmHcfTest.section ? lcmHcfTest.section.charAt(0).toUpperCase() + lcmHcfTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-cyan-600 hover:bg-cyan-700 text-white"
+              render={<Link href={`/exam/${lcmHcfTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
