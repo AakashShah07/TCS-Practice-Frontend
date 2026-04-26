@@ -34,6 +34,7 @@ src/
   components/
     ui/                   # shadcn/ui primitives (button, card, dialog, etc.)
     layout/               # Navbar, Footer
+    auth/                 # AuthParticles (login/register visual effects)
     exam/                 # ExamTopBar, QuestionPanel, QuestionPalette, SectionPanel
     analytics/            # PerformanceCharts, TopicStrengths, TopicIntelligence
     results/              # SectionAnalysis, TimeAnalysis
@@ -75,6 +76,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api   # Backend API base URL
 - Tab-switch detection for exam integrity
 - Per-question time tracking
 - Sections must be submitted sequentially
+- localStorage backup for exam progress on auth failure (prevents data loss on session expiry)
 
 ### API Layer
 - All API modules use the shared Axios client from `lib/api/client.ts`
