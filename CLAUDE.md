@@ -97,3 +97,28 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api   # Backend API base URL
 - Use Zustand stores for shared state; avoid prop drilling
 - API calls go through `src/lib/api/` modules, never raw axios
 - Use `@/` path alias for all imports
+
+## Development Workflow
+
+### Getting Started
+1. Clone the repo and run `npm install`
+2. Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_API_URL`
+3. Ensure the backend API server is running on the configured port
+4. Run `npm run dev` to start the development server
+
+### Adding New Pages
+- Create route files under `src/app/` using the App Router conventions
+- Authenticated pages go in `(main)/`, unauthenticated in `(auth)/`
+- Always add skeleton loading states for pages that fetch data
+
+### Adding New API Endpoints
+1. Define TypeScript interfaces in `lib/api/types.ts`
+2. Create or extend a module in `lib/api/` using the shared Axios client
+3. Wrap responses with `ApiResponse<T>` for consistency
+4. Consume from Zustand stores or directly in components
+
+### Testing Checklist
+- Run `npm run build` before pushing to catch type errors and build failures
+- Verify both light and dark theme appearance
+- Test auth flows: login, token refresh, and session expiry handling
+- For exam features: test section locking, timer, and tab-switch detection
