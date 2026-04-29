@@ -7,6 +7,7 @@ import {
   FileText,
   BookOpen,
   BarChart3,
+  Code2,
   Menu,
   LogOut,
 } from "lucide-react";
@@ -27,6 +28,7 @@ const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/tests", label: "Tests", icon: FileText },
   { href: "/practice", label: "Practice", icon: BookOpen },
+  { href: "/coding", label: "Coding", icon: Code2 },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
 ];
 

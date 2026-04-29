@@ -1,3 +1,42 @@
+// Coding question types
+export interface CodingQuestionSummary {
+  _id: string;
+  title: string;
+  difficulty: "easy" | "medium" | "hard";
+  topic: string;
+  source: string;
+  createdAt: string;
+}
+
+export interface CodingSolution {
+  approach: string;
+  code: string;
+  language: string;
+  timeComplexity: string;
+  spaceComplexity: string;
+}
+
+export interface CodingExample {
+  input: string;
+  output: string;
+  explanation: string;
+}
+
+export interface CodingQuestion extends CodingQuestionSummary {
+  description: string;
+  constraints: string[];
+  examples: CodingExample[];
+  bruteForce: CodingSolution;
+  optimal: CodingSolution;
+  isActive: boolean;
+  updatedAt: string;
+}
+
+export interface CodingTopicCount {
+  topic: string;
+  count: number;
+}
+
 // Base API response wrapper
 export interface ApiResponse<T> {
   success: boolean;
