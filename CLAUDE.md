@@ -28,7 +28,7 @@ npm run lint     # Run ESLint
 src/
   app/                    # Next.js App Router pages
     (auth)/               # Login, Register (unauthenticated)
-    (main)/               # Dashboard, Tests, Practice, Analytics, Results (authenticated)
+    (main)/               # Dashboard, Tests, Practice, Coding, Analytics, Results (authenticated)
     exam/[testId]/        # Full exam interface with timer and section locking
     page.tsx              # Public landing page
   components/
@@ -51,6 +51,7 @@ src/
       exam.ts             # startAttempt, saveAnswer, submitAttempt, recordTabSwitch
       analytics.ts        # dashboard, section, topic, time, recommendations, trends
       practice.ts         # fetchTopics, fetchPracticeQuestions, generatePracticeTest
+      coding.ts           # fetchCodingQuestions, fetchCodingTopics, fetchCodingQuestion
       results.ts          # fetchResult, fetchReview, fetchHistory
       types.ts            # All TypeScript interfaces (User, Test, Question, Attempt, etc.)
     utils.ts              # Utility helpers (cn for class merging)
@@ -83,6 +84,12 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api   # Backend API base URL
 - Standard response wrapper: `ApiResponse<T>` with success, data, message fields
 - Section type: `"numerical" | "reasoning" | "verbal" | "advanced"`
 - Test type: `"section_test" | "full_mock" | "topic_practice"`
+
+### Coding Questions (PYQ)
+- `/coding` lists all PYQ coding questions with difficulty/topic filters
+- `/coding/[id]` shows full problem statement, constraints, examples, and two solutions (brute force + optimal)
+- API: `GET /api/coding`, `GET /api/coding/topics`, `GET /api/coding/:id`
+- Types: `CodingQuestion`, `CodingQuestionSummary`, `CodingSolution`, `CodingTopicCount`
 
 ### Styling
 - Tailwind v4 with `@tailwindcss/postcss` plugin
