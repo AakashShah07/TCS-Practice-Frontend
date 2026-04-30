@@ -16,6 +16,7 @@ import {
   Percent,
   Clock,
   Divide,
+  Ruler,
 } from "lucide-react";
 import {
   Card,
@@ -97,6 +98,7 @@ export default function TestsPage() {
   const [percentageTest, setPercentageTest] = useState<Test | null>(null);
   const [timeWorkTest, setTimeWorkTest] = useState<Test | null>(null);
   const [lcmHcfTest, setLcmHcfTest] = useState<Test | null>(null);
+  const [mensurationTest, setMensurationTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -115,6 +117,8 @@ export default function TestsPage() {
         if (twTest) setTimeWorkTest(twTest);
         const lhTest = data.find((t) => t.topic === "LCM & HCF");
         if (lhTest) setLcmHcfTest(lhTest);
+        const menTest = data.find((t) => t.topic === "Mensuration");
+        if (menTest) setMensurationTest(menTest);
       } catch {
         // API not ready
       } finally {
@@ -170,6 +174,7 @@ export default function TestsPage() {
             { border: "border-amber-200 dark:border-amber-800", from: "from-amber-50 dark:from-amber-950/30", via: "via-yellow-50 dark:via-yellow-950/20", to: "to-orange-50 dark:to-orange-950/20", shimmer: "bg-amber-200/60 dark:bg-amber-800/40" },
             { border: "border-violet-200 dark:border-violet-800", from: "from-violet-50 dark:from-violet-950/30", via: "via-purple-50 dark:via-purple-950/20", to: "to-fuchsia-50 dark:to-fuchsia-950/20", shimmer: "bg-violet-200/60 dark:bg-violet-800/40" },
             { border: "border-cyan-200 dark:border-cyan-800", from: "from-cyan-50 dark:from-cyan-950/30", via: "via-sky-50 dark:via-sky-950/20", to: "to-teal-50 dark:to-teal-950/20", shimmer: "bg-cyan-200/60 dark:bg-cyan-800/40" },
+            { border: "border-rose-200 dark:border-rose-800", from: "from-rose-50 dark:from-rose-950/30", via: "via-pink-50 dark:via-pink-950/20", to: "to-red-50 dark:to-red-950/20", shimmer: "bg-rose-200/60 dark:bg-rose-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -481,6 +486,54 @@ export default function TestsPage() {
             <Button
               className="bg-cyan-600 hover:bg-cyan-700 text-white"
               render={<Link href={`/exam/${lcmHcfTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Mensuration Practice Card */}
+      {!specialLoading && mensurationTest && (
+        <Card className="relative overflow-hidden border-2 border-rose-200 bg-gradient-to-r from-rose-50 via-pink-50 to-red-50 dark:from-rose-950/30 dark:via-pink-950/20 dark:to-red-950/20 dark:border-rose-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-rose-100/40 dark:bg-rose-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-pink-100/40 dark:bg-pink-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center">
+                <Ruler className="h-6 w-6 text-rose-600 dark:text-rose-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-rose-900 dark:text-rose-100">
+                    Mensuration Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-pink-500 dark:text-pink-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-rose-700/80 dark:text-rose-300/80">
+                  Area, perimeter, volume, surface area — circles, triangles, cylinders, cones & more
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-900/40 dark:text-rose-200 dark:border-rose-700">
+                {mensurationTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-pink-100 text-pink-800 border-pink-200 dark:bg-pink-900/40 dark:text-pink-200 dark:border-pink-700">
+                {Math.round(mensurationTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-red-100 text-red-800 border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-700">
+                {mensurationTest.section ? mensurationTest.section.charAt(0).toUpperCase() + mensurationTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-rose-600 hover:bg-rose-700 text-white"
+              render={<Link href={`/exam/${mensurationTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
