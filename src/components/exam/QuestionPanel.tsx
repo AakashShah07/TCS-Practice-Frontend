@@ -262,6 +262,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
     sections,
     sectionLocked,
     submittedSections,
+    attemptDead,
     setAnswer,
     clearAnswer,
     markForReview: storeMarkForReview,
@@ -270,6 +271,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
     isLastQuestionInSection,
     getNextSection,
     submitSection,
+    setAttemptDead,
   } = useTestStore();
 
   const [showSectionSubmit, setShowSectionSubmit] = useState(false);
@@ -294,9 +296,24 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   const sectionUnanswered = sectionResponses.length - sectionAnswered;
 
   function handleApiError(err: unknown) {
+    // If attempt is already known to be dead, don't show more toasts
+    if (attemptDead) return;
+
+    const status = (err as { response?: { status?: number } })?.response?.status;
     const message =
       (err as { response?: { data?: { message?: string } } })?.response?.data
         ?.message || "";
+
+    // 400 from attempt endpoints means the attempt is no longer active
+    if (status === 400) {
+      setAttemptDead();
+      toast.error(
+        message || "No active attempt found. The test may have expired or been submitted already.",
+        { duration: 10000 }
+      );
+      return;
+    }
+
     if (message) {
       toast.error(message);
     } else {
@@ -306,14 +323,14 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
 
   async function handleOptionClick(optionIndex: number) {
     setAnswer(currentQuestionIndex, optionIndex);
-    if (attemptId) {
+    if (attemptId && !attemptDead) {
       saveAnswer(attemptId, currentQuestionIndex, optionIndex, currentResponse?.timeSpent ?? 0).catch(handleApiError);
     }
   }
 
   async function handleClearResponse() {
     clearAnswer(currentQuestionIndex);
-    if (attemptId) {
+    if (attemptId && !attemptDead) {
       clearResponse(attemptId, currentQuestionIndex).catch(handleApiError);
     }
   }
@@ -321,19 +338,19 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   async function handleMarkAndNext() {
     if (!isMarked) {
       storeMarkForReview(currentQuestionIndex);
-      if (attemptId) {
+      if (attemptId && !attemptDead) {
         markForReview(attemptId, currentQuestionIndex).catch(handleApiError);
       }
     }
     const timeSpent = nextQuestion();
-    if (attemptId && timeSpent >= 0) {
+    if (attemptId && !attemptDead && timeSpent >= 0) {
       navigate(attemptId, currentQuestionIndex + 1, currentQuestionIndex, timeSpent, question.section).catch(handleApiError);
     }
   }
 
   function handlePrev() {
     const timeSpent = prevQuestion();
-    if (attemptId) {
+    if (attemptId && !attemptDead) {
       navigate(attemptId, currentQuestionIndex - 1, currentQuestionIndex, timeSpent, question.section).catch(handleApiError);
     }
   }
@@ -345,7 +362,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
       return;
     }
     const timeSpent = nextQuestion();
-    if (attemptId) {
+    if (attemptId && !attemptDead) {
       navigate(attemptId, currentQuestionIndex + 1, currentQuestionIndex, timeSpent, question.section).catch(handleApiError);
     }
   }

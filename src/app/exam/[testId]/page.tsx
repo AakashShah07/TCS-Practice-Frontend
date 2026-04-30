@@ -33,12 +33,14 @@ export default function ExamPage() {
     isPaused,
     tabSwitchCount,
     testTitle,
+    attemptDead,
     initTest,
     decrementTimer,
     togglePause,
     setSubmitted,
     incrementTabSwitch,
     resetTest,
+    setAttemptDead,
   } = useTestStore();
 
   const [started, setStarted] = useState(false);
@@ -69,26 +71,39 @@ export default function ExamPage() {
       }
     } catch (err) {
       setSubmitting(false);
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "";
+
+      if (status === 400) {
+        // Attempt is no longer active — stop the timer, mark dead
+        setAttemptDead();
+        if (timerRef.current) clearInterval(timerRef.current);
+        toast.error(
+          message || "No active attempt found. The test may have expired or been submitted already.",
+          { duration: 10000 }
+        );
+        return;
+      }
+
       // Restart timer if submit failed so user can retry
       if (!isPaused && questions.length > 0) {
         timerRef.current = setInterval(() => {
           decrementTimer();
         }, 1000);
       }
-      const status = (err as { response?: { status?: number } })?.response?.status;
+
       if (status === 401) {
         toast.error(
           "Session expired. Your answers are saved locally. Please login in a new tab and come back to retry.",
           { duration: 10000 }
         );
       } else {
-        const message =
-          (err as { response?: { data?: { message?: string } } })?.response?.data
-            ?.message || "Failed to submit test. Please try again.";
-        toast.error(message);
+        toast.error(message || "Failed to submit test. Please try again.");
       }
     }
-  }, [isSubmitted, attemptId, setSubmitted, router, isPaused, questions.length, decrementTimer]);
+  }, [isSubmitted, attemptId, setSubmitted, router, isPaused, questions.length, decrementTimer, setAttemptDead]);
 
   // Called on "Start Test" button click (user gesture → fullscreen works)
   const handleStartTest = async () => {
@@ -182,7 +197,7 @@ export default function ExamPage() {
     if (!started || !attemptId) return;
 
     function handleVisibilityChange() {
-      if (document.hidden && !isSubmitted && attemptId) {
+      if (document.hidden && !isSubmitted && attemptId && !attemptDead) {
         incrementTabSwitch();
         recordTabSwitch(attemptId).catch(() => {});
         toast.warning(

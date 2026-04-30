@@ -66,6 +66,8 @@ interface TestState {
   getAnsweredCount: () => number;
   togglePause: () => void;
   resetTest: () => void;
+  attemptDead: boolean;
+  setAttemptDead: () => void;
 }
 
 const initialState = {
@@ -86,6 +88,7 @@ const initialState = {
   isPaused: false,
   sectionLocked: false,
   submittedSections: [] as Section[],
+  attemptDead: false,
 };
 
 const EXAM_BACKUP_KEY = "exam_backup";
@@ -383,6 +386,8 @@ export const useTestStore = create<TestState>((set, get) => ({
   },
 
   togglePause: () => set({ isPaused: !get().isPaused }),
+
+  setAttemptDead: () => set({ attemptDead: true }),
 
   resetTest: () => {
     clearExamBackup();
