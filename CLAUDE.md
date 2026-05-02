@@ -78,6 +78,9 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api   # Backend API base URL
 - Per-question time tracking
 - Sections must be submitted sequentially
 - localStorage backup for exam progress on auth failure (prevents data loss on session expiry)
+- **Dead attempt handling:** If the backend returns 400 (attempt no longer active), the `attemptDead` flag in `test-store` is set. All further API calls (save, navigate, clear, mark-review, tab-switch) are skipped, and a single error toast is shown instead of spamming per-action toasts.
+- **Pause is frontend-only:** The pause button stops the client timer but the backend has no pause concept — it was counting wall-clock time from `startedAt`. The server-side time-expiry check was removed from `saveAnswer` to prevent the backend from killing attempts during frontend pause.
+- **Duplicate question prevention:** Backend deduplicates questions by text before selecting for an attempt. A unique index on `(text, topic)` prevents duplicate questions in the DB. Run `node seeds/cleanup_duplicates.js` if duplicates are suspected.
 
 ### API Layer
 - All API modules use the shared Axios client from `lib/api/client.ts`

@@ -17,6 +17,7 @@ import {
   Clock,
   Divide,
   Ruler,
+  Gauge,
 } from "lucide-react";
 import {
   Card,
@@ -99,6 +100,7 @@ export default function TestsPage() {
   const [timeWorkTest, setTimeWorkTest] = useState<Test | null>(null);
   const [lcmHcfTest, setLcmHcfTest] = useState<Test | null>(null);
   const [mensurationTest, setMensurationTest] = useState<Test | null>(null);
+  const [stdTest, setStdTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -119,6 +121,8 @@ export default function TestsPage() {
         if (lhTest) setLcmHcfTest(lhTest);
         const menTest = data.find((t) => t.topic === "Mensuration");
         if (menTest) setMensurationTest(menTest);
+        const stdData = data.find((t) => t.topic === "Speed, Time & Distance");
+        if (stdData) setStdTest(stdData);
       } catch {
         // API not ready
       } finally {
@@ -534,6 +538,54 @@ export default function TestsPage() {
             <Button
               className="bg-rose-600 hover:bg-rose-700 text-white"
               render={<Link href={`/exam/${mensurationTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Speed, Time & Distance Practice Card */}
+      {!specialLoading && stdTest && (
+        <Card className="relative overflow-hidden border-2 border-teal-200 bg-gradient-to-r from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-950/30 dark:via-cyan-950/20 dark:to-sky-950/20 dark:border-teal-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-teal-100/40 dark:bg-teal-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-cyan-100/40 dark:bg-cyan-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+                <Gauge className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-teal-900 dark:text-teal-100">
+                    Speed, Time & Distance Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-cyan-500 dark:text-cyan-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-teal-700/80 dark:text-teal-300/80">
+                  Relative speed, trains, boats & streams, average speed, circular tracks & more
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/40 dark:text-teal-200 dark:border-teal-700">
+                {stdTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-cyan-100 text-cyan-800 border-cyan-200 dark:bg-cyan-900/40 dark:text-cyan-200 dark:border-cyan-700">
+                {Math.round(stdTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-900/40 dark:text-sky-200 dark:border-sky-700">
+                {stdTest.section ? stdTest.section.charAt(0).toUpperCase() + stdTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-teal-600 hover:bg-teal-700 text-white"
+              render={<Link href={`/exam/${stdTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
