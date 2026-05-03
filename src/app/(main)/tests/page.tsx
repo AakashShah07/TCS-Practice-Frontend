@@ -18,6 +18,7 @@ import {
   Divide,
   Ruler,
   Gauge,
+  Dices,
 } from "lucide-react";
 import {
   Card,
@@ -101,6 +102,7 @@ export default function TestsPage() {
   const [lcmHcfTest, setLcmHcfTest] = useState<Test | null>(null);
   const [mensurationTest, setMensurationTest] = useState<Test | null>(null);
   const [stdTest, setStdTest] = useState<Test | null>(null);
+  const [probabilityTest, setProbabilityTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -123,6 +125,8 @@ export default function TestsPage() {
         if (menTest) setMensurationTest(menTest);
         const stdData = data.find((t) => t.topic === "Speed, Time & Distance");
         if (stdData) setStdTest(stdData);
+        const probTest = data.find((t) => t.topic === "Probability, Permutation & Combination");
+        if (probTest) setProbabilityTest(probTest);
       } catch {
         // API not ready
       } finally {
@@ -179,6 +183,8 @@ export default function TestsPage() {
             { border: "border-violet-200 dark:border-violet-800", from: "from-violet-50 dark:from-violet-950/30", via: "via-purple-50 dark:via-purple-950/20", to: "to-fuchsia-50 dark:to-fuchsia-950/20", shimmer: "bg-violet-200/60 dark:bg-violet-800/40" },
             { border: "border-cyan-200 dark:border-cyan-800", from: "from-cyan-50 dark:from-cyan-950/30", via: "via-sky-50 dark:via-sky-950/20", to: "to-teal-50 dark:to-teal-950/20", shimmer: "bg-cyan-200/60 dark:bg-cyan-800/40" },
             { border: "border-rose-200 dark:border-rose-800", from: "from-rose-50 dark:from-rose-950/30", via: "via-pink-50 dark:via-pink-950/20", to: "to-red-50 dark:to-red-950/20", shimmer: "bg-rose-200/60 dark:bg-rose-800/40" },
+            { border: "border-teal-200 dark:border-teal-800", from: "from-teal-50 dark:from-teal-950/30", via: "via-cyan-50 dark:via-cyan-950/20", to: "to-sky-50 dark:to-sky-950/20", shimmer: "bg-teal-200/60 dark:bg-teal-800/40" },
+            { border: "border-lime-200 dark:border-lime-800", from: "from-lime-50 dark:from-lime-950/30", via: "via-green-50 dark:via-green-950/20", to: "to-emerald-50 dark:to-emerald-950/20", shimmer: "bg-lime-200/60 dark:bg-lime-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -586,6 +592,54 @@ export default function TestsPage() {
             <Button
               className="bg-teal-600 hover:bg-teal-700 text-white"
               render={<Link href={`/exam/${stdTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Probability, Permutation & Combination Practice Card */}
+      {!specialLoading && probabilityTest && (
+        <Card className="relative overflow-hidden border-2 border-lime-200 bg-gradient-to-r from-lime-50 via-green-50 to-emerald-50 dark:from-lime-950/30 dark:via-green-950/20 dark:to-emerald-950/20 dark:border-lime-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-lime-100/40 dark:bg-lime-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-green-100/40 dark:bg-green-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-lime-100 dark:bg-lime-900/40 flex items-center justify-center">
+                <Dices className="h-6 w-6 text-lime-600 dark:text-lime-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-lime-900 dark:text-lime-100">
+                    Probability, Permutation & Combination
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-green-500 dark:text-green-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-lime-700/80 dark:text-lime-300/80">
+                  Classical probability, conditional probability, arrangements, selections, factorial problems & more
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-lime-100 text-lime-800 border-lime-200 dark:bg-lime-900/40 dark:text-lime-200 dark:border-lime-700">
+                {probabilityTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/40 dark:text-green-200 dark:border-green-700">
+                {Math.round(probabilityTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700">
+                {probabilityTest.section ? probabilityTest.section.charAt(0).toUpperCase() + probabilityTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-lime-600 hover:bg-lime-700 text-white"
+              render={<Link href={`/exam/${probabilityTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
