@@ -19,6 +19,7 @@ import {
   Ruler,
   Gauge,
   Dices,
+  Shuffle,
 } from "lucide-react";
 import {
   Card,
@@ -103,6 +104,7 @@ export default function TestsPage() {
   const [mensurationTest, setMensurationTest] = useState<Test | null>(null);
   const [stdTest, setStdTest] = useState<Test | null>(null);
   const [probabilityTest, setProbabilityTest] = useState<Test | null>(null);
+  const [paraJumbleTest, setParaJumbleTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -127,6 +129,8 @@ export default function TestsPage() {
         if (stdData) setStdTest(stdData);
         const probTest = data.find((t) => t.topic === "Probability, Permutation & Combination");
         if (probTest) setProbabilityTest(probTest);
+        const pjTest = data.find((t) => t.topic === "Para Jumble");
+        if (pjTest) setParaJumbleTest(pjTest);
       } catch {
         // API not ready
       } finally {
@@ -185,6 +189,7 @@ export default function TestsPage() {
             { border: "border-rose-200 dark:border-rose-800", from: "from-rose-50 dark:from-rose-950/30", via: "via-pink-50 dark:via-pink-950/20", to: "to-red-50 dark:to-red-950/20", shimmer: "bg-rose-200/60 dark:bg-rose-800/40" },
             { border: "border-teal-200 dark:border-teal-800", from: "from-teal-50 dark:from-teal-950/30", via: "via-cyan-50 dark:via-cyan-950/20", to: "to-sky-50 dark:to-sky-950/20", shimmer: "bg-teal-200/60 dark:bg-teal-800/40" },
             { border: "border-lime-200 dark:border-lime-800", from: "from-lime-50 dark:from-lime-950/30", via: "via-green-50 dark:via-green-950/20", to: "to-emerald-50 dark:to-emerald-950/20", shimmer: "bg-lime-200/60 dark:bg-lime-800/40" },
+            { border: "border-fuchsia-200 dark:border-fuchsia-800", from: "from-fuchsia-50 dark:from-fuchsia-950/30", via: "via-pink-50 dark:via-pink-950/20", to: "to-purple-50 dark:to-purple-950/20", shimmer: "bg-fuchsia-200/60 dark:bg-fuchsia-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -640,6 +645,54 @@ export default function TestsPage() {
             <Button
               className="bg-lime-600 hover:bg-lime-700 text-white"
               render={<Link href={`/exam/${probabilityTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Para Jumble Practice Card */}
+      {!specialLoading && paraJumbleTest && (
+        <Card className="relative overflow-hidden border-2 border-fuchsia-200 bg-gradient-to-r from-fuchsia-50 via-pink-50 to-purple-50 dark:from-fuchsia-950/30 dark:via-pink-950/20 dark:to-purple-950/20 dark:border-fuchsia-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-fuchsia-100/40 dark:bg-fuchsia-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-pink-100/40 dark:bg-pink-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-fuchsia-100 dark:bg-fuchsia-900/40 flex items-center justify-center">
+                <Shuffle className="h-6 w-6 text-fuchsia-600 dark:text-fuchsia-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-fuchsia-900 dark:text-fuchsia-100">
+                    Para Jumble Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-pink-500 dark:text-pink-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-fuchsia-700/80 dark:text-fuchsia-300/80">
+                  Sentence rearrangement, logical sequencing, paragraph coherence & transition clues
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200 dark:bg-fuchsia-900/40 dark:text-fuchsia-200 dark:border-fuchsia-700">
+                {paraJumbleTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-pink-100 text-pink-800 border-pink-200 dark:bg-pink-900/40 dark:text-pink-200 dark:border-pink-700">
+                {Math.round(paraJumbleTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                {paraJumbleTest.section ? paraJumbleTest.section.charAt(0).toUpperCase() + paraJumbleTest.section.slice(1) : "Verbal"}
+              </Badge>
+              <Badge className="bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white"
+              render={<Link href={`/exam/${paraJumbleTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
