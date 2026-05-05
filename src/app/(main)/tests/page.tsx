@@ -21,6 +21,7 @@ import {
   Dices,
   Shuffle,
   BookOpenText,
+  PenLine,
 } from "lucide-react";
 import {
   Card,
@@ -107,6 +108,7 @@ export default function TestsPage() {
   const [probabilityTest, setProbabilityTest] = useState<Test | null>(null);
   const [paraJumbleTest, setParaJumbleTest] = useState<Test | null>(null);
   const [rcTest, setRcTest] = useState<Test | null>(null);
+  const [vocabTest, setVocabTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -135,6 +137,8 @@ export default function TestsPage() {
         if (pjTest) setParaJumbleTest(pjTest);
         const rcData = data.find((t) => t.topic === "Reading Comprehension");
         if (rcData) setRcTest(rcData);
+        const vocData = data.find((t) => t.topic === "Vocabulary Fill in the Blank");
+        if (vocData) setVocabTest(vocData);
       } catch {
         // API not ready
       } finally {
@@ -195,6 +199,7 @@ export default function TestsPage() {
             { border: "border-lime-200 dark:border-lime-800", from: "from-lime-50 dark:from-lime-950/30", via: "via-green-50 dark:via-green-950/20", to: "to-emerald-50 dark:to-emerald-950/20", shimmer: "bg-lime-200/60 dark:bg-lime-800/40" },
             { border: "border-fuchsia-200 dark:border-fuchsia-800", from: "from-fuchsia-50 dark:from-fuchsia-950/30", via: "via-pink-50 dark:via-pink-950/20", to: "to-purple-50 dark:to-purple-950/20", shimmer: "bg-fuchsia-200/60 dark:bg-fuchsia-800/40" },
             { border: "border-orange-200 dark:border-orange-800", from: "from-orange-50 dark:from-orange-950/30", via: "via-amber-50 dark:via-amber-950/20", to: "to-yellow-50 dark:to-yellow-950/20", shimmer: "bg-orange-200/60 dark:bg-orange-800/40" },
+            { border: "border-sky-200 dark:border-sky-800", from: "from-sky-50 dark:from-sky-950/30", via: "via-blue-50 dark:via-blue-950/20", to: "to-indigo-50 dark:to-indigo-950/20", shimmer: "bg-sky-200/60 dark:bg-sky-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -746,6 +751,54 @@ export default function TestsPage() {
             <Button
               className="bg-orange-600 hover:bg-orange-700 text-white"
               render={<Link href={`/exam/${rcTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Vocabulary Fill in the Blank Practice Card */}
+      {!specialLoading && vocabTest && (
+        <Card className="relative overflow-hidden border-2 border-sky-200 bg-gradient-to-r from-sky-50 via-blue-50 to-indigo-50 dark:from-sky-950/30 dark:via-blue-950/20 dark:to-indigo-950/20 dark:border-sky-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-sky-100/40 dark:bg-sky-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-100/40 dark:bg-blue-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center">
+                <PenLine className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-sky-900 dark:text-sky-100">
+                    Vocabulary Fill in the Blank
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-blue-500 dark:text-blue-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-sky-700/80 dark:text-sky-300/80">
+                  Contextual word usage, idioms, phrasal verbs, synonyms, antonyms & sentence completion
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-900/40 dark:text-sky-200 dark:border-sky-700">
+                {vocabTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-700">
+                {Math.round(vocabTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-700">
+                {vocabTest.section ? vocabTest.section.charAt(0).toUpperCase() + vocabTest.section.slice(1) : "Verbal"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-sky-600 hover:bg-sky-700 text-white"
+              render={<Link href={`/exam/${vocabTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>

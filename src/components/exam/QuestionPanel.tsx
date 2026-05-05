@@ -52,12 +52,19 @@ function QuestionText({ text }: { text: string }) {
   // 4. Relation chain: "A is father of B. B is mother of C."
   const hasRelationChain = /\b[A-Z]\s+is\s+(father|mother|brother|sister|son|daughter|husband|wife|parent|spouse|married|sibling)\b/i.test(text);
 
+  // 5. Fill-in-the-blank: contains 3+ consecutive underscores
+  const hasBlanks = /_{3,}/.test(text);
+
   if (hasGivenPrefix || hasSymbolMeans || hasArrowDefs) {
     return <FormattedCodedQuestion text={text} />;
   }
 
   if (hasRelationChain) {
     return <FormattedRelationChain text={text} />;
+  }
+
+  if (hasBlanks) {
+    return <FormattedFillInBlank text={text} />;
   }
 
   // Default: render as-is
@@ -236,6 +243,41 @@ function FormattedRelationChain({ text }: { text: string }) {
       )}
       <p className="pt-2 border-t border-slate-200 dark:border-slate-700 text-foreground font-semibold">
         {questionPart}
+      </p>
+    </div>
+  );
+}
+
+/** Handles fill-in-the-blank questions — highlights the blank as a styled slot */
+function FormattedFillInBlank({ text }: { text: string }) {
+  // Split text around blanks (3+ underscores)
+  const parts = text.split(/(_{3,})/);
+
+  return (
+    <div className="text-[17px] leading-[1.8] text-foreground font-medium space-y-3">
+      <p className="text-emerald-600 dark:text-emerald-400 font-semibold text-sm uppercase tracking-wide flex items-center gap-1.5">
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+        </svg>
+        Fill in the Blank
+      </p>
+      <p className="whitespace-pre-wrap">
+        {parts.map((part, i) =>
+          /_{3,}/.test(part) ? (
+            <span
+              key={i}
+              className="inline-flex items-center mx-1 align-baseline"
+            >
+              <span className="inline-block min-w-[120px] h-[34px] rounded-lg border-2 border-dashed border-emerald-400 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 relative">
+                <span className="absolute inset-0 flex items-center justify-center text-emerald-400 dark:text-emerald-500 text-xs font-medium tracking-wider">
+                  ?
+                </span>
+              </span>
+            </span>
+          ) : (
+            <span key={i}>{part}</span>
+          )
+        )}
       </p>
     </div>
   );
