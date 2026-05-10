@@ -22,6 +22,7 @@ import {
   Shuffle,
   BookOpenText,
   PenLine,
+  AlertTriangle,
 } from "lucide-react";
 import {
   Card,
@@ -109,6 +110,7 @@ export default function TestsPage() {
   const [paraJumbleTest, setParaJumbleTest] = useState<Test | null>(null);
   const [rcTest, setRcTest] = useState<Test | null>(null);
   const [vocabTest, setVocabTest] = useState<Test | null>(null);
+  const [errorDetectionTest, setErrorDetectionTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -139,6 +141,8 @@ export default function TestsPage() {
         if (rcData) setRcTest(rcData);
         const vocData = data.find((t) => t.topic === "Vocabulary Fill in the Blank");
         if (vocData) setVocabTest(vocData);
+        const edTest = data.find((t) => t.topic === "Error Detection");
+        if (edTest) setErrorDetectionTest(edTest);
       } catch {
         // API not ready
       } finally {
@@ -200,6 +204,7 @@ export default function TestsPage() {
             { border: "border-fuchsia-200 dark:border-fuchsia-800", from: "from-fuchsia-50 dark:from-fuchsia-950/30", via: "via-pink-50 dark:via-pink-950/20", to: "to-purple-50 dark:to-purple-950/20", shimmer: "bg-fuchsia-200/60 dark:bg-fuchsia-800/40" },
             { border: "border-orange-200 dark:border-orange-800", from: "from-orange-50 dark:from-orange-950/30", via: "via-amber-50 dark:via-amber-950/20", to: "to-yellow-50 dark:to-yellow-950/20", shimmer: "bg-orange-200/60 dark:bg-orange-800/40" },
             { border: "border-sky-200 dark:border-sky-800", from: "from-sky-50 dark:from-sky-950/30", via: "via-blue-50 dark:via-blue-950/20", to: "to-indigo-50 dark:to-indigo-950/20", shimmer: "bg-sky-200/60 dark:bg-sky-800/40" },
+            { border: "border-pink-200 dark:border-pink-800", from: "from-pink-50 dark:from-pink-950/30", via: "via-red-50 dark:via-red-950/20", to: "to-rose-50 dark:to-rose-950/20", shimmer: "bg-pink-200/60 dark:bg-pink-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -799,6 +804,54 @@ export default function TestsPage() {
             <Button
               className="bg-sky-600 hover:bg-sky-700 text-white"
               render={<Link href={`/exam/${vocabTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Error Detection Practice Card */}
+      {!specialLoading && errorDetectionTest && (
+        <Card className="relative overflow-hidden border-2 border-pink-200 bg-gradient-to-r from-pink-50 via-red-50 to-rose-50 dark:from-pink-950/30 dark:via-red-950/20 dark:to-rose-950/20 dark:border-pink-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-pink-100/40 dark:bg-pink-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-red-100/40 dark:bg-red-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-pink-100 dark:bg-pink-900/40 flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-pink-600 dark:text-pink-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-pink-900 dark:text-pink-100">
+                    Error Detection Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-red-500 dark:text-red-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-pink-700/80 dark:text-pink-300/80">
+                  Spot grammatical errors — subject-verb agreement, tense, prepositions, articles & sentence structure
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-pink-100 text-pink-800 border-pink-200 dark:bg-pink-900/40 dark:text-pink-200 dark:border-pink-700">
+                {errorDetectionTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-red-100 text-red-800 border-red-200 dark:bg-red-900/40 dark:text-red-200 dark:border-red-700">
+                {Math.round(errorDetectionTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-900/40 dark:text-rose-200 dark:border-rose-700">
+                {errorDetectionTest.section ? errorDetectionTest.section.charAt(0).toUpperCase() + errorDetectionTest.section.slice(1) : "Verbal"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-pink-600 hover:bg-pink-700 text-white"
+              render={<Link href={`/exam/${errorDetectionTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
