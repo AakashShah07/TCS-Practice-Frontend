@@ -266,9 +266,9 @@ function FormattedFillInBlank({ text }: { text: string }) {
           /_{3,}/.test(part) ? (
             <span
               key={i}
-              className="inline-flex items-center mx-1 align-baseline"
+              className="inline-flex items-center mx-1 align-middle"
             >
-              <span className="inline-block min-w-[120px] h-[34px] rounded-lg border-2 border-dashed border-emerald-400 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 relative">
+              <span className="inline-block min-w-[120px] h-[34px] rounded-lg border-2 border-dashed border-emerald-400 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 relative translate-y-[-1px]">
                 <span className="absolute inset-0 flex items-center justify-center text-emerald-400 dark:text-emerald-500 text-xs font-medium tracking-wider">
                   ?
                 </span>
