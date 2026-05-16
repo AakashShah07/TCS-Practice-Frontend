@@ -23,6 +23,9 @@ import {
   BookOpenText,
   PenLine,
   AlertTriangle,
+  ScrollText,
+  BarChart3,
+  IndianRupee,
 } from "lucide-react";
 import {
   Card,
@@ -111,6 +114,9 @@ export default function TestsPage() {
   const [rcTest, setRcTest] = useState<Test | null>(null);
   const [vocabTest, setVocabTest] = useState<Test | null>(null);
   const [errorDetectionTest, setErrorDetectionTest] = useState<Test | null>(null);
+  const [passageFillBlankTest, setPassageFillBlankTest] = useState<Test | null>(null);
+  const [averageTest, setAverageTest] = useState<Test | null>(null);
+  const [profitLossTest, setProfitLossTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -143,6 +149,12 @@ export default function TestsPage() {
         if (vocData) setVocabTest(vocData);
         const edTest = data.find((t) => t.topic === "Error Detection");
         if (edTest) setErrorDetectionTest(edTest);
+        const pfbTest = data.find((t) => t.topic === "Passage Fill in the Blank");
+        if (pfbTest) setPassageFillBlankTest(pfbTest);
+        const avgTest = data.find((t) => t.topic === "Average");
+        if (avgTest) setAverageTest(avgTest);
+        const plTest = data.find((t) => t.topic === "Profit & Loss");
+        if (plTest) setProfitLossTest(plTest);
       } catch {
         // API not ready
       } finally {
@@ -205,6 +217,9 @@ export default function TestsPage() {
             { border: "border-orange-200 dark:border-orange-800", from: "from-orange-50 dark:from-orange-950/30", via: "via-amber-50 dark:via-amber-950/20", to: "to-yellow-50 dark:to-yellow-950/20", shimmer: "bg-orange-200/60 dark:bg-orange-800/40" },
             { border: "border-sky-200 dark:border-sky-800", from: "from-sky-50 dark:from-sky-950/30", via: "via-blue-50 dark:via-blue-950/20", to: "to-indigo-50 dark:to-indigo-950/20", shimmer: "bg-sky-200/60 dark:bg-sky-800/40" },
             { border: "border-pink-200 dark:border-pink-800", from: "from-pink-50 dark:from-pink-950/30", via: "via-red-50 dark:via-red-950/20", to: "to-rose-50 dark:to-rose-950/20", shimmer: "bg-pink-200/60 dark:bg-pink-800/40" },
+            { border: "border-indigo-200 dark:border-indigo-800", from: "from-indigo-50 dark:from-indigo-950/30", via: "via-violet-50 dark:via-violet-950/20", to: "to-blue-50 dark:to-blue-950/20", shimmer: "bg-indigo-200/60 dark:bg-indigo-800/40" },
+            { border: "border-yellow-200 dark:border-yellow-800", from: "from-yellow-50 dark:from-yellow-950/30", via: "via-amber-50 dark:via-amber-950/20", to: "to-lime-50 dark:to-lime-950/20", shimmer: "bg-yellow-200/60 dark:bg-yellow-800/40" },
+            { border: "border-green-200 dark:border-green-800", from: "from-green-50 dark:from-green-950/30", via: "via-emerald-50 dark:via-emerald-950/20", to: "to-teal-50 dark:to-teal-950/20", shimmer: "bg-green-200/60 dark:bg-green-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -852,6 +867,177 @@ export default function TestsPage() {
             <Button
               className="bg-pink-600 hover:bg-pink-700 text-white"
               render={<Link href={`/exam/${errorDetectionTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Passage Fill in the Blank Practice Card */}
+      {!specialLoading && passageFillBlankTest && (
+        <Card className="relative overflow-hidden border-2 border-indigo-200 bg-gradient-to-r from-indigo-50 via-violet-50 to-blue-50 dark:from-indigo-950/30 dark:via-violet-950/20 dark:to-blue-950/20 dark:border-indigo-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-100/40 dark:bg-indigo-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-violet-100/40 dark:bg-violet-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center">
+                <ScrollText className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-indigo-900 dark:text-indigo-100">
+                    Passage Fill in the Blank
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-violet-500 dark:text-violet-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-indigo-700/80 dark:text-indigo-300/80">
+                  Read a passage with numbered blanks and choose the correct word for each blank from the options
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative space-y-4">
+            {/* Mini passage preview */}
+            <div className="rounded-lg border border-indigo-200 dark:border-indigo-700/50 bg-white/80 dark:bg-indigo-950/40 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              {/* Left: Passage */}
+              <div className="text-indigo-900/80 dark:text-indigo-200/80 leading-relaxed">
+                <p>
+                  Once two friends were passing through a{" "}
+                  <span className="text-indigo-500 dark:text-indigo-400 font-bold">...(1)...</span>{" "}
+                  forest. A bear came out of its cave. It began to{" "}
+                  <span className="text-indigo-500 dark:text-indigo-400 font-bold">...(2)...</span>{" "}
+                  Both felt terrified. The fair-weather friend ran{" "}
+                  <span className="text-indigo-500 dark:text-indigo-400 font-bold">...(3)...</span>{" "}
+                  and climbed up a tall tree. The other laid himself on the ground and{" "}
+                  <span className="text-indigo-500 dark:text-indigo-400 font-bold">...(4)...</span>{" "}
+                  to be dead.
+                </p>
+              </div>
+              {/* Right: Options */}
+              <div className="space-y-1.5 text-indigo-800/90 dark:text-indigo-200/90 text-xs">
+                <p><span className="font-semibold">1.</span> (A) volatile (B) precarious (C) dense (D) pugnacious</p>
+                <p><span className="font-semibold">2.</span> (A) shout (B) roar (C) chirp (D) bleat</p>
+                <p><span className="font-semibold">3.</span> (A) quick (B) hard (C) toward (D) for</p>
+                <p><span className="font-semibold">4.</span> (A) alarmed (B) positioned (C) frightened (D) pretended</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap gap-2">
+                <Badge className="bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/40 dark:text-indigo-200 dark:border-indigo-700">
+                  {passageFillBlankTest.totalQuestions} Questions
+                </Badge>
+                <Badge className="bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700">
+                  {Math.round(passageFillBlankTest.duration / 60)} Minutes
+                </Badge>
+                <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-700">
+                  {passageFillBlankTest.section ? passageFillBlankTest.section.charAt(0).toUpperCase() + passageFillBlankTest.section.slice(1) : "Verbal"}
+                </Badge>
+                <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                  Easy to Hard
+                </Badge>
+              </div>
+              <Button
+                className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                render={<Link href={`/exam/${passageFillBlankTest._id}`} target="_blank" />}
+              >
+                Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Average Practice Card */}
+      {!specialLoading && averageTest && (
+        <Card className="relative overflow-hidden border-2 border-yellow-200 bg-gradient-to-r from-yellow-50 via-amber-50 to-lime-50 dark:from-yellow-950/30 dark:via-amber-950/20 dark:to-lime-950/20 dark:border-yellow-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-yellow-100/40 dark:bg-yellow-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-100/40 dark:bg-amber-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-yellow-100 dark:bg-yellow-900/40 flex items-center justify-center">
+                <BarChart3 className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-yellow-900 dark:text-yellow-100">
+                    Average Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-amber-500 dark:text-amber-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-yellow-700/80 dark:text-yellow-300/80">
+                  Simple average, weighted average, age-based problems, runs & innings, mixtures & more
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-200 dark:border-yellow-700">
+                {averageTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700">
+                {Math.round(averageTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-lime-100 text-lime-800 border-lime-200 dark:bg-lime-900/40 dark:text-lime-200 dark:border-lime-700">
+                {averageTest.section ? averageTest.section.charAt(0).toUpperCase() + averageTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-yellow-600 hover:bg-yellow-700 text-white"
+              render={<Link href={`/exam/${averageTest._id}`} target="_blank" />}
+            >
+              Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Profit & Loss Practice Card */}
+      {!specialLoading && profitLossTest && (
+        <Card className="relative overflow-hidden border-2 border-green-200 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/30 dark:via-emerald-950/20 dark:to-teal-950/20 dark:border-green-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-green-100/40 dark:bg-green-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-100/40 dark:bg-emerald-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
+                <IndianRupee className="h-6 w-6 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-green-900 dark:text-green-100">
+                    Profit & Loss Practice
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-emerald-500 dark:text-emerald-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-green-700/80 dark:text-green-300/80">
+                  Cost price, selling price, markup, discount, successive discounts, partnership & more
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/40 dark:text-green-200 dark:border-green-700">
+                {profitLossTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-700">
+                {Math.round(profitLossTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/40 dark:text-teal-200 dark:border-teal-700">
+                {profitLossTest.section ? profitLossTest.section.charAt(0).toUpperCase() + profitLossTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-green-600 hover:bg-green-700 text-white"
+              render={<Link href={`/exam/${profitLossTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
