@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle2, XCircle, MinusCircle, ArrowLeft, Lightbulb } from "lucide-react";
+import { CheckCircle2, XCircle, MinusCircle, ArrowLeft, Lightbulb, Flag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -107,7 +107,7 @@ export default function ReviewPage() {
   const resultId = params.testId as string;
   const [reviewData, setReviewData] = useState<ReviewResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "correct" | "wrong" | "skipped">("all");
+  const [filter, setFilter] = useState<"all" | "correct" | "wrong" | "skipped" | "flagged">("all");
 
   useEffect(() => {
     async function load() {
@@ -146,6 +146,7 @@ export default function ReviewPage() {
     if (filter === "wrong")
       return item.selectedAnswer !== null && item.selectedAnswer !== item.correctAnswer;
     if (filter === "skipped") return item.selectedAnswer === null;
+    if (filter === "flagged") return item.markedForReview === true;
     return true;
   });
 
@@ -165,7 +166,7 @@ export default function ReviewPage() {
 
       {/* Filter */}
       <div className="flex gap-2">
-        {(["all", "correct", "wrong", "skipped"] as const).map((f) => {
+        {(["all", "correct", "wrong", "skipped", "flagged"] as const).map((f) => {
           const count =
             f === "all"
               ? reviewData.review.length
@@ -173,6 +174,8 @@ export default function ReviewPage() {
               ? reviewData.review.filter((item) => item.selectedAnswer !== null && item.selectedAnswer === item.correctAnswer).length
               : f === "wrong"
               ? reviewData.review.filter((item) => item.selectedAnswer !== null && item.selectedAnswer !== item.correctAnswer).length
+              : f === "flagged"
+              ? reviewData.review.filter((item) => item.markedForReview === true).length
               : reviewData.review.filter((item) => item.selectedAnswer === null).length;
           return (
             <Button
@@ -201,6 +204,9 @@ export default function ReviewPage() {
                     <CardTitle className="text-sm">
                       Question {globalIndex + 1}
                     </CardTitle>
+                    {item.markedForReview && (
+                      <Flag className="h-4 w-4 text-orange-500 dark:text-orange-400" />
+                    )}
                   </div>
                   <div className="flex gap-1.5">
                     <Badge variant="outline" className="text-xs">

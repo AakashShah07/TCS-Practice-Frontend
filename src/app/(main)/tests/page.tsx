@@ -26,6 +26,7 @@ import {
   ScrollText,
   BarChart3,
   IndianRupee,
+  Hourglass,
 } from "lucide-react";
 import {
   Card,
@@ -117,6 +118,7 @@ export default function TestsPage() {
   const [passageFillBlankTest, setPassageFillBlankTest] = useState<Test | null>(null);
   const [averageTest, setAverageTest] = useState<Test | null>(null);
   const [profitLossTest, setProfitLossTest] = useState<Test | null>(null);
+  const [agesTest, setAgesTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -155,6 +157,8 @@ export default function TestsPage() {
         if (avgTest) setAverageTest(avgTest);
         const plTest = data.find((t) => t.topic === "Profit & Loss");
         if (plTest) setProfitLossTest(plTest);
+        const ageTest = data.find((t) => t.topic === "Problems on Ages");
+        if (ageTest) setAgesTest(ageTest);
       } catch {
         // API not ready
       } finally {
@@ -220,6 +224,7 @@ export default function TestsPage() {
             { border: "border-indigo-200 dark:border-indigo-800", from: "from-indigo-50 dark:from-indigo-950/30", via: "via-violet-50 dark:via-violet-950/20", to: "to-blue-50 dark:to-blue-950/20", shimmer: "bg-indigo-200/60 dark:bg-indigo-800/40" },
             { border: "border-yellow-200 dark:border-yellow-800", from: "from-yellow-50 dark:from-yellow-950/30", via: "via-amber-50 dark:via-amber-950/20", to: "to-lime-50 dark:to-lime-950/20", shimmer: "bg-yellow-200/60 dark:bg-yellow-800/40" },
             { border: "border-green-200 dark:border-green-800", from: "from-green-50 dark:from-green-950/30", via: "via-emerald-50 dark:via-emerald-950/20", to: "to-teal-50 dark:to-teal-950/20", shimmer: "bg-green-200/60 dark:bg-green-800/40" },
+            { border: "border-purple-200 dark:border-purple-800", from: "from-purple-50 dark:from-purple-950/30", via: "via-blue-50 dark:via-blue-950/20", to: "to-violet-50 dark:to-violet-950/20", shimmer: "bg-purple-200/60 dark:bg-purple-800/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -1040,6 +1045,54 @@ export default function TestsPage() {
               render={<Link href={`/exam/${profitLossTest._id}`} target="_blank" />}
             >
               Start Practice <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Problems on Ages Challenge Card */}
+      {!specialLoading && agesTest && (
+        <Card className="relative overflow-hidden border-2 border-purple-200 bg-gradient-to-r from-purple-50 via-blue-50 to-violet-50 dark:from-purple-950/30 dark:via-blue-950/20 dark:to-violet-950/20 dark:border-purple-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-purple-100/40 dark:bg-purple-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-100/40 dark:bg-blue-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
+                <Hourglass className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-purple-900 dark:text-purple-100">
+                    Problems on Ages Challenge
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-blue-500 dark:text-blue-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-purple-700/80 dark:text-purple-300/80">
+                  Present age, age ratios, age differences, past & future age equations & family age puzzles
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                {agesTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-200 dark:border-blue-700">
+                {Math.round(agesTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-900/40 dark:text-violet-200 dark:border-violet-700">
+                {agesTest.section ? agesTest.section.charAt(0).toUpperCase() + agesTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-pink-100 text-pink-800 border-pink-200 dark:bg-pink-900/40 dark:text-pink-200 dark:border-pink-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+              render={<Link href={`/exam/${agesTest._id}`} target="_blank" />}
+            >
+              Take Challenge <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
           </CardContent>
         </Card>

@@ -189,6 +189,7 @@ export interface ReviewItem {
   question: Question;
   selectedAnswer: number | null;
   correctAnswer: number;
+  markedForReview?: boolean;
   timeSpent: number;
 }
 

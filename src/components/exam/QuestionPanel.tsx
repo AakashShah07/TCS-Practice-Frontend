@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
  * Formats question text so that coded-relation definitions, multi-line setups,
  * and the final question each appear on their own line.
  */
-function QuestionText({ text }: { text: string }) {
+function QuestionText({ text, topic }: { text: string; topic?: string }) {
   // 1. "Given:" or "In a code/coded language:" prefix
   const hasGivenPrefix = /^(Given|In a code[d]? language|In a coded relation)\s*:/i.test(text);
 
@@ -52,8 +52,14 @@ function QuestionText({ text }: { text: string }) {
   // 4. Relation chain: "A is father of B. B is mother of C."
   const hasRelationChain = /\b[A-Z]\s+is\s+(father|mother|brother|sister|son|daughter|husband|wife|parent|spouse|married|sibling)\b/i.test(text);
 
-  // 5. Fill-in-the-blank: contains 3+ consecutive underscores
-  const hasBlanks = /_{3,}/.test(text);
+  const isFillBlankTopic = !topic || /fill|blank|vocabulary|passage/i.test(topic);
+
+  // 5. Passage fill-in-the-blank: contains ...(N)... numbered blanks
+  const passageBlanks = text.match(/\.\.\.\(\d+\)\.\.\./g);
+  const isPassageFillBlank = isFillBlankTopic && passageBlanks && passageBlanks.length >= 3;
+
+  // 6. Fill-in-the-blank: contains 3+ consecutive underscores
+  const hasBlanks = isFillBlankTopic && /_{3,}/.test(text);
 
   if (hasGivenPrefix || hasSymbolMeans || hasArrowDefs) {
     return <FormattedCodedQuestion text={text} />;
@@ -61,6 +67,10 @@ function QuestionText({ text }: { text: string }) {
 
   if (hasRelationChain) {
     return <FormattedRelationChain text={text} />;
+  }
+
+  if (isPassageFillBlank) {
+    return <FormattedPassageFillBlank text={text} />;
   }
 
   if (hasBlanks) {
@@ -283,6 +293,45 @@ function FormattedFillInBlank({ text }: { text: string }) {
   );
 }
 
+/** Renders a passage with numbered blanks highlighted — used inside the split layout */
+function FormattedPassageFillBlank({ text, activeBlank }: { text: string; activeBlank?: number }) {
+  // Split text around ...(N)... patterns
+  const parts = text.split(/(\.\.\.\(\d+\)\.\.\.)/)
+
+  return (
+    <p className="text-[15px] leading-[1.9] text-foreground font-medium whitespace-pre-wrap">
+      {parts.map((part, i) => {
+        const blankMatch = part.match(/\.\.\.\((\d+)\)\.\.\./);
+        if (blankMatch) {
+          const blankNum = parseInt(blankMatch[1]);
+          const isActive = activeBlank === blankNum;
+          return (
+            <span
+              key={i}
+              className={cn(
+                "font-bold mx-0.5 transition-colors",
+                isActive
+                  ? "text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/40 px-1 rounded"
+                  : "text-rose-500 dark:text-rose-400"
+              )}
+            >
+              ...({blankNum})...
+            </span>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </p>
+  );
+}
+
+/** Detects if a question is a passage fill-in-the-blank type */
+function isPassageFillBlankQuestion(text: string): boolean {
+  const blanks = text.match(/\.\.\.\(\d+\)\.\.\./g);
+  return !!blanks && blanks.length >= 3;
+}
+
+
 const sectionLabels: Record<string, string> = {
   numerical: "Numerical",
   reasoning: "Reasoning",
@@ -314,6 +363,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
     getNextSection,
     submitSection,
     setAttemptDead,
+    goToQuestion,
   } = useTestStore();
 
   const [showSectionSubmit, setShowSectionSubmit] = useState(false);
@@ -331,6 +381,19 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
 
   // Section stats for submit dialog
   const sectionInfo = sections.find((s) => s.name === currentSection);
+
+  const isPassageType = question && isPassageFillBlankQuestion(question.text);
+
+  // Collect all sibling passage questions for the split view
+  // They share the same topic and all contain ...(N)... blanks
+  const passageSiblings = isPassageType
+    ? questions
+        .map((q, idx) => ({ question: q, index: idx }))
+        .filter((item) => item.question.topic === question.topic && isPassageFillBlankQuestion(item.question.text))
+    : [];
+  const activeBlank = isPassageType
+    ? passageSiblings.findIndex((s) => s.index === currentQuestionIndex) + 1
+    : 0;
   const sectionStart = sectionInfo?.startIndex ?? 0;
   const sectionEnd = sectionInfo?.endIndex ?? 0;
   const sectionResponses = responses.slice(sectionStart, sectionEnd + 1);
@@ -422,94 +485,189 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   return (
     <div className="h-full flex flex-col bg-white dark:bg-gray-950">
       <div className="flex-1 min-h-0 p-5 sm:p-8 overflow-y-auto">
-        <div className="max-w-2xl mx-auto space-y-8">
-          {/* Question Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400">
-                Q{currentQuestionIndex + 1}
-              </span>
-              <Badge variant="outline" className="text-xs font-medium bg-slate-50 dark:bg-slate-800">
-                {question.topic}
-              </Badge>
-              {question.difficulty && (
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    "text-[10px] capitalize",
-                    question.difficulty === "easy" && "border-green-200 text-green-700 bg-green-50",
-                    question.difficulty === "medium" && "border-amber-200 text-amber-700 bg-amber-50",
-                    question.difficulty === "hard" && "border-red-200 text-red-700 bg-red-50"
-                  )}
-                >
-                  {question.difficulty}
+        {isPassageType ? (
+          /* ── Passage Fill-in-the-Blank: Split Layout ── */
+          <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-1">
+            {/* Left: Passage */}
+            <div className="overflow-y-auto p-5 sm:p-6 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-700">
+              <FormattedPassageFillBlank text={question.text} activeBlank={activeBlank} />
+            </div>
+
+            {/* Right: All blanks' options */}
+            <div className="overflow-y-auto p-5 sm:p-6 space-y-4">
+              {passageSiblings.map((sibling, blankIdx) => {
+                const blankNum = blankIdx + 1;
+                const isActive = blankNum === activeBlank;
+                const siblingResponse = responses[sibling.index];
+                const siblingSelected = siblingResponse?.selectedAnswer ?? null;
+
+                return (
+                  <div
+                    key={sibling.index}
+                    className={cn(
+                      "rounded-xl p-3 transition-colors cursor-pointer",
+                      isActive
+                        ? "bg-indigo-50 dark:bg-indigo-950/50 ring-2 ring-indigo-500"
+                        : "hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                    )}
+                    onClick={() => {
+                      if (!isActive) {
+                        const timeSpent = goToQuestion(sibling.index);
+                        if (attemptId && !attemptDead) {
+                          navigate(attemptId, sibling.index, currentQuestionIndex, timeSpent, question.section).catch(handleApiError);
+                        }
+                      }
+                    }}
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      <span className={cn(
+                        "font-bold text-sm shrink-0",
+                        isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400"
+                      )}>
+                        {blankNum}.
+                      </span>
+                      {sibling.question.options.map((opt, optIdx) => {
+                        const optLabel = String.fromCharCode(65 + optIdx);
+                        const isThisSelected = siblingSelected === optIdx;
+
+                        // Check if option text already has a label like "(A) ..."
+                        const hasLabel = /^\([A-Z]\)\s/.test(opt);
+                        const displayText = hasLabel ? opt : `(${optLabel}) ${opt}`;
+
+                        return isActive ? (
+                          <button
+                            key={optIdx}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOptionClick(optIdx);
+                            }}
+                            className={cn(
+                              "px-2.5 py-1 rounded-lg text-sm font-medium transition-all",
+                              isThisSelected
+                                ? "bg-indigo-600 text-white shadow-sm"
+                                : "text-slate-700 dark:text-slate-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 hover:text-indigo-700 dark:hover:text-indigo-300"
+                            )}
+                          >
+                            {displayText}
+                          </button>
+                        ) : (
+                          <span
+                            key={optIdx}
+                            className={cn(
+                              "text-sm px-1 py-0.5",
+                              isThisSelected
+                                ? "font-semibold text-indigo-600 dark:text-indigo-400"
+                                : "text-slate-600 dark:text-slate-400"
+                            )}
+                          >
+                            {displayText}
+                          </span>
+                        );
+                      })}
+                      {siblingSelected !== null && !isActive && (
+                        <span className="ml-auto text-emerald-500">
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          /* ── Default Question Layout ── */
+          <div className="max-w-2xl mx-auto space-y-8">
+            {/* Question Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400">
+                  Q{currentQuestionIndex + 1}
+                </span>
+                <Badge variant="outline" className="text-xs font-medium bg-slate-50 dark:bg-slate-800">
+                  {question.topic}
+                </Badge>
+                {question.difficulty && (
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-[10px] capitalize",
+                      question.difficulty === "easy" && "border-green-200 text-green-700 bg-green-50",
+                      question.difficulty === "medium" && "border-amber-200 text-amber-700 bg-amber-50",
+                      question.difficulty === "hard" && "border-red-200 text-red-700 bg-red-50"
+                    )}
+                  >
+                    {question.difficulty}
+                  </Badge>
+                )}
+              </div>
+              {isMarked && (
+                <Badge className="bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-100 gap-1">
+                  <BookmarkCheck className="h-3 w-3" />
+                  Flagged
                 </Badge>
               )}
             </div>
-            {isMarked && (
-              <Badge className="bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-100 gap-1">
-                <BookmarkCheck className="h-3 w-3" />
-                Flagged
-              </Badge>
-            )}
-          </div>
 
-          {/* Question Text */}
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-full" />
-            <div className="pl-5 py-1">
-              <QuestionText text={question.text} />
+            {/* Question Text */}
+            <div className="relative">
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-full" />
+              <div className="pl-5 py-1">
+                <QuestionText text={question.text} topic={question.topic} />
+              </div>
+            </div>
+
+            {/* Options */}
+            <div className="space-y-3">
+              {question.options.map((option, index) => {
+                const isSelected = selectedOption === index;
+                const optionLabel = String.fromCharCode(65 + index);
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleOptionClick(index)}
+                    className={cn(
+                      "group w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 text-left transition-all duration-200",
+                      "hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm",
+                      isSelected
+                        ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 shadow-md shadow-indigo-100 dark:shadow-indigo-900/20"
+                        : "border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 bg-white dark:bg-slate-900"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all duration-200",
+                        isSelected
+                          ? "bg-indigo-600 text-white shadow-sm"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900 group-hover:text-indigo-700 dark:group-hover:text-indigo-300"
+                      )}
+                    >
+                      {optionLabel}
+                    </span>
+                    <span
+                      className={cn(
+                        "text-[15px] leading-relaxed transition-colors",
+                        isSelected ? "text-indigo-900 dark:text-indigo-100 font-medium" : "text-slate-700 dark:text-slate-300"
+                      )}
+                    >
+                      {option}
+                    </span>
+                    {isSelected && (
+                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white shrink-0">
+                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
-
-          {/* Options */}
-          <div className="space-y-3">
-            {question.options.map((option, index) => {
-              const isSelected = selectedOption === index;
-              const optionLabel = String.fromCharCode(65 + index);
-
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleOptionClick(index)}
-                  className={cn(
-                    "group w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 text-left transition-all duration-200",
-                    "hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm",
-                    isSelected
-                      ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 shadow-md shadow-indigo-100 dark:shadow-indigo-900/20"
-                      : "border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 bg-white dark:bg-slate-900"
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all duration-200",
-                      isSelected
-                        ? "bg-indigo-600 text-white shadow-sm"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900 group-hover:text-indigo-700 dark:group-hover:text-indigo-300"
-                    )}
-                  >
-                    {optionLabel}
-                  </span>
-                  <span
-                    className={cn(
-                      "text-[15px] leading-relaxed transition-colors",
-                      isSelected ? "text-indigo-900 dark:text-indigo-100 font-medium" : "text-slate-700 dark:text-slate-300"
-                    )}
-                  >
-                    {option}
-                  </span>
-                  {isSelected && (
-                    <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white shrink-0">
-                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Navigation Bar */}
