@@ -40,7 +40,7 @@ export default function QuestionPalette() {
   const sectionAnswered = sectionResponses.filter((r) => r.status === "answered").length;
   const sectionNotAnswered = sectionResponses.filter((r) => r.status === "not_answered").length;
   const sectionNotVisited = sectionResponses.filter((r) => r.status === "not_visited").length;
-  const sectionMarked = sectionResponses.filter((r) => r.status === "marked_for_review").length;
+  const sectionMarked = sectionResponses.filter((r) => r.markedForReview).length;
   const sectionTotal = sectionIndices.length;
 
   const progressPercent = sectionTotal > 0 ? (sectionAnswered / sectionTotal) * 100 : 0;
@@ -49,7 +49,6 @@ export default function QuestionPalette() {
     answered: "bg-emerald-500 text-white hover:bg-emerald-600",
     not_answered: "bg-rose-500 text-white hover:bg-rose-600",
     not_visited: "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700",
-    marked_for_review: "bg-amber-400 text-amber-950 hover:bg-amber-500",
   };
 
   function handleGoToQuestion(index: number) {
@@ -103,7 +102,7 @@ export default function QuestionPalette() {
           </div>
           <div className="flex flex-wrap gap-1">
             {sectionIndices
-              .filter((i) => responses[i]?.status === "marked_for_review")
+              .filter((i) => responses[i]?.markedForReview)
               .map((i) => (
                 <button
                   key={i}
@@ -126,6 +125,7 @@ export default function QuestionPalette() {
           {sectionIndices.map((globalIndex) => {
             const status = getStatus(globalIndex);
             const isCurrent = globalIndex === currentQuestionIndex;
+            const isFlagged = responses[globalIndex]?.markedForReview;
             const displayNum = globalIndex - sectionStart + 1;
 
             return (
@@ -133,13 +133,18 @@ export default function QuestionPalette() {
                 key={globalIndex}
                 onClick={() => handleGoToQuestion(globalIndex)}
                 className={cn(
-                  "w-full aspect-square rounded-md text-[11px] font-bold transition-all duration-150",
+                  "relative w-full aspect-square rounded-md text-[11px] font-bold transition-all duration-150",
                   "hover:scale-105 active:scale-95",
                   statusStyles[status] || statusStyles.not_visited,
-                  isCurrent && "ring-2 ring-indigo-600 dark:ring-indigo-400 ring-offset-1 scale-110"
+                  isFlagged && "ring-2 ring-amber-400 dark:ring-amber-500",
+                  isCurrent && "ring-2 ring-indigo-600 dark:ring-indigo-400 ring-offset-1 scale-110",
+                  isCurrent && isFlagged && "ring-2 ring-indigo-600 dark:ring-indigo-400 ring-offset-1 ring-offset-amber-400 dark:ring-offset-amber-500 scale-110"
                 )}
               >
                 {displayNum}
+                {isFlagged && (
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-amber-400 border border-white dark:border-slate-950" />
+                )}
               </button>
             );
           })}

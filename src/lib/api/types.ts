@@ -98,6 +98,7 @@ export interface AttemptResponse {
   question: string;
   selectedAnswer: number | null;
   status: "not_visited" | "not_answered" | "answered" | "marked_for_review";
+  markedForReview?: boolean;
   timeSpent: number;
 }
 
@@ -105,6 +106,7 @@ export interface AttemptResponsePopulated {
   question: Question;
   selectedAnswer: number | null;
   status: "not_visited" | "not_answered" | "answered" | "marked_for_review";
+  markedForReview?: boolean;
   timeSpent: number;
 }
 

@@ -373,7 +373,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
 
   const currentResponse = responses[currentQuestionIndex];
   const selectedOption = currentResponse?.selectedAnswer ?? null;
-  const isMarked = currentResponse?.status === "marked_for_review";
+  const isMarked = currentResponse?.markedForReview === true;
 
   const isLastInSection = sectionLocked && isLastQuestionInSection();
   const nextSec = getNextSection();
@@ -441,11 +441,9 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   }
 
   async function handleMarkAndNext() {
-    if (!isMarked) {
-      storeMarkForReview(currentQuestionIndex);
-      if (attemptId && !attemptDead) {
-        markForReview(attemptId, currentQuestionIndex).catch(handleApiError);
-      }
+    storeMarkForReview(currentQuestionIndex);
+    if (attemptId && !attemptDead) {
+      markForReview(attemptId, currentQuestionIndex).catch(handleApiError);
     }
     const timeSpent = nextQuestion();
     if (attemptId && !attemptDead && timeSpent >= 0) {

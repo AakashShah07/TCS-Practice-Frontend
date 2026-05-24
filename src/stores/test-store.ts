@@ -12,6 +12,7 @@ export type QuestionStatus =
 interface ResponseState {
   selectedAnswer: number | null;
   status: QuestionStatus;
+  markedForReview: boolean;
   timeSpent: number;
 }
 
@@ -158,6 +159,7 @@ export const useTestStore = create<TestState>((set, get) => ({
     const defaultResponses = params.questions.map(() => ({
       selectedAnswer: null,
       status: "not_visited" as QuestionStatus,
+      markedForReview: false,
       timeSpent: 0,
     }));
 
@@ -210,7 +212,7 @@ export const useTestStore = create<TestState>((set, get) => ({
   markForReview: (index) => {
     const responses = [...get().responses];
     if (responses[index]) {
-      responses[index] = { ...responses[index], status: "marked_for_review" };
+      responses[index] = { ...responses[index], markedForReview: !responses[index].markedForReview };
       set({ responses });
       backupToLocalStorage(get());
     }
