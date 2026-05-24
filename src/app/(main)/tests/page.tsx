@@ -27,6 +27,7 @@ import {
   BarChart3,
   IndianRupee,
   Hourglass,
+  KeyRound,
 } from "lucide-react";
 import {
   Card,
@@ -119,6 +120,7 @@ export default function TestsPage() {
   const [averageTest, setAverageTest] = useState<Test | null>(null);
   const [profitLossTest, setProfitLossTest] = useState<Test | null>(null);
   const [agesTest, setAgesTest] = useState<Test | null>(null);
+  const [codingDecodingTest, setCodingDecodingTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -159,6 +161,8 @@ export default function TestsPage() {
         if (plTest) setProfitLossTest(plTest);
         const ageTest = data.find((t) => t.topic === "Problems on Ages");
         if (ageTest) setAgesTest(ageTest);
+        const cdTest = data.find((t) => t.topic === "Coding Decoding");
+        if (cdTest) setCodingDecodingTest(cdTest);
       } catch {
         // API not ready
       } finally {
@@ -225,6 +229,7 @@ export default function TestsPage() {
             { border: "border-yellow-200 dark:border-yellow-800", from: "from-yellow-50 dark:from-yellow-950/30", via: "via-amber-50 dark:via-amber-950/20", to: "to-lime-50 dark:to-lime-950/20", shimmer: "bg-yellow-200/60 dark:bg-yellow-800/40" },
             { border: "border-green-200 dark:border-green-800", from: "from-green-50 dark:from-green-950/30", via: "via-emerald-50 dark:via-emerald-950/20", to: "to-teal-50 dark:to-teal-950/20", shimmer: "bg-green-200/60 dark:bg-green-800/40" },
             { border: "border-purple-200 dark:border-purple-800", from: "from-purple-50 dark:from-purple-950/30", via: "via-blue-50 dark:via-blue-950/20", to: "to-violet-50 dark:to-violet-950/20", shimmer: "bg-purple-200/60 dark:bg-purple-800/40" },
+            { border: "border-slate-200 dark:border-slate-700", from: "from-slate-50 dark:from-slate-950/30", via: "via-zinc-50 dark:via-zinc-950/20", to: "to-stone-50 dark:to-stone-950/20", shimmer: "bg-slate-200/60 dark:bg-slate-700/40" },
           ].map((s, i) => (
             <Card
               key={i}
@@ -1091,6 +1096,54 @@ export default function TestsPage() {
             <Button
               className="bg-purple-600 hover:bg-purple-700 text-white"
               render={<Link href={`/exam/${agesTest._id}`} target="_blank" />}
+            >
+              Take Challenge <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Coding Decoding Challenge Card */}
+      {!specialLoading && codingDecodingTest && (
+        <Card className="relative overflow-hidden border-2 border-slate-200 bg-gradient-to-r from-slate-50 via-zinc-50 to-stone-50 dark:from-slate-950/30 dark:via-zinc-950/20 dark:to-stone-950/20 dark:border-slate-700">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-slate-100/40 dark:bg-slate-800/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-zinc-100/40 dark:bg-zinc-800/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800/60 flex items-center justify-center">
+                <KeyRound className="h-6 w-6 text-slate-600 dark:text-slate-300" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-slate-900 dark:text-slate-100">
+                    Coding Decoding Challenge
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-zinc-500 dark:text-zinc-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-slate-700/80 dark:text-slate-300/80">
+                  Letter shifting, number coding, symbol substitution, word coding, condition-based coding & more
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800/40 dark:text-slate-200 dark:border-slate-600">
+                {codingDecodingTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-zinc-100 text-zinc-800 border-zinc-200 dark:bg-zinc-800/40 dark:text-zinc-200 dark:border-zinc-600">
+                {Math.round(codingDecodingTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-stone-100 text-stone-800 border-stone-200 dark:bg-stone-800/40 dark:text-stone-200 dark:border-stone-600">
+                {codingDecodingTest.section ? codingDecodingTest.section.charAt(0).toUpperCase() + codingDecodingTest.section.slice(1) : "Reasoning"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-slate-700 hover:bg-slate-800 text-white"
+              render={<Link href={`/exam/${codingDecodingTest._id}`} target="_blank" />}
             >
               Take Challenge <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
