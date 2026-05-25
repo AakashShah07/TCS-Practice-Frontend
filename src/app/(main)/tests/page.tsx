@@ -121,6 +121,7 @@ export default function TestsPage() {
   const [profitLossTest, setProfitLossTest] = useState<Test | null>(null);
   const [agesTest, setAgesTest] = useState<Test | null>(null);
   const [codingDecodingTest, setCodingDecodingTest] = useState<Test | null>(null);
+  const [percentageChallengeTest, setPercentageChallengeTest] = useState<Test | null>(null);
   const [specialLoading, setSpecialLoading] = useState(true);
 
   useEffect(() => {
@@ -163,6 +164,8 @@ export default function TestsPage() {
         if (ageTest) setAgesTest(ageTest);
         const cdTest = data.find((t) => t.topic === "Coding Decoding");
         if (cdTest) setCodingDecodingTest(cdTest);
+        const pctChallengeTest = data.find((t) => t.topic === "Percentage");
+        if (pctChallengeTest) setPercentageChallengeTest(pctChallengeTest);
       } catch {
         // API not ready
       } finally {
@@ -1144,6 +1147,54 @@ export default function TestsPage() {
             <Button
               className="bg-slate-700 hover:bg-slate-800 text-white"
               render={<Link href={`/exam/${codingDecodingTest._id}`} target="_blank" />}
+            >
+              Take Challenge <ArrowRight className="ml-1 h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Percentage Challenge Card */}
+      {!specialLoading && percentageChallengeTest && (
+        <Card className="relative overflow-hidden border-2 border-orange-200 bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 dark:from-orange-950/30 dark:via-amber-950/20 dark:to-yellow-950/20 dark:border-orange-800">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-orange-100/40 dark:bg-orange-900/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-amber-100/40 dark:bg-amber-900/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <CardHeader className="relative">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-orange-100 dark:bg-orange-900/40 flex items-center justify-center">
+                <Percent className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-xl text-orange-900 dark:text-orange-100">
+                    Percentage Challenge
+                  </CardTitle>
+                  <Flame className="h-5 w-5 text-amber-500 dark:text-amber-400 animate-pulse" />
+                </div>
+                <CardDescription className="text-orange-700/80 dark:text-orange-300/80">
+                  Simple percentage, successive change, percentage increase & decrease, population & depreciation problems
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="relative flex flex-wrap items-center justify-between gap-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/40 dark:text-orange-200 dark:border-orange-700">
+                {percentageChallengeTest.totalQuestions} Questions
+              </Badge>
+              <Badge className="bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-700">
+                {Math.round(percentageChallengeTest.duration / 60)} Minutes
+              </Badge>
+              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/40 dark:text-yellow-200 dark:border-yellow-700">
+                {percentageChallengeTest.section ? percentageChallengeTest.section.charAt(0).toUpperCase() + percentageChallengeTest.section.slice(1) : "Numerical"}
+              </Badge>
+              <Badge className="bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-200 dark:border-purple-700">
+                Easy to Hard
+              </Badge>
+            </div>
+            <Button
+              className="bg-orange-600 hover:bg-orange-700 text-white"
+              render={<Link href={`/exam/${percentageChallengeTest._id}`} target="_blank" />}
             >
               Take Challenge <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
