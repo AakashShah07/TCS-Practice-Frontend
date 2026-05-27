@@ -186,21 +186,21 @@ export default function HomePage() {
 
       {/* ── Nav ── */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 landing-slide-down">
-        <div className="max-w-[1140px] mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
+        <div className="max-w-[1140px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 sm:gap-2.5">
             <Image src="/llog.png" alt="CrackNQT" width={32} height={32} className="rounded-lg" />
-            <span className="text-xl font-black text-[#111827] dark:text-white tracking-tight">CrackNQT</span>
+            <span className="text-lg sm:text-xl font-black text-[#111827] dark:text-white tracking-tight">CrackNQT</span>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/login"
-              className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-3 py-2"
+              className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 sm:px-3 py-2"
             >
               Sign in
             </Link>
             <Link
               href="/register"
-              className="auth-btn text-sm font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-blue-500 dark:hover:bg-blue-600 px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 dark:shadow-blue-500/10 transition-all"
+              className="auth-btn text-sm font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-blue-500 dark:hover:bg-blue-600 px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 dark:shadow-blue-500/10 transition-all"
             >
               Get Started
             </Link>
@@ -223,7 +223,7 @@ export default function HomePage() {
           <div className="absolute bottom-[20%] right-[28%] w-3 h-3 bg-violet-400 rounded-full opacity-10 dark:opacity-[0.06] landing-dot-6" />
         </div>
 
-        <div className="max-w-[1140px] mx-auto px-6 text-center relative z-10">
+        <div className="max-w-[1140px] mx-auto px-4 sm:px-6 text-center relative z-10">
           {/* Trust pill — pop in */}
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-50/80 dark:bg-blue-950/60 backdrop-blur-sm border border-blue-100 dark:border-blue-800 text-xs font-bold text-[#2563EB] dark:text-blue-400 mb-8 landing-scale-in tracking-wide uppercase">
             <Zap className="w-3.5 h-3.5" />
@@ -260,19 +260,19 @@ export default function HomePage() {
           </div>
 
           {/* Stats — count up style with stagger */}
-          <div className="flex items-center justify-center gap-10 sm:gap-16 mt-16">
+          <div className="flex items-center justify-center gap-6 sm:gap-16 mt-16">
             <div className="text-center landing-fade-up landing-delay-400">
-              <p className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white landing-counter">1000+</p>
+              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white landing-counter">1000+</p>
               <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Questions</p>
             </div>
-            <div className="w-px h-12 bg-gray-200 dark:bg-gray-700 landing-scale-y landing-delay-400" />
+            <div className="w-px h-10 sm:h-12 bg-gray-200 dark:bg-gray-700 landing-scale-y landing-delay-400" />
             <div className="text-center landing-fade-up" style={{ animationDelay: "500ms" }}>
-              <p className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white">4</p>
+              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">4</p>
               <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Sections</p>
             </div>
-            <div className="w-px h-12 bg-gray-200 dark:bg-gray-700 landing-scale-y" style={{ animationDelay: "500ms" }} />
+            <div className="w-px h-10 sm:h-12 bg-gray-200 dark:bg-gray-700 landing-scale-y" style={{ animationDelay: "500ms" }} />
             <div className="text-center landing-fade-up" style={{ animationDelay: "600ms" }}>
-              <p className="text-3xl sm:text-4xl font-black text-[#2563EB] dark:text-blue-400">100%</p>
+              <p className="text-2xl sm:text-4xl font-black text-[#2563EB] dark:text-blue-400">100%</p>
               <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Free</p>
             </div>
           </div>
@@ -419,10 +419,10 @@ export default function HomePage() {
           <div className="max-w-4xl mx-auto">
             {/* What is TCS NQT? */}
             <div className="flex items-center gap-3 mb-6 reveal-slide-left" data-reveal>
-              <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-[#2563EB] dark:text-blue-400" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center shrink-0">
+                <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-[#2563EB] dark:text-blue-400" />
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#111827] dark:text-white tracking-tight">
                 What is TCS NQT?
               </h2>
             </div>
@@ -440,10 +440,10 @@ export default function HomePage() {
 
             {/* TCS NQT 2026 Syllabus */}
             <div className="flex items-center gap-3 mb-8 reveal-slide-right" data-reveal>
-              <div className="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-950 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-violet-600 dark:text-violet-400" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-violet-50 dark:bg-violet-950 flex items-center justify-center shrink-0">
+                <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600 dark:text-violet-400" />
               </div>
-              <h3 className="text-2xl font-black text-[#111827] dark:text-white tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-black text-[#111827] dark:text-white tracking-tight">
                 TCS NQT 2026 Syllabus
               </h3>
             </div>
@@ -668,8 +668,8 @@ export default function HomePage() {
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="max-w-2xl mx-auto">
             <div className="flex items-center justify-center gap-3 mb-10 reveal-fade-up" data-reveal>
-              <HelpCircle className="w-7 h-7 text-[#2563EB] dark:text-blue-400" />
-              <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight">
+              <HelpCircle className="w-7 h-7 text-[#2563EB] dark:text-blue-400 shrink-0" />
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#111827] dark:text-white tracking-tight">
                 Frequently Asked Questions
               </h2>
             </div>
@@ -723,8 +723,8 @@ export default function HomePage() {
       {/* ── Footer ── */}
       <footer className="bg-[#111827] dark:bg-black text-white py-14">
         <div className="max-w-[1140px] mx-auto px-6">
-          <div className="grid sm:grid-cols-4 gap-10 mb-10">
-            <div className="sm:col-span-1">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 mb-10">
+            <div className="col-span-2 sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
                 <Image src="/llog.png" alt="CrackNQT" width={28} height={28} className="rounded-lg" />
                 <span className="text-lg font-black">CrackNQT</span>
