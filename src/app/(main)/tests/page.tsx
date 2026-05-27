@@ -468,12 +468,12 @@ const topicCards: TopicCardConfig[] = [
   },
   {
     topic: "Profit & Loss",
-    title: "Profit & Loss Practice",
+    title: "Profit & Loss Challenge",
     description: "Cost price, selling price, markup, discount, successive discounts, partnership & more",
     icon: IndianRupee,
     defaultSection: "Numerical",
     difficultyLabel: "Easy to Hard",
-    buttonLabel: "Start Practice",
+    buttonLabel: "Take Challenge",
     colors: {
       card: "border-green-200 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/30 dark:via-emerald-950/20 dark:to-teal-950/20 dark:border-green-800",
       circle1: "bg-green-100/40 dark:bg-green-900/10",
