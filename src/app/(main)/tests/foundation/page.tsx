@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Calculator, Brain, BookOpen, ArrowRight } from "lucide-react";
+import { Calculator, Brain, BookOpen, Database, ArrowRight } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -60,6 +60,19 @@ const sectionInfo = {
       "Sentence Correction",
     ],
   },
+  system: {
+    title: "System IT",
+    icon: Database,
+    color: "text-indigo-600 dark:text-indigo-400",
+    bg: "bg-indigo-50 dark:bg-indigo-950",
+    topics: [
+      "Relational Model",
+      "Keys (Primary, Foreign, Candidate)",
+      "Relational Algebra",
+      "ER Model",
+      "Entities & Relationships",
+    ],
+  },
 };
 
 export default function FoundationPage() {
@@ -107,10 +120,11 @@ function FoundationContent() {
       </div>
 
       <Tabs defaultValue={section} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="numerical">Numerical</TabsTrigger>
           <TabsTrigger value="reasoning">Reasoning</TabsTrigger>
           <TabsTrigger value="verbal">Verbal</TabsTrigger>
+          <TabsTrigger value="system">System IT</TabsTrigger>
         </TabsList>
 
         {Object.entries(sectionInfo).map(([key, info]) => {

@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Calculator, Brain, BookOpen, Target } from "lucide-react";
+import { Calculator, Brain, BookOpen, Target, Database } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -25,6 +25,7 @@ const sectionMeta: Record<
   reasoning: { icon: Brain, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-950", label: "Reasoning" },
   verbal: { icon: BookOpen, color: "text-green-600 dark:text-green-400", bg: "bg-green-50 dark:bg-green-950", label: "Verbal" },
   advanced: { icon: Target, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-50 dark:bg-orange-950", label: "Advanced" },
+  system: { icon: Database, color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-950", label: "System IT" },
 };
 
 function difficultyBar(easy: number, medium: number, hard: number, total: number) {
@@ -92,12 +93,13 @@ function PracticeContent() {
     async function load() {
       setLoading(true);
       try {
-        const [numerical, reasoning, verbal] = await Promise.all([
+        const [numerical, reasoning, verbal, system] = await Promise.all([
           fetchTopicsWithCounts("numerical"),
           fetchTopicsWithCounts("reasoning"),
           fetchTopicsWithCounts("verbal"),
+          fetchTopicsWithCounts("system"),
         ]);
-        setTopicsBySection({ numerical, reasoning, verbal });
+        setTopicsBySection({ numerical, reasoning, verbal, system });
       } catch {
         // API not ready
       } finally {
@@ -119,7 +121,7 @@ function PracticeContent() {
       </div>
 
       <Tabs defaultValue={defaultTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="numerical">
             <Calculator className="h-4 w-4 mr-1.5 hidden sm:block" />
             Numerical
@@ -132,9 +134,13 @@ function PracticeContent() {
             <BookOpen className="h-4 w-4 mr-1.5 hidden sm:block" />
             Verbal
           </TabsTrigger>
+          <TabsTrigger value="system">
+            <Database className="h-4 w-4 mr-1.5 hidden sm:block" />
+            System IT
+          </TabsTrigger>
         </TabsList>
 
-        {(["numerical", "reasoning", "verbal"] as const).map((section) => {
+        {(["numerical", "reasoning", "verbal", "system"] as const).map((section) => {
           const meta = sectionMeta[section];
           const SectionIcon = meta.icon;
           const topics = topicsBySection[section] || [];
