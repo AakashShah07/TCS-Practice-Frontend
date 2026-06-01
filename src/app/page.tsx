@@ -22,6 +22,12 @@ import {
   Brain,
   MessageSquare,
   Users,
+  Briefcase,
+  Cpu,
+  Globe,
+  Settings,
+  ShieldCheck,
+  Database,
 } from "lucide-react";
 
 const faqData = [
@@ -260,21 +266,72 @@ export default function HomePage() {
           </div>
 
           {/* Stats — count up style with stagger */}
-          <div className="flex items-center justify-center gap-6 sm:gap-16 mt-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-12 mt-16 max-w-4xl mx-auto">
             <div className="text-center landing-fade-up landing-delay-400">
-              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white landing-counter">1000+</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Questions</p>
+              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">25,000+</p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Questions Solved</p>
             </div>
-            <div className="w-px h-10 sm:h-12 bg-gray-200 dark:bg-gray-700 landing-scale-y landing-delay-400" />
             <div className="text-center landing-fade-up" style={{ animationDelay: "500ms" }}>
-              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">4</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Sections</p>
+              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">8,500+</p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Students</p>
             </div>
-            <div className="w-px h-10 sm:h-12 bg-gray-200 dark:bg-gray-700 landing-scale-y" style={{ animationDelay: "500ms" }} />
             <div className="text-center landing-fade-up" style={{ animationDelay: "600ms" }}>
-              <p className="text-2xl sm:text-4xl font-black text-[#2563EB] dark:text-blue-400">100%</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Free</p>
+              <p className="text-2xl sm:text-4xl font-black text-[#2563EB] dark:text-blue-400">92%</p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Satisfaction</p>
             </div>
+            <div className="text-center landing-fade-up" style={{ animationDelay: "700ms" }}>
+              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">15+</p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Companies</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Exam Selection ── */}
+      <section className="py-12 sm:py-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up" data-reveal>
+              Choose Your Exam
+            </h2>
+            <p className="text-[#6B7280] dark:text-gray-400 mt-2 text-sm font-medium reveal-fade-up" data-reveal>
+              Tailored preparation for top IT companies.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+            {[
+              { name: "TCS NQT",       logo: "/logos/tcs-logo.webp",     bg: "bg-blue-600" },
+              { name: "Infosys",       logo: "/logos/infosys.webp",      bg: "bg-indigo-600" },
+              { name: "Wipro",         logo: "/logos/Wipro.webp",        bg: "bg-emerald-600" },
+              { name: "Accenture",     logo: "/logos/accenture.webp",    bg: "bg-purple-600" },
+              { name: "Cognizant",     logo: "/logos/cognizant.webp",    bg: "bg-amber-600" },
+              { name: "Capgemini",     logo: "/logos/capgemini.webp",    bg: "bg-rose-600" },
+              { name: "Tech Mahindra", logo: "/logos/techmahindra.webp", bg: "bg-cyan-600" },
+              { name: "HCL",           logo: "/logos/hcl.webp",          bg: "bg-orange-600" },
+            ].map((exam, i) => (
+              <Link
+                key={exam.name}
+                href="/register"
+                className="group flex flex-col items-center gap-3 p-5 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-blue-400/50 hover:shadow-lg hover:shadow-blue-500/8 hover:-translate-y-0.5 transition-all duration-300 reveal-fade-up"
+                data-reveal
+                style={{ transitionDelay: `${i * 50}ms` }}
+              >
+                {/* Logo container — white bg so logos look clean on both light/dark */}
+                <div className="w-16 h-16 rounded-2xl bg-white border border-gray-100 dark:border-gray-600 shadow-sm flex items-center justify-center overflow-hidden p-2 group-hover:shadow-md transition-shadow">
+                  <Image
+                    src={exam.logo}
+                    alt={`${exam.name} logo`}
+                    width={48}
+                    height={48}
+                    className="object-contain w-full h-full"
+                  />
+                </div>
+                <span className="text-sm font-bold text-[#111827] dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-center leading-tight">
+                  {exam.name}
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -333,54 +390,114 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Test Preview — cards flip in ── */}
+      {/* ── Popular Tests ── */}
       <section className="py-20 sm:py-24 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up" data-reveal>
-              Jump Right In
+              🔥 Most Popular Tests
             </h2>
             <p className="text-[#6B7280] dark:text-gray-400 mt-3 text-base font-medium reveal-fade-up" data-reveal>
-              Pick a section or take the full mock — no signup required to browse.
+              Highly attempted mock tests for various exam patterns.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <div className="group rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-[#F9FAFB] dark:bg-gray-800 p-7 flex flex-col justify-between hover:border-[#2563EB]/40 dark:hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-300 reveal-flip-up" data-reveal>
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                    <Layers className="w-5 h-5 text-[#2563EB] dark:text-blue-400" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { title: "TCS NQT Full Mock #1",     qs: 79, mins: 120, attempted: "4,200+", logo: "/logos/tcs-logo.webp",     company: "TCS" },
+              { title: "Infosys Placement Test",   qs: 54, mins: 100, attempted: "3,100+", logo: "/logos/infosys.webp",      company: "Infosys" },
+              { title: "Accenture Cognitive Mock", qs: 90, mins: 90,  attempted: "2,800+", logo: "/logos/accenture.webp",    company: "Accenture" },
+              { title: "Wipro Elite Mock #1",      qs: 52, mins: 128, attempted: "2,500+", logo: "/logos/Wipro.webp",        company: "Wipro" },
+              { title: "Cognizant GenC Mock",      qs: 60, mins: 80,  attempted: "2,200+", logo: "/logos/cognizant.webp",    company: "Cognizant" },
+              { title: "Capgemini Game-Based",     qs: 40, mins: 60,  attempted: "1,900+", logo: "/logos/capgemini.webp",    company: "Capgemini" },
+            ].map((test, i) => (
+              <div
+                key={test.title}
+                className="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 p-6 flex flex-col justify-between hover:border-blue-400/50 hover:shadow-xl hover:shadow-blue-500/8 hover:-translate-y-0.5 transition-all duration-300 reveal-flip-up"
+                data-reveal
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                <div>
+                  {/* Header: logo + title */}
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="w-12 h-12 rounded-xl bg-white border border-gray-100 dark:border-gray-600 shadow-sm flex items-center justify-center overflow-hidden p-1.5 shrink-0">
+                      <Image
+                        src={test.logo}
+                        alt={test.company}
+                        width={36}
+                        height={36}
+                        className="object-contain w-full h-full"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-semibold text-[#6B7280] dark:text-gray-400 uppercase tracking-wider mb-0.5">{test.company}</p>
+                      <h3 className="text-base font-black text-[#111827] dark:text-white leading-tight">{test.title}</h3>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-black text-[#111827] dark:text-white">Numerical Ability</h3>
+                  {/* Stats */}
+                  <div className="flex flex-wrap items-center gap-3 mb-6">
+                    <span className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7280] dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 px-2.5 py-1 rounded-lg">
+                      <BookOpen className="w-3.5 h-3.5" />{test.qs} Questions
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7280] dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 px-2.5 py-1 rounded-lg">
+                      <Clock className="w-3.5 h-3.5" />{test.mins} Min
+                    </span>
+                    <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-lg">
+                      <Users className="w-3.5 h-3.5" />{test.attempted} attempted
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-[#9CA3AF] dark:text-gray-500 font-semibold mb-6">
-                  <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4" />25 Qs</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />30 Min</span>
-                </div>
+                <Link
+                  href="/register"
+                  className="w-full py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-[#111827] dark:text-white text-sm font-bold rounded-xl group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all text-center block"
+                >
+                  Start Test →
+                </Link>
               </div>
-              <Link href="/register" className="text-sm font-bold text-[#2563EB] dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
-                Start Test <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div className="group rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-[#F9FAFB] dark:bg-gray-800 p-7 flex flex-col justify-between hover:border-indigo-300/50 dark:hover:border-indigo-500/40 hover:shadow-lg hover:shadow-indigo-500/5 transition-all duration-300 reveal-flip-up" data-reveal style={{ transitionDelay: "150ms" }}>
-              <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-300">
-                    <Monitor className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                  </div>
-                  <h3 className="text-lg font-black text-[#111827] dark:text-white">Full Mock Test</h3>
+      {/* ── Topic Practice ── */}
+      <section className="py-20 sm:py-24">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up" data-reveal>
+              Practice By Topic
+            </h2>
+            <p className="text-[#6B7280] dark:text-gray-400 mt-3 text-base font-medium reveal-fade-up" data-reveal>
+              Master specific subjects with our targeted practice modules.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6">
+            {[
+              { name: "Quantitative Aptitude", icon: Calculator, color: "text-blue-600", bg: "bg-blue-50" },
+              { name: "Logical Reasoning", icon: Brain, color: "text-indigo-600", bg: "bg-indigo-50" },
+              { name: "Verbal Ability", icon: MessageSquare, color: "text-emerald-600", bg: "bg-emerald-50" },
+              { name: "Programming", icon: Code2, color: "text-violet-600", bg: "bg-violet-50" },
+              { name: "DBMS", icon: Database, color: "text-amber-600", bg: "bg-amber-50" },
+              { name: "Operating Systems", icon: Monitor, color: "text-rose-600", bg: "bg-rose-50" },
+              { name: "Computer Networks", icon: Globe, color: "text-cyan-600", bg: "bg-cyan-50" },
+              { name: "OOPs Concepts", icon: Layers, color: "text-purple-600", bg: "bg-purple-50" },
+              { name: "SQL Queries", icon: FileText, color: "text-orange-600", bg: "bg-orange-50" },
+            ].map((topic, i) => (
+              <Link
+                key={topic.name}
+                href="/register"
+                className="group p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-blue-500/30 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 reveal-fade-up"
+                data-reveal
+                style={{ transitionDelay: `${i * 50}ms` }}
+              >
+                <div className={`w-12 h-12 rounded-xl ${topic.bg} dark:bg-opacity-10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <topic.icon className={`w-6 h-6 ${topic.color}`} />
                 </div>
-                <div className="flex items-center gap-4 text-sm text-[#9CA3AF] dark:text-gray-500 font-semibold mb-6">
-                  <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4" />79 Qs</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />120 Min</span>
-                </div>
-              </div>
-              <Link href="/register" className="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
-                Start Test <ArrowRight className="w-4 h-4" />
+                <h3 className="font-bold text-[#111827] dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  {topic.name}
+                </h3>
               </Link>
-            </div>
+            ))}
           </div>
         </div>
       </section>
