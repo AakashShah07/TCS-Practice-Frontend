@@ -89,6 +89,7 @@ export interface Test {
   duration: number; // seconds
   sectionLocked: boolean;
   isActive: boolean;
+  isPremium?: boolean;
   questions?: Question[];
   createdAt: string;
 }
