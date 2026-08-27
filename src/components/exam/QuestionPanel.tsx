@@ -331,6 +331,21 @@ function isPassageFillBlankQuestion(text: string): boolean {
   return !!blanks && blanks.length >= 3;
 }
 
+/** Parses a Reading Comprehension question into the passage content and the actual comprehension prompt */
+function extractReadingComprehensionParts(text: string): { passage: string; question: string } | null {
+  const readThePassagePrefix = /^Read the passage\s*:\s*/i;
+  if (!readThePassagePrefix.test(text)) return null;
+
+  const passageMatch = text.match(/^Read the passage\s*:\s*['"“]([\s\S]*?)['"”]\s*([\s\S]*)$/i);
+  if (passageMatch) {
+    const passage = passageMatch[1]?.trim() ?? "";
+    const question = passageMatch[2]?.trim() ?? "";
+    return { passage, question };
+  }
+
+  const remainder = text.replace(readThePassagePrefix, "").trim();
+  return { passage: remainder, question: "" };
+}
 
 const sectionLabels: Record<string, string> = {
   numerical: "Numerical",
@@ -382,7 +397,10 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   // Section stats for submit dialog
   const sectionInfo = sections.find((s) => s.name === currentSection);
 
+  const isReadingComprehensionType = question?.topic?.toLowerCase() === "reading comprehension";
   const isPassageType = question && isPassageFillBlankQuestion(question.text);
+
+  const readingComprehensionParts = extractReadingComprehensionParts(question.text);
 
   // Collect all sibling passage questions for the split view
   // They share the same topic and all contain ...(N)... blanks
@@ -483,7 +501,111 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   return (
     <div className="h-full flex flex-col bg-white dark:bg-gray-950">
       <div className="flex-1 min-h-0 p-5 sm:p-8 overflow-y-auto">
-        {isPassageType ? (
+        {isReadingComprehensionType && readingComprehensionParts ? (
+          /* ── Reading Comprehension: Split Layout ── */
+          <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-1">
+            {/* Left: Passage */}
+            <div className="overflow-y-auto p-5 sm:p-6 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+              <div className="mb-4">
+                <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-sky-700 dark:bg-sky-950/50 dark:text-sky-300 dark:border-sky-800">
+                  Reading Passage
+                </span>
+              </div>
+              <p className="text-[15px] leading-[1.9] text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-medium">
+                {readingComprehensionParts.passage}
+              </p>
+            </div>
+
+            {/* Right: Comprehension prompt + answer options */}
+            <div className="overflow-y-auto p-5 sm:p-6">
+              <div className="max-w-2xl mx-auto space-y-8">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400">
+                      Q{currentQuestionIndex + 1}
+                    </span>
+                    <Badge variant="outline" className="text-xs font-medium bg-slate-50 dark:bg-slate-800">
+                      {question.topic}
+                    </Badge>
+                    {question.difficulty && (
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-[10px] capitalize",
+                          question.difficulty === "easy" && "border-green-200 text-green-700 bg-green-50",
+                          question.difficulty === "medium" && "border-amber-200 text-amber-700 bg-amber-50",
+                          question.difficulty === "hard" && "border-red-200 text-red-700 bg-red-50"
+                        )}
+                      >
+                        {question.difficulty}
+                      </Badge>
+                    )}
+                  </div>
+                  {isMarked && (
+                    <Badge className="bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-100 gap-1">
+                      <BookmarkCheck className="h-3 w-3" />
+                      Flagged
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-full" />
+                  <div className="pl-5 py-1">
+                    <QuestionText text={readingComprehensionParts.question || question.text} topic={question.topic} />
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {question.options.map((option, index) => {
+                    const isSelected = selectedOption === index;
+                    const optionLabel = String.fromCharCode(65 + index);
+
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleOptionClick(index)}
+                        className={cn(
+                          "group w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 text-left transition-all duration-200",
+                          "hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm",
+                          isSelected
+                            ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 shadow-md shadow-indigo-100 dark:shadow-indigo-900/20"
+                            : "border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 bg-white dark:bg-slate-900"
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all duration-200",
+                            isSelected
+                              ? "bg-indigo-600 text-white shadow-sm"
+                              : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900 group-hover:text-indigo-700 dark:group-hover:text-indigo-300"
+                          )}
+                        >
+                          {optionLabel}
+                        </span>
+                        <span
+                          className={cn(
+                            "text-[15px] leading-relaxed transition-colors",
+                            isSelected ? "text-indigo-900 dark:text-indigo-100 font-medium" : "text-slate-700 dark:text-slate-300"
+                          )}
+                        >
+                          {option}
+                        </span>
+                        {isSelected && (
+                          <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white shrink-0">
+                            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : isPassageType ? (
           /* ── Passage Fill-in-the-Blank: Split Layout ── */
           <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-1">
             {/* Left: Passage */}

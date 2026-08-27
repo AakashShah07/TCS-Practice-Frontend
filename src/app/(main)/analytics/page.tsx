@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/auth-store";
 import {
   Trophy,
   FileText,
@@ -9,6 +11,7 @@ import {
   Clock,
   Lightbulb,
   ArrowRight,
+  Crown,
 } from "lucide-react";
 import {
   Card,
@@ -55,6 +58,8 @@ const typeLabels: Record<string, string> = {
 };
 
 export default function AnalyticsPage() {
+  const { user } = useAuthStore();
+  const router = useRouter();
   const [dashboard, setDashboard] = useState<DashboardAnalytics | null>(null);
   const [topicStats, setTopicStats] = useState<TopicStat[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
@@ -62,6 +67,11 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (user && !user.isPremium) {
+      router.push("/premium");
+      return;
+    }
+
     async function load() {
       setLoading(true);
       try {
@@ -82,7 +92,8 @@ export default function AnalyticsPage() {
       }
     }
     load();
-  }, []);
+  }, [user, router]);
+
 
   if (loading) {
     return (
@@ -207,55 +218,60 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-        <p className="text-muted-foreground mt-1">
-          Detailed performance analysis and recommendations
-        </p>
+      <div className="flex items-center gap-3">
+        <Crown className="h-8 w-8 text-amber-500" />
+        <div>
+          <h1 className="text-3xl font-black tracking-tight text-amber-900 dark:text-amber-100">
+            Premium Analytics
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Exclusive performance analysis and personalized insights
+          </p>
+        </div>
       </div>
 
       {/* Overview Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Average Score</CardTitle>
-            <Trophy className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-amber-900 dark:text-amber-100">Average Score</CardTitle>
+            <Crown className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-black text-amber-950 dark:text-amber-100">
               {Math.round(dashboard.avgScore)}%
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Tests</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-amber-900 dark:text-amber-100">Total Tests</CardTitle>
+            <FileText className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dashboard.totalTests}</div>
+            <div className="text-2xl font-black text-amber-950 dark:text-amber-100">{dashboard.totalTests}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Accuracy Rate</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-amber-900 dark:text-amber-100">Accuracy Rate</CardTitle>
+            <Target className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-black text-amber-950 dark:text-amber-100">
               {Math.round(dashboard.avgAccuracy)}%
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-amber-900 dark:text-amber-100">
               Time Practiced
             </CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <Clock className="h-4 w-4 text-amber-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-black text-amber-950 dark:text-amber-100">
               {formatTime(dashboard.totalTimeSpent)}
             </div>
           </CardContent>

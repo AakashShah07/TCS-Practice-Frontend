@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { fetchReview } from "@/lib/api/results";
 import type { ReviewResponse, ReviewItem } from "@/lib/api/types";
+import { usePreventCopy } from "@/hooks/usePreventCopy";
 import { cn } from "@/lib/utils";
 
 function StatusIcon({ item }: { item: ReviewItem }) {
@@ -103,6 +104,7 @@ function SolutionCard({ explanation }: { explanation: string }) {
 }
 
 export default function ReviewPage() {
+  usePreventCopy();
   const params = useParams();
   const resultId = params.testId as string;
   const [reviewData, setReviewData] = useState<ReviewResponse | null>(null);

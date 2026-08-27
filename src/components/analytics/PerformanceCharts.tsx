@@ -67,16 +67,38 @@ export default function PerformanceCharts({
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={scoreHistory}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" fontSize={12} />
-                  <YAxis domain={[0, 100]} fontSize={12} />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" />
+                  <XAxis
+                    dataKey="date"
+                    fontSize={12}
+                    tick={{ fill: "#475569", fontSize: 11 }}
+                    axisLine={{ stroke: "#94a3b8" }}
+                    tickLine={{ stroke: "#94a3b8" }}
+                  />
+                  <YAxis
+                    domain={[0, 100]}
+                    fontSize={12}
+                    tick={{ fill: "#475569", fontSize: 11 }}
+                    axisLine={{ stroke: "#94a3b8" }}
+                    tickLine={{ stroke: "#94a3b8" }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: 12,
+                      border: "1px solid #d8b4fe",
+                      color: "#334155",
+                      backgroundColor: "#ffffff",
+                    }}
+                  />
                   <Line
                     type="monotone"
                     dataKey="score"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
+                    stroke="#7c3aed"
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                    connectNulls
+                    dot={{ r: 4, strokeWidth: 2, fill: "#ffffff", stroke: "#7c3aed" }}
+                    activeDot={{ r: 6, fill: "#7c3aed", stroke: "#ffffff", strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -87,16 +109,38 @@ export default function PerformanceCharts({
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={accuracyHistory}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" fontSize={12} />
-                  <YAxis domain={[0, 100]} fontSize={12} />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" />
+                  <XAxis
+                    dataKey="date"
+                    fontSize={12}
+                    tick={{ fill: "#475569", fontSize: 11 }}
+                    axisLine={{ stroke: "#94a3b8" }}
+                    tickLine={{ stroke: "#94a3b8" }}
+                  />
+                  <YAxis
+                    domain={[0, 100]}
+                    fontSize={12}
+                    tick={{ fill: "#475569", fontSize: 11 }}
+                    axisLine={{ stroke: "#94a3b8" }}
+                    tickLine={{ stroke: "#94a3b8" }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: 12,
+                      border: "1px solid #86efac",
+                      color: "#334155",
+                      backgroundColor: "#ffffff",
+                    }}
+                  />
                   <Line
                     type="monotone"
                     dataKey="accuracy"
                     stroke="#16a34a"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                    connectNulls
+                    dot={{ r: 4, strokeWidth: 2, fill: "#ffffff", stroke: "#16a34a" }}
+                    activeDot={{ r: 6, fill: "#16a34a", stroke: "#ffffff", strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -107,14 +151,33 @@ export default function PerformanceCharts({
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={sectionData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" fontSize={12} />
-                  <YAxis domain={[0, 100]} fontSize={12} />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" />
+                  <XAxis
+                    dataKey="name"
+                    fontSize={12}
+                    tick={{ fill: "#475569", fontSize: 11 }}
+                    axisLine={{ stroke: "#94a3b8" }}
+                    tickLine={{ stroke: "#94a3b8" }}
+                  />
+                  <YAxis
+                    domain={[0, 100]}
+                    fontSize={12}
+                    tick={{ fill: "#475569", fontSize: 11 }}
+                    axisLine={{ stroke: "#94a3b8" }}
+                    tickLine={{ stroke: "#94a3b8" }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: 12,
+                      border: "1px solid #cbd5e1",
+                      color: "#334155",
+                      backgroundColor: "#ffffff",
+                    }}
+                  />
                   <Legend />
                   <Bar
                     dataKey="accuracy"
-                    fill="hsl(var(--primary))"
+                    fill="#7c3aed"
                     name="Accuracy %"
                     radius={[4, 4, 0, 0]}
                   />

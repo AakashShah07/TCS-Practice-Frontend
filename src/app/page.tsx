@@ -390,6 +390,50 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Premium Test Promotion ── */}
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/20 dark:to-gray-950 border-y border-amber-100 dark:border-amber-900/30">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="relative bg-white dark:bg-gray-900 rounded-[2.5rem] p-10 sm:p-16 border border-amber-200 dark:border-amber-800 shadow-2xl shadow-amber-500/10 overflow-hidden reveal-scale-up" data-reveal>
+            {/* Background decorative glow */}
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-400/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl animate-pulse delay-700" />
+            
+            <div className="relative z-10 flex flex-col items-center text-center">
+              {/* Animated Badge */}
+              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm font-bold uppercase tracking-widest mb-8 animate-bounce">
+                <Trophy className="w-4 h-4" />
+                Limited Time Offer
+              </div>
+
+              {/* Headline with animated gradient */}
+              <h3 className="text-5xl sm:text-7xl font-[800] text-[#111827] dark:text-white mb-8 tracking-tighter leading-[0.9]">
+                Unlock <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-600 animate-gradient-x">Lifetime Mastery</span>
+              </h3>
+
+              {/* Subheadline */}
+              <p className="text-xl sm:text-2xl text-[#6B7280] dark:text-gray-400 max-w-2xl mb-12 leading-relaxed">
+                Get <strong className="text-[#111827] dark:text-white">unlimited access</strong> to premium mock tests, advanced coding challenges, and deep analytical insights.
+              </p>
+
+              {/* Price & CTA */}
+              <div className="flex flex-col items-center gap-6">
+                <div className="text-6xl font-black text-[#111827] dark:text-white tracking-tight">
+                  ₹111 <span className="text-xl text-[#6B7280] dark:text-gray-500 font-medium">/ lifetime</span>
+                </div>
+                
+                <Link
+                  href="/login"
+                  className="group relative inline-flex items-center gap-3 px-12 py-6 bg-[#111827] hover:bg-black dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-black text-lg rounded-3xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/40"
+                >
+                  Claim Lifetime Access
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Popular Tests ── */}
       <section className="py-20 sm:py-24 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
         <div className="max-w-[1140px] mx-auto px-6">

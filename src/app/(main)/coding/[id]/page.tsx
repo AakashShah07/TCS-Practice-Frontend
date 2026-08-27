@@ -12,8 +12,6 @@ import {
   HardDrive,
   ChevronDown,
   ChevronUp,
-  Copy,
-  Check,
   BookOpen,
 } from "lucide-react";
 import {
@@ -26,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { fetchCodingQuestion } from "@/lib/api/coding";
 import type { CodingQuestion, CodingSolution } from "@/lib/api/types";
+import { usePreventCopy } from "@/hooks/usePreventCopy";
 
 const difficultyConfig = {
   easy: {
@@ -43,25 +42,10 @@ const difficultyConfig = {
 };
 
 function CodeBlock({ code, language }: { code: string; language: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <div className="relative group rounded-lg overflow-hidden border bg-slate-950 dark:bg-slate-900">
       <div className="flex items-center justify-between px-4 py-2 bg-slate-900 dark:bg-slate-800 border-b border-slate-700">
         <span className="text-xs text-slate-400 font-mono">{language}</span>
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
-        >
-          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-          {copied ? "Copied" : "Copy"}
-        </button>
       </div>
       <pre className="p-4 overflow-x-auto text-sm leading-relaxed">
         <code className="text-slate-200 font-mono whitespace-pre">{code}</code>
@@ -157,6 +141,7 @@ function SolutionSection({
 }
 
 export default function CodingQuestionDetailPage() {
+  usePreventCopy();
   const params = useParams();
   const id = params.id as string;
   const [question, setQuestion] = useState<CodingQuestion | null>(null);

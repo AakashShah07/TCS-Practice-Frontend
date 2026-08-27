@@ -9,6 +9,7 @@ import {
   Tag,
   Clock,
   Search,
+  Crown,
 } from "lucide-react";
 import {
   Card,
@@ -24,6 +25,7 @@ import {
   fetchCodingTopics,
 } from "@/lib/api/coding";
 import type { CodingQuestionSummary, CodingTopicCount } from "@/lib/api/types";
+import { useAuthStore } from "@/stores/auth-store";
 
 const difficultyConfig = {
   easy: {
@@ -49,6 +51,8 @@ export default function CodingQuestionsPage() {
   const [loading, setLoading] = useState(true);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("");
   const [selectedTopic, setSelectedTopic] = useState<string>("");
+  const { user } = useAuthStore();
+  const isPremium = user?.isPremium;
 
   useEffect(() => {
     fetchCodingTopics().then(setTopics).catch(() => {});
@@ -148,7 +152,8 @@ export default function CodingQuestionsPage() {
               <div className="flex gap-1.5">
                 <button
                   onClick={() => setSelectedDifficulty("")}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                  disabled={!isPremium}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${!isPremium && "opacity-50 cursor-not-allowed"} ${
                     selectedDifficulty === ""
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted hover:bg-accent"
@@ -160,7 +165,8 @@ export default function CodingQuestionsPage() {
                   <button
                     key={d}
                     onClick={() => setSelectedDifficulty(d === selectedDifficulty ? "" : d)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                    disabled={!isPremium}
+                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${!isPremium && "opacity-50 cursor-not-allowed"} ${
                       selectedDifficulty === d
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted hover:bg-accent"
@@ -179,7 +185,8 @@ export default function CodingQuestionsPage() {
               <div className="flex flex-wrap gap-1.5">
                 <button
                   onClick={() => setSelectedTopic("")}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                  disabled={!isPremium}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${!isPremium && "opacity-50 cursor-not-allowed"} ${
                     selectedTopic === ""
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted hover:bg-accent"
@@ -191,7 +198,8 @@ export default function CodingQuestionsPage() {
                   <button
                     key={t.topic}
                     onClick={() => setSelectedTopic(t.topic === selectedTopic ? "" : t.topic)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                    disabled={!isPremium}
+                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${!isPremium && "opacity-50 cursor-not-allowed"} ${
                       selectedTopic === t.topic
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted hover:bg-accent"
@@ -225,7 +233,7 @@ export default function CodingQuestionsPage() {
         </div>
       ) : questions.length > 0 ? (
         <div className="space-y-3">
-          {questions.map((q, index) => {
+          {questions.slice(0, isPremium ? questions.length : 6).map((q, index) => {
             const diff = difficultyConfig[q.difficulty];
             return (
               <Link key={q._id} href={`/coding/${q._id}`}>
@@ -251,6 +259,24 @@ export default function CodingQuestionsPage() {
               </Link>
             );
           })}
+          {!isPremium && questions.length > 6 && (
+            <Link href="/premium/payment">
+              <Card className="border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/30 hover:border-amber-300 transition-all cursor-pointer">
+                <CardContent className="py-6 px-5 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center shrink-0">
+                      <Crown className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-amber-900 dark:text-amber-100">Unlock All Questions</h3>
+                      <p className="text-sm text-amber-700/80 dark:text-amber-300/80">Upgrade to Premium to access all coding questions and solutions.</p>
+                    </div>
+                  </div>
+                  <Button variant="default" className="bg-amber-600 hover:bg-amber-700 text-white">Upgrade Now</Button>
+                </CardContent>
+              </Card>
+            </Link>
+          )}
         </div>
       ) : (
         <Card>

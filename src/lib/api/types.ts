@@ -53,6 +53,7 @@ export interface User {
   name: string;
   email: string;
   role: "user" | "admin";
+  isPremium: boolean;
   createdAt?: string;
 }
 

@@ -30,6 +30,7 @@ import {
   Hourglass,
   KeyRound,
   Database,
+  Crown,
 } from "lucide-react";
 import {
   Card,
@@ -46,6 +47,7 @@ import {
   TopicTestCard,
   type TopicCardColors,
 } from "@/components/topic-test-card";
+import { useAuthStore } from "@/stores/auth-store";
 
 interface TopicCardConfig {
   topic: string;
@@ -718,24 +720,31 @@ const testCategories = [
 
 export default function TestsPage() {
   const [topicTests, setTopicTests] = useState<Record<string, Test>>({});
+  const [premiumTests, setPremiumTests] = useState<Test[]>([]);
   const [specialLoading, setSpecialLoading] = useState(true);
+  const { user } = useAuthStore();
 
   useEffect(() => {
-    async function loadSpecialTests() {
+    async function loadTests() {
       try {
-        const data = await fetchTests({ type: "topic_practice" });
+        const [topicData, mockData] = await Promise.all([
+          fetchTests({ type: "topic_practice" }),
+          fetchTests({ type: "full_mock" }),
+        ]);
+
         const map: Record<string, Test> = {};
-        for (const t of data) {
+        for (const t of topicData) {
           if (t.topic) map[t.topic] = t;
         }
         setTopicTests(map);
+        setPremiumTests(mockData.filter(t => t.isPremium));
       } catch {
         // API not ready
       } finally {
         setSpecialLoading(false);
       }
     }
-    loadSpecialTests();
+    loadTests();
   }, []);
 
   return (
@@ -746,6 +755,34 @@ export default function TestsPage() {
           Choose a section to practice or take a full mock test
         </p>
       </div>
+
+      {/* Premium Tests (if user is premium) */}
+      {user?.isPremium && premiumTests.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold flex items-center gap-2 text-amber-600">
+            <Crown className="h-5 w-5" />
+            Premium Mock Tests
+          </h2>
+          <div className="grid gap-4">
+            {premiumTests.map((test) => (
+              <Card key={test._id} className="border-amber-200 bg-amber-50 dark:bg-amber-950/20">
+                <CardHeader>
+                  <CardTitle className="text-lg text-amber-900 dark:text-amber-100">{test.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex items-center justify-between">
+                  <div className="flex gap-2">
+                    <Badge variant="outline">{test.totalQuestions} Questions</Badge>
+                    <Badge variant="outline">{Math.round(test.duration / 60)} Minutes</Badge>
+                  </div>
+                  <Button className="bg-amber-600 hover:bg-amber-700" render={<Link href={`/exam/${test._id}`} />}>
+                    Start Test <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Full Mock Test */}
       <Card className="bg-primary text-primary-foreground">

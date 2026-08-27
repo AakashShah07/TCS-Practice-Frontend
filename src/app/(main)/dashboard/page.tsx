@@ -12,6 +12,8 @@ import {
   BookOpen,
   Zap,
   ArrowRight,
+  Sparkles,
+  Crown,
 } from "lucide-react";
 import {
   Card,
@@ -279,13 +281,62 @@ export default function DashboardPage() {
       {/* Full Mock Test CTA */}
       <Card className="bg-primary text-primary-foreground">
         <CardHeader>
-          <CardTitle className="text-xl">Full Mock Test</CardTitle>
-          <CardDescription className="text-primary-foreground/80">
+          <CardTitle className="text-xl font-bold tracking-tight text-primary-foreground">
+            Full Mock Test (Easy Mode)
+          </CardTitle>
+          <CardDescription className="text-primary-foreground/95 font-semibold tracking-wide">
             Complete TCS NQT simulation — 79 Questions • 120 Minutes
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button variant="secondary" render={<Link href="/tests/mock" />}>Start Mock Test</Button>
+        </CardContent>
+      </Card>
+
+      {/* Premium Unlock CTA */}
+      <Card className="overflow-hidden border-violet-200 bg-[linear-gradient(135deg,rgba(124,58,237,0.12),rgba(255,255,255,0.92))] shadow-sm dark:border-violet-500/40 dark:bg-[linear-gradient(135deg,rgba(91,33,182,0.55),rgba(28,25,47,0.98))]">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-white shadow-md shadow-violet-500/30">
+              <Crown className="h-5 w-5" />
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold tracking-tight text-slate-950 dark:text-white">
+                Unlock Premium Access
+              </CardTitle>
+              <CardDescription className="text-slate-600 dark:text-slate-300">
+                Hard Mode tests, live analytics, and smarter preparation insights
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="flex items-center gap-2 rounded-lg bg-white/70 px-3 py-2 text-sm font-medium text-slate-700 shadow-sm dark:bg-white/8 dark:text-slate-100">
+              <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-300" />
+              Hard Mode Mock Tests
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-white/70 px-3 py-2 text-sm font-medium text-slate-700 shadow-sm dark:bg-white/8 dark:text-slate-100">
+              <Trophy className="h-4 w-4 text-violet-600 dark:text-violet-300" />
+              Advanced Analytics
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-white/70 px-3 py-2 text-sm font-medium text-slate-700 shadow-sm dark:bg-white/8 dark:text-slate-100">
+              <Target className="h-4 w-4 text-violet-600 dark:text-violet-300" />
+              Performance Intelligence
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link 
+              href="/premium"
+              className="relative z-10 inline-flex items-center justify-center rounded-xl bg-linear-to-r from-violet-700 to-purple-600 px-5 py-2.5 font-semibold text-white shadow-[0_8px_28px_rgba(124,58,237,0.26)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_34px_rgba(124,58,237,0.40)] text-sm"
+            >
+              Unlock Lifetime Access
+            </Link>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-300">
+              <span className="font-bold text-violet-700 dark:text-violet-300">₹99</span> one-time • No subscription • Lifetime access
+            </span>
+          </div>
+
         </CardContent>
       </Card>
 
