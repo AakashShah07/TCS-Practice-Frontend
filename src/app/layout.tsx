@@ -140,6 +140,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="h-full antialiased">
       <head>
+        <meta name="google-adsense-account" content="ca-pub-9796476439148629"></meta>
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-XF4D0X8KBZ"
