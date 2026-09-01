@@ -72,7 +72,7 @@ export default function Navbar() {
               const isAnalyticsLink = link.href === "/analytics";
               const isLocked = isAnalyticsLink && !user?.isPremium;
               const Icon = isLocked ? Lock : link.icon;
-              const isActive = pathname.startsWith(link.href);
+              const isActive = pathname !== "/tcs-nqt-preparation" && pathname.startsWith(link.href);
               
               return (
                 <Link
@@ -148,7 +148,7 @@ export default function Navbar() {
                   const isAnalyticsLink = link.href === "/analytics";
                   const isLocked = isAnalyticsLink && !user?.isPremium;
                   const Icon = isLocked ? Lock : link.icon;
-                  const isActive = pathname.startsWith(link.href);
+                  const isActive = pathname !== "/tcs-nqt-preparation" && pathname.startsWith(link.href);
                   
                   return (
                     <Link

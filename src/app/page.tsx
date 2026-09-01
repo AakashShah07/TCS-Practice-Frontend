@@ -29,6 +29,19 @@ import {
   ShieldCheck,
   Database,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/stores/auth-store";
+
+const resourceLinks = [
+  { href: "/tcs-nqt-syllabus", label: "Syllabus" },
+  { href: "/tcs-nqt-preparation", label: "Preparation" },
+  { href: "/tcs-nqt-cutoff", label: "Cutoff" },
+];
 
 const faqData = [
   {
@@ -173,6 +186,7 @@ export default function HomePage() {
   const [foundationOpen, setFoundationOpen] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [expandedSubs, setExpandedSubs] = useState<Set<string>>(new Set());
+  const { isAuthenticated } = useAuthStore();
 
   const toggleSub = useCallback((key: string) => {
     setExpandedSubs((prev) => {
@@ -198,6 +212,39 @@ export default function HomePage() {
             <span className="text-lg sm:text-xl font-black text-[#111827] dark:text-white tracking-tight">CrackNQT</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Desktop: Show links directly */}
+            {!isAuthenticated && (
+              <div className="hidden md:flex items-center gap-1">
+                {resourceLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 py-2"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Mobile: Show dropdown */}
+            {!isAuthenticated && (
+              <div className="md:hidden">
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 py-2 flex items-center gap-1">
+                    Resources <ChevronDown className="h-4 w-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    {resourceLinks.map((link) => (
+                      <DropdownMenuItem key={link.href} onClick={() => window.location.href = link.href}>
+                        {link.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+
             <Link
               href="/login"
               className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 sm:px-3 py-2"

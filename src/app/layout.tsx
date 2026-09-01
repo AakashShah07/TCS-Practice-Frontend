@@ -138,11 +138,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className="h-full antialiased"
-    >
+    <html lang="en" suppressHydrationWarning className="h-full antialiased">
       <head>
         {/* Google Analytics */}
         <Script
@@ -157,6 +153,11 @@ export default function RootLayout({
             gtag('config', 'G-XF4D0X8KBZ');
           `}
         </Script>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9796476439148629"
+          crossOrigin="anonymous"
+        ></Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
