@@ -21,12 +21,8 @@ export default function PreparationHero() {
           Proven, data-driven strategies to help you crack the TCS NQT exam with confidence.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button asChild size="lg" className="rounded-full px-8">
-            <Link href="/practice">Start Practicing</Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="rounded-full px-8">
-            <Link href="/tests">Explore Tests</Link>
-          </Button>
+          <Button size="lg" className="rounded-full px-8" render={(props) => <Link {...props} href="/practice">Start Practicing</Link>} />
+          <Button variant="outline" size="lg" className="rounded-full px-8" render={(props) => <Link {...props} href="/tests">Explore Tests</Link>} />
         </div>
       </motion.div>
       

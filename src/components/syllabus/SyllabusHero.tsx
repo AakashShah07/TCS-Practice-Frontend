@@ -22,12 +22,8 @@ export default function SyllabusHero() {
           Master every important topic with a structured roadmap covering aptitude, reasoning, verbal ability, and technical skills.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button asChild size="lg" className="rounded-full px-8">
-            <Link href="/practice">Start Preparation</Link>
-          </Button>
-          <Button asChild variant="outline" size="lg" className="rounded-full px-8">
-            <Link href="/tests">Explore Mock Tests</Link>
-          </Button>
+          <Button size="lg" className="rounded-full px-8" render={(props) => <Link {...props} href="/practice">Start Preparation</Link>} />
+          <Button variant="outline" size="lg" className="rounded-full px-8" render={(props) => <Link {...props} href="/tests">Explore Mock Tests</Link>} />
         </div>
       </motion.div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
