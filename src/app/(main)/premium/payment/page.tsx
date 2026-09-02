@@ -41,7 +41,7 @@ export default function PaymentPage() {
 
   const upiId = "aakashshah0707@okicici"; // Placeholder UPI ID
   const productName = "CrackNQt Premium - Lifetime Access";
-  const amount = 149;
+  const amount = 49;
   const orderId = `CNQ-${user?._id.slice(-6).toUpperCase() || "DEMO"}`;
 
   const copyToClipboard = () => {

@@ -465,7 +465,7 @@ export default function HomePage() {
               {/* Price & CTA */}
               <div className="flex flex-col items-center gap-6">
                 <div className="text-6xl font-black text-[#111827] dark:text-white tracking-tight">
-                  ₹149 <span className="text-xl text-[#6B7280] dark:text-gray-500 font-medium">/ lifetime</span>
+                  ₹49 <span className="text-xl text-[#6B7280] dark:text-gray-500 font-medium">/ lifetime</span>
                 </div>
                 
                 <Link

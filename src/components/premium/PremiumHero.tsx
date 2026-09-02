@@ -169,7 +169,7 @@ export default function PremiumHero() {
               </h1>
 
               <p className="mt-6 max-w-2xl text-lg text-slate-600 dark:text-white/70">
-                Get the complete CRackNQT Premium experience for just ₹149 — one payment, lifetime access. Unlock advanced mocks, AI-powered analytics, coding practice, and smarter preparation tools built to help you reach your NQT goal.
+                Get the complete CRackNQT Premium experience for just ₹49 — one payment, lifetime access. Unlock advanced mocks, AI-powered analytics, coding practice, and smarter preparation tools built to help you reach your NQT goal.
               </p>
 
               {/* Trust & indicators */}
