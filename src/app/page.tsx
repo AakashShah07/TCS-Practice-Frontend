@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
+
 import { useEffect, useRef, useState, useCallback } from "react";
+import { ArrowUpRight, Mail, ShieldCheck } from "lucide-react";
 import {
   Monitor,
   BarChart3,
@@ -11,22 +13,21 @@ import {
   Clock,
   Layers,
   CheckCircle2,
+  UserRound,
   Zap,
   GraduationCap,
+  ClipboardCheck,
   HelpCircle,
   FileText,
   ChevronDown,
+  Building2,
   Code2,
   Trophy,
   Calculator,
   Brain,
   MessageSquare,
   Users,
-  Briefcase,
-  Cpu,
   Globe,
-  Settings,
-  ShieldCheck,
   Database,
 } from "lucide-react";
 import {
@@ -94,24 +95,54 @@ const syllabusData = {
         icon: Calculator,
         questions: "~26 Qs",
         difficulty: "moderate" as const,
-        topics: ["Number Systems", "LCM & HCF", "Percentages", "Profit & Loss", "Time & Work", "Speed, Time & Distance", "Averages", "Ratios", "Mensuration", "Data Interpretation", "Series"],
-        detail: "Data Interpretation (pie charts, tables, graphs) is a major focus area. Series questions test pattern recognition and number sequences.",
+        topics: [
+          "Number Systems",
+          "LCM & HCF",
+          "Percentages",
+          "Profit & Loss",
+          "Time & Work",
+          "Speed, Time & Distance",
+          "Averages",
+          "Ratios",
+          "Mensuration",
+          "Data Interpretation",
+          "Series",
+        ],
+        detail:
+          "Data Interpretation (pie charts, tables, graphs) is a major focus area. Series questions test pattern recognition and number sequences.",
       },
       {
         name: "Verbal Ability",
         icon: MessageSquare,
         questions: "~24 Qs",
         difficulty: "low-moderate" as const,
-        topics: ["Reading Comprehension", "Sentence Completion", "Error Identification", "Synonyms & Antonyms", "Para Jumbles", "Active/Passive Voice"],
-        detail: "Reading Comprehension passages are lengthy. Grammar-based questions cover voice, tense, articles, and sentence structure.",
+        topics: [
+          "Reading Comprehension",
+          "Sentence Completion",
+          "Error Identification",
+          "Synonyms & Antonyms",
+          "Para Jumbles",
+          "Active/Passive Voice",
+        ],
+        detail:
+          "Reading Comprehension passages are lengthy. Grammar-based questions cover voice, tense, articles, and sentence structure.",
       },
       {
         name: "Reasoning Ability",
         icon: Brain,
         questions: "~15 Qs",
         difficulty: "moderate-hard" as const,
-        topics: ["Seating Arrangements", "Blood Relations", "Coding-Decoding", "Direction Sense", "Syllogism", "Data Sufficiency", "Logical Puzzles"],
-        detail: "Complex puzzles can span 4–5 questions. Seating arrangements frequently combine circular and linear patterns.",
+        topics: [
+          "Seating Arrangements",
+          "Blood Relations",
+          "Coding-Decoding",
+          "Direction Sense",
+          "Syllogism",
+          "Data Sufficiency",
+          "Logical Puzzles",
+        ],
+        detail:
+          "Complex puzzles can span 4–5 questions. Seating arrangements frequently combine circular and linear patterns.",
       },
     ],
   },
@@ -128,28 +159,67 @@ const syllabusData = {
         icon: Brain,
         questions: "14–16 Qs · 25 mins",
         difficulty: "hard" as const,
-        topics: ["Permutations & Combinations", "Probability", "Logarithms", "Advanced Puzzles", "Spatial Reasoning"],
-        detail: "Higher-level questions shared between quant and reasoning. Expect multi-step problems requiring deep analytical thinking.",
+        topics: [
+          "Permutations & Combinations",
+          "Probability",
+          "Logarithms",
+          "Advanced Puzzles",
+          "Spatial Reasoning",
+        ],
+        detail:
+          "Higher-level questions shared between quant and reasoning. Expect multi-step problems requiring deep analytical thinking.",
       },
       {
         name: "Advanced Coding",
         icon: Code2,
         questions: "2 Qs · 90 mins",
         difficulty: "hard" as const,
-        topics: ["Arrays", "Strings", "Stacks", "Queues", "Sorting", "Searching", "Programming Constructs"],
-        detail: "Two coding problems testing Data Structures & Algorithms. At least one fully solved problem is needed for Digital/Prime profiles.",
+        topics: [
+          "Arrays",
+          "Strings",
+          "Stacks",
+          "Queues",
+          "Sorting",
+          "Searching",
+          "Programming Constructs",
+        ],
+        detail:
+          "Two coding problems testing Data Structures & Algorithms. At least one fully solved problem is needed for Digital/Prime profiles.",
         languages: ["C", "C++", "Java", "Python", "Perl"],
       },
     ],
   },
 };
 
-const difficultyConfig: Record<string, { label: string; bg: string; text: string }> = {
-  low: { label: "LOW", bg: "bg-green-100 dark:bg-green-900/50", text: "text-green-700 dark:text-green-300" },
-  moderate: { label: "MODERATE", bg: "bg-amber-100 dark:bg-amber-900/50", text: "text-amber-700 dark:text-amber-300" },
-  hard: { label: "HARD", bg: "bg-red-100 dark:bg-red-900/50", text: "text-red-700 dark:text-red-300" },
-  "low-moderate": { label: "LOW–MODERATE", bg: "bg-green-100 dark:bg-green-900/50", text: "text-green-700 dark:text-green-300" },
-  "moderate-hard": { label: "MODERATE–HARD", bg: "bg-orange-100 dark:bg-orange-900/50", text: "text-orange-700 dark:text-orange-300" },
+const difficultyConfig: Record<
+  string,
+  { label: string; bg: string; text: string }
+> = {
+  low: {
+    label: "LOW",
+    bg: "bg-green-100 dark:bg-green-900/50",
+    text: "text-green-700 dark:text-green-300",
+  },
+  moderate: {
+    label: "MODERATE",
+    bg: "bg-amber-100 dark:bg-amber-900/50",
+    text: "text-amber-700 dark:text-amber-300",
+  },
+  hard: {
+    label: "HARD",
+    bg: "bg-red-100 dark:bg-red-900/50",
+    text: "text-red-700 dark:text-red-300",
+  },
+  "low-moderate": {
+    label: "LOW–MODERATE",
+    bg: "bg-green-100 dark:bg-green-900/50",
+    text: "text-green-700 dark:text-green-300",
+  },
+  "moderate-hard": {
+    label: "MODERATE–HARD",
+    bg: "bg-orange-100 dark:bg-orange-900/50",
+    text: "text-orange-700 dark:text-orange-300",
+  },
 };
 
 // Intersection Observer hook for scroll animations
@@ -169,7 +239,7 @@ function useScrollReveal() {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     );
 
     const targets = el.querySelectorAll("[data-reveal]");
@@ -187,6 +257,89 @@ export default function HomePage() {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [expandedSubs, setExpandedSubs] = useState<Set<string>>(new Set());
   const { isAuthenticated } = useAuthStore();
+
+  const footerGroups = [
+    {
+      title: "Practice",
+      icon: BookOpen,
+      links: [
+        {
+          label: "Numerical Ability",
+          href: "/tests/foundation?section=numerical",
+        },
+        {
+          label: "Reasoning Ability",
+          href: "/tests/foundation?section=reasoning",
+        },
+        {
+          label: "Verbal Ability",
+          href: "/tests/foundation?section=verbal",
+        },
+        {
+          label: "Advanced Section",
+          href: "/tests/advanced",
+        },
+      ],
+    },
+    {
+      title: "Tests",
+      icon: ClipboardCheck,
+      links: [
+        {
+          label: "All Tests",
+          href: "/tests",
+        },
+        {
+          label: "Full Mock Test",
+          href: "/tests/mock",
+        },
+        {
+          label: "Topic Practice",
+          href: "/practice",
+        },
+        {
+          label: "Advanced Tests",
+          href: "/tests/advanced",
+        },
+      ],
+    },
+    {
+      title: "Account",
+      icon: UserRound,
+      links: [
+        {
+          label: "Sign In",
+          href: "/login",
+        },
+        {
+          label: "Create Account",
+          href: "/register",
+        },
+        // {
+        //   label: "Sitemap",
+        //   href: "/sitemap.xml",
+        // },
+      ],
+    },
+    {
+      title: "Company",
+      icon: Building2,
+      links: [
+        {
+          label: "About Us",
+          href: "/about",
+        },
+        {
+          label: "Contact Us",
+          href: "/contact",
+        },
+        {
+          label: "Privacy Policy",
+          href: "/privacy-policy",
+        },
+      ],
+    },
+  ];
 
   const toggleSub = useCallback((key: string) => {
     setExpandedSubs((prev) => {
@@ -208,8 +361,16 @@ export default function HomePage() {
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 landing-slide-down">
         <div className="max-w-[1140px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 sm:gap-2.5">
-            <Image src="/llog.png" alt="CrackNQT" width={32} height={32} className="rounded-lg" />
-            <span className="text-lg sm:text-xl font-black text-[#111827] dark:text-white tracking-tight">CrackNQT</span>
+            <Image
+              src="/llog.png"
+              alt="CrackNQT"
+              width={32}
+              height={32}
+              className="rounded-lg"
+            />
+            <span className="text-lg sm:text-xl font-black text-[#111827] dark:text-white tracking-tight">
+              CrackNQT
+            </span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Desktop: Show links directly */}
@@ -236,7 +397,10 @@ export default function HomePage() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
                     {resourceLinks.map((link) => (
-                      <DropdownMenuItem key={link.href} onClick={() => window.location.href = link.href}>
+                      <DropdownMenuItem
+                        key={link.href}
+                        onClick={() => (window.location.href = link.href)}
+                      >
                         {link.label}
                       </DropdownMenuItem>
                     ))}
@@ -292,7 +456,11 @@ export default function HomePage() {
 
           {/* Subtitle — fade up */}
           <p className="mt-7 text-lg sm:text-xl text-[#6B7280] dark:text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium landing-fade-up landing-delay-200">
-            Practice real exam-level questions, take mock tests, and track your performance — <span className="text-[#111827] dark:text-white font-bold">completely free, forever.</span>
+            Practice real exam-level questions, take mock tests, and track your
+            performance —{" "}
+            <span className="text-[#111827] dark:text-white font-bold">
+              completely free, forever.
+            </span>
           </p>
 
           {/* Buttons — slide up with bounce */}
@@ -315,20 +483,45 @@ export default function HomePage() {
           {/* Stats — count up style with stagger */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-12 mt-16 max-w-4xl mx-auto">
             <div className="text-center landing-fade-up landing-delay-400">
-              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">25,000+</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Questions Solved</p>
+              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">
+                25,000+
+              </p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">
+                Questions Solved
+              </p>
             </div>
-            <div className="text-center landing-fade-up" style={{ animationDelay: "500ms" }}>
-              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">8,500+</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Students</p>
+            <div
+              className="text-center landing-fade-up"
+              style={{ animationDelay: "500ms" }}
+            >
+              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">
+                8,500+
+              </p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">
+                Students
+              </p>
             </div>
-            <div className="text-center landing-fade-up" style={{ animationDelay: "600ms" }}>
-              <p className="text-2xl sm:text-4xl font-black text-[#2563EB] dark:text-blue-400">92%</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Satisfaction</p>
+            <div
+              className="text-center landing-fade-up"
+              style={{ animationDelay: "600ms" }}
+            >
+              <p className="text-2xl sm:text-4xl font-black text-[#2563EB] dark:text-blue-400">
+                92%
+              </p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">
+                Satisfaction
+              </p>
             </div>
-            <div className="text-center landing-fade-up" style={{ animationDelay: "700ms" }}>
-              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">15+</p>
-              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">Companies</p>
+            <div
+              className="text-center landing-fade-up"
+              style={{ animationDelay: "700ms" }}
+            >
+              <p className="text-2xl sm:text-4xl font-black text-[#111827] dark:text-white">
+                15+
+              </p>
+              <p className="text-xs sm:text-sm text-[#9CA3AF] dark:text-gray-500 mt-1 font-semibold uppercase tracking-wide">
+                Companies
+              </p>
             </div>
           </div>
         </div>
@@ -338,24 +531,58 @@ export default function HomePage() {
       <section className="py-12 sm:py-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up" data-reveal>
+            <h2
+              className="text-2xl sm:text-3xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up"
+              data-reveal
+            >
               Choose Your Exam
             </h2>
-            <p className="text-[#6B7280] dark:text-gray-400 mt-2 text-sm font-medium reveal-fade-up" data-reveal>
+            <p
+              className="text-[#6B7280] dark:text-gray-400 mt-2 text-sm font-medium reveal-fade-up"
+              data-reveal
+            >
               Tailored preparation for top IT companies.
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
             {[
-              { name: "TCS NQT",       logo: "/logos/tcs-logo.webp",     bg: "bg-blue-600" },
-              { name: "Infosys",       logo: "/logos/infosys.webp",      bg: "bg-indigo-600" },
-              { name: "Wipro",         logo: "/logos/Wipro.webp",        bg: "bg-emerald-600" },
-              { name: "Accenture",     logo: "/logos/accenture.webp",    bg: "bg-purple-600" },
-              { name: "Cognizant",     logo: "/logos/cognizant.webp",    bg: "bg-amber-600" },
-              { name: "Capgemini",     logo: "/logos/capgemini.webp",    bg: "bg-rose-600" },
-              { name: "Tech Mahindra", logo: "/logos/techmahindra.webp", bg: "bg-cyan-600" },
-              { name: "HCL",           logo: "/logos/hcl.webp",          bg: "bg-orange-600" },
+              {
+                name: "TCS NQT",
+                logo: "/logos/tcs-logo.webp",
+                bg: "bg-blue-600",
+              },
+              {
+                name: "Infosys",
+                logo: "/logos/infosys.webp",
+                bg: "bg-indigo-600",
+              },
+              {
+                name: "Wipro",
+                logo: "/logos/Wipro.webp",
+                bg: "bg-emerald-600",
+              },
+              {
+                name: "Accenture",
+                logo: "/logos/accenture.webp",
+                bg: "bg-purple-600",
+              },
+              {
+                name: "Cognizant",
+                logo: "/logos/cognizant.webp",
+                bg: "bg-amber-600",
+              },
+              {
+                name: "Capgemini",
+                logo: "/logos/capgemini.webp",
+                bg: "bg-rose-600",
+              },
+              {
+                name: "Tech Mahindra",
+                logo: "/logos/techmahindra.webp",
+                bg: "bg-cyan-600",
+              },
+              { name: "HCL", logo: "/logos/hcl.webp", bg: "bg-orange-600" },
             ].map((exam, i) => (
               <Link
                 key={exam.name}
@@ -386,10 +613,16 @@ export default function HomePage() {
       {/* ── Features — slide in from sides ── */}
       <section className="py-20 sm:py-24">
         <div className="max-w-[1140px] mx-auto px-6">
-          <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight text-center mb-4 reveal-fade-up" data-reveal>
+          <h2
+            className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight text-center mb-4 reveal-fade-up"
+            data-reveal
+          >
             Everything You Need
           </h2>
-          <p className="text-[#6B7280] dark:text-gray-400 text-center mb-14 text-base font-medium reveal-fade-up" data-reveal>
+          <p
+            className="text-[#6B7280] dark:text-gray-400 text-center mb-14 text-base font-medium reveal-fade-up"
+            data-reveal
+          >
             One platform, zero cost.
           </p>
 
@@ -426,11 +659,17 @@ export default function HomePage() {
                 data-reveal
                 style={{ transitionDelay: `${i * 100}ms` }}
               >
-                <div className={`w-12 h-12 rounded-2xl ${f.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                <div
+                  className={`w-12 h-12 rounded-2xl ${f.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}
+                >
                   <f.icon className={`w-6 h-6 ${f.iconColor}`} />
                 </div>
-                <h3 className="text-lg font-black text-[#111827] dark:text-white mb-2">{f.title}</h3>
-                <p className="text-sm text-[#6B7280] dark:text-gray-400 leading-relaxed">{f.desc}</p>
+                <h3 className="text-lg font-black text-[#111827] dark:text-white mb-2">
+                  {f.title}
+                </h3>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400 leading-relaxed">
+                  {f.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -440,11 +679,14 @@ export default function HomePage() {
       {/* ── Premium Test Promotion ── */}
       <section className="py-24 sm:py-32 bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/20 dark:to-gray-950 border-y border-amber-100 dark:border-amber-900/30">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="relative bg-white dark:bg-gray-900 rounded-[2.5rem] p-10 sm:p-16 border border-amber-200 dark:border-amber-800 shadow-2xl shadow-amber-500/10 overflow-hidden reveal-scale-up" data-reveal>
+          <div
+            className="relative bg-white dark:bg-gray-900 rounded-[2.5rem] p-10 sm:p-16 border border-amber-200 dark:border-amber-800 shadow-2xl shadow-amber-500/10 overflow-hidden reveal-scale-up"
+            data-reveal
+          >
             {/* Background decorative glow */}
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-400/20 rounded-full blur-3xl animate-pulse" />
             <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl animate-pulse delay-700" />
-            
+
             <div className="relative z-10 flex flex-col items-center text-center">
               {/* Animated Badge */}
               <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm font-bold uppercase tracking-widest mb-8 animate-bounce">
@@ -454,20 +696,31 @@ export default function HomePage() {
 
               {/* Headline with animated gradient */}
               <h3 className="text-5xl sm:text-7xl font-[800] text-[#111827] dark:text-white mb-8 tracking-tighter leading-[0.9]">
-                Unlock <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-600 animate-gradient-x">Lifetime Mastery</span>
+                Unlock{" "}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-600 animate-gradient-x">
+                  Lifetime Mastery
+                </span>
               </h3>
 
               {/* Subheadline */}
               <p className="text-xl sm:text-2xl text-[#6B7280] dark:text-gray-400 max-w-2xl mb-12 leading-relaxed">
-                Get <strong className="text-[#111827] dark:text-white">unlimited access</strong> to premium mock tests, advanced coding challenges, and deep analytical insights.
+                Get{" "}
+                <strong className="text-[#111827] dark:text-white">
+                  unlimited access
+                </strong>{" "}
+                to premium mock tests, advanced coding challenges, and deep
+                analytical insights.
               </p>
 
               {/* Price & CTA */}
               <div className="flex flex-col items-center gap-6">
                 <div className="text-6xl font-black text-[#111827] dark:text-white tracking-tight">
-                  ₹49 <span className="text-xl text-[#6B7280] dark:text-gray-500 font-medium">/ lifetime</span>
+                  ₹49{" "}
+                  <span className="text-xl text-[#6B7280] dark:text-gray-500 font-medium">
+                    / lifetime
+                  </span>
                 </div>
-                
+
                 <Link
                   href="/login"
                   className="group relative inline-flex items-center gap-3 px-12 py-6 bg-[#111827] hover:bg-black dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-black text-lg rounded-3xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/40"
@@ -485,22 +738,70 @@ export default function HomePage() {
       <section className="py-20 sm:py-24 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up" data-reveal>
+            <h2
+              className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up"
+              data-reveal
+            >
               🔥 Most Popular Tests
             </h2>
-            <p className="text-[#6B7280] dark:text-gray-400 mt-3 text-base font-medium reveal-fade-up" data-reveal>
+            <p
+              className="text-[#6B7280] dark:text-gray-400 mt-3 text-base font-medium reveal-fade-up"
+              data-reveal
+            >
               Highly attempted mock tests for various exam patterns.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { title: "TCS NQT Full Mock #1",     qs: 79, mins: 120, attempted: "4,200+", logo: "/logos/tcs-logo.webp",     company: "TCS" },
-              { title: "Infosys Placement Test",   qs: 54, mins: 100, attempted: "3,100+", logo: "/logos/infosys.webp",      company: "Infosys" },
-              { title: "Accenture Cognitive Mock", qs: 90, mins: 90,  attempted: "2,800+", logo: "/logos/accenture.webp",    company: "Accenture" },
-              { title: "Wipro Elite Mock #1",      qs: 52, mins: 128, attempted: "2,500+", logo: "/logos/Wipro.webp",        company: "Wipro" },
-              { title: "Cognizant GenC Mock",      qs: 60, mins: 80,  attempted: "2,200+", logo: "/logos/cognizant.webp",    company: "Cognizant" },
-              { title: "Capgemini Game-Based",     qs: 40, mins: 60,  attempted: "1,900+", logo: "/logos/capgemini.webp",    company: "Capgemini" },
+              {
+                title: "TCS NQT Full Mock #1",
+                qs: 79,
+                mins: 120,
+                attempted: "4,200+",
+                logo: "/logos/tcs-logo.webp",
+                company: "TCS",
+              },
+              {
+                title: "Infosys Placement Test",
+                qs: 54,
+                mins: 100,
+                attempted: "3,100+",
+                logo: "/logos/infosys.webp",
+                company: "Infosys",
+              },
+              {
+                title: "Accenture Cognitive Mock",
+                qs: 90,
+                mins: 90,
+                attempted: "2,800+",
+                logo: "/logos/accenture.webp",
+                company: "Accenture",
+              },
+              {
+                title: "Wipro Elite Mock #1",
+                qs: 52,
+                mins: 128,
+                attempted: "2,500+",
+                logo: "/logos/Wipro.webp",
+                company: "Wipro",
+              },
+              {
+                title: "Cognizant GenC Mock",
+                qs: 60,
+                mins: 80,
+                attempted: "2,200+",
+                logo: "/logos/cognizant.webp",
+                company: "Cognizant",
+              },
+              {
+                title: "Capgemini Game-Based",
+                qs: 40,
+                mins: 60,
+                attempted: "1,900+",
+                logo: "/logos/capgemini.webp",
+                company: "Capgemini",
+              },
             ].map((test, i) => (
               <div
                 key={test.title}
@@ -521,20 +822,27 @@ export default function HomePage() {
                       />
                     </div>
                     <div>
-                      <p className="text-[11px] font-semibold text-[#6B7280] dark:text-gray-400 uppercase tracking-wider mb-0.5">{test.company}</p>
-                      <h3 className="text-base font-black text-[#111827] dark:text-white leading-tight">{test.title}</h3>
+                      <p className="text-[11px] font-semibold text-[#6B7280] dark:text-gray-400 uppercase tracking-wider mb-0.5">
+                        {test.company}
+                      </p>
+                      <h3 className="text-base font-black text-[#111827] dark:text-white leading-tight">
+                        {test.title}
+                      </h3>
                     </div>
                   </div>
                   {/* Stats */}
                   <div className="flex flex-wrap items-center gap-3 mb-6">
                     <span className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7280] dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 px-2.5 py-1 rounded-lg">
-                      <BookOpen className="w-3.5 h-3.5" />{test.qs} Questions
+                      <BookOpen className="w-3.5 h-3.5" />
+                      {test.qs} Questions
                     </span>
                     <span className="flex items-center gap-1.5 text-xs font-semibold text-[#6B7280] dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 px-2.5 py-1 rounded-lg">
-                      <Clock className="w-3.5 h-3.5" />{test.mins} Min
+                      <Clock className="w-3.5 h-3.5" />
+                      {test.mins} Min
                     </span>
                     <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 rounded-lg">
-                      <Users className="w-3.5 h-3.5" />{test.attempted} attempted
+                      <Users className="w-3.5 h-3.5" />
+                      {test.attempted} attempted
                     </span>
                   </div>
                 </div>
@@ -554,25 +862,76 @@ export default function HomePage() {
       <section className="py-20 sm:py-24">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up" data-reveal>
+            <h2
+              className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight reveal-fade-up"
+              data-reveal
+            >
               Practice By Topic
             </h2>
-            <p className="text-[#6B7280] dark:text-gray-400 mt-3 text-base font-medium reveal-fade-up" data-reveal>
+            <p
+              className="text-[#6B7280] dark:text-gray-400 mt-3 text-base font-medium reveal-fade-up"
+              data-reveal
+            >
               Master specific subjects with our targeted practice modules.
             </p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6">
             {[
-              { name: "Quantitative Aptitude", icon: Calculator, color: "text-blue-600", bg: "bg-blue-50" },
-              { name: "Logical Reasoning", icon: Brain, color: "text-indigo-600", bg: "bg-indigo-50" },
-              { name: "Verbal Ability", icon: MessageSquare, color: "text-emerald-600", bg: "bg-emerald-50" },
-              { name: "Programming", icon: Code2, color: "text-violet-600", bg: "bg-violet-50" },
-              { name: "DBMS", icon: Database, color: "text-amber-600", bg: "bg-amber-50" },
-              { name: "Operating Systems", icon: Monitor, color: "text-rose-600", bg: "bg-rose-50" },
-              { name: "Computer Networks", icon: Globe, color: "text-cyan-600", bg: "bg-cyan-50" },
-              { name: "OOPs Concepts", icon: Layers, color: "text-purple-600", bg: "bg-purple-50" },
-              { name: "SQL Queries", icon: FileText, color: "text-orange-600", bg: "bg-orange-50" },
+              {
+                name: "Quantitative Aptitude",
+                icon: Calculator,
+                color: "text-blue-600",
+                bg: "bg-blue-50",
+              },
+              {
+                name: "Logical Reasoning",
+                icon: Brain,
+                color: "text-indigo-600",
+                bg: "bg-indigo-50",
+              },
+              {
+                name: "Verbal Ability",
+                icon: MessageSquare,
+                color: "text-emerald-600",
+                bg: "bg-emerald-50",
+              },
+              {
+                name: "Programming",
+                icon: Code2,
+                color: "text-violet-600",
+                bg: "bg-violet-50",
+              },
+              {
+                name: "DBMS",
+                icon: Database,
+                color: "text-amber-600",
+                bg: "bg-amber-50",
+              },
+              {
+                name: "Operating Systems",
+                icon: Monitor,
+                color: "text-rose-600",
+                bg: "bg-rose-50",
+              },
+              {
+                name: "Computer Networks",
+                icon: Globe,
+                color: "text-cyan-600",
+                bg: "bg-cyan-50",
+              },
+              {
+                name: "OOPs Concepts",
+                icon: Layers,
+                color: "text-purple-600",
+                bg: "bg-purple-50",
+              },
+              {
+                name: "SQL Queries",
+                icon: FileText,
+                color: "text-orange-600",
+                bg: "bg-orange-50",
+              },
             ].map((topic, i) => (
               <Link
                 key={topic.name}
@@ -581,7 +940,9 @@ export default function HomePage() {
                 data-reveal
                 style={{ transitionDelay: `${i * 50}ms` }}
               >
-                <div className={`w-12 h-12 rounded-xl ${topic.bg} dark:bg-opacity-10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                <div
+                  className={`w-12 h-12 rounded-xl ${topic.bg} dark:bg-opacity-10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
+                >
                   <topic.icon className={`w-6 h-6 ${topic.color}`} />
                 </div>
                 <h3 className="font-bold text-[#111827] dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -597,7 +958,10 @@ export default function HomePage() {
       <section className="py-20 sm:py-24">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="max-w-xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight mb-10 reveal-fade-up" data-reveal>
+            <h2
+              className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight mb-10 reveal-fade-up"
+              data-reveal
+            >
               Why CrackNQT?
             </h2>
             <div className="space-y-4 text-left">
@@ -613,7 +977,9 @@ export default function HomePage() {
                   style={{ transitionDelay: `${i * 120}ms` }}
                 >
                   <CheckCircle2 className="w-6 h-6 text-emerald-500 mt-0.5 shrink-0" />
-                  <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed font-medium">{text}</p>
+                  <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed font-medium">
+                    {text}
+                  </p>
                 </div>
               ))}
             </div>
@@ -626,7 +992,10 @@ export default function HomePage() {
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="max-w-4xl mx-auto">
             {/* What is TCS NQT? */}
-            <div className="flex items-center gap-3 mb-6 reveal-slide-left" data-reveal>
+            <div
+              className="flex items-center gap-3 mb-6 reveal-slide-left"
+              data-reveal
+            >
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center shrink-0">
                 <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 text-[#2563EB] dark:text-blue-400" />
               </div>
@@ -634,20 +1003,40 @@ export default function HomePage() {
                 What is TCS NQT?
               </h2>
             </div>
-            <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed mb-12 reveal-fade-up" data-reveal>
-              TCS NQT 2026 (National Qualifier Test) is a recruitment exam conducted by
-              Tata Consultancy Services to hire freshers across India. The exam has two mandatory rounds —
-              the <strong className="text-[#111827] dark:text-white">Foundation Section</strong> (aptitude) and
-              the <strong className="text-[#111827] dark:text-white">Advanced Section</strong> (quantitative reasoning + coding).
-              There is <strong className="text-[#111827] dark:text-white">no negative marking</strong> in either round.
-              Qualifying opens doors to TCS Ninja, Digital, and Prime roles.{" "}
-              <Link href="/register" className="text-[#2563EB] dark:text-blue-400 font-bold hover:underline">
+            <p
+              className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed mb-12 reveal-fade-up"
+              data-reveal
+            >
+              TCS NQT 2026 (National Qualifier Test) is a recruitment exam
+              conducted by Tata Consultancy Services to hire freshers across
+              India. The exam has two mandatory rounds — the{" "}
+              <strong className="text-[#111827] dark:text-white">
+                Foundation Section
+              </strong>{" "}
+              (aptitude) and the{" "}
+              <strong className="text-[#111827] dark:text-white">
+                Advanced Section
+              </strong>{" "}
+              (quantitative reasoning + coding). There is{" "}
+              <strong className="text-[#111827] dark:text-white">
+                no negative marking
+              </strong>{" "}
+              in either round. Qualifying opens doors to TCS Ninja, Digital, and
+              Prime roles.{" "}
+              <Link
+                href="/register"
+                className="text-[#2563EB] dark:text-blue-400 font-bold hover:underline"
+              >
                 Start practicing for free on CrackNQT
-              </Link>.
+              </Link>
+              .
             </p>
 
             {/* TCS NQT 2026 Syllabus */}
-            <div className="flex items-center gap-3 mb-8 reveal-slide-right" data-reveal>
+            <div
+              className="flex items-center gap-3 mb-8 reveal-slide-right"
+              data-reveal
+            >
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-violet-50 dark:bg-violet-950 flex items-center justify-center shrink-0">
                 <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600 dark:text-violet-400" />
               </div>
@@ -671,47 +1060,85 @@ export default function HomePage() {
                           <BookOpen className="w-5 h-5 text-[#2563EB] dark:text-blue-400" />
                         </div>
                         <div className="min-w-0">
-                          <h4 className="font-black text-[#111827] dark:text-white text-lg">{fd.title}</h4>
+                          <h4 className="font-black text-[#111827] dark:text-white text-lg">
+                            {fd.title}
+                          </h4>
                           <div className="flex flex-wrap items-center gap-2 mt-1">
-                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400"><Clock className="w-3 h-3" />{fd.duration}</span>
-                            <span className="text-gray-300 dark:text-gray-600">|</span>
-                            <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">{fd.questions}</span>
-                            <span className="text-gray-300 dark:text-gray-600">|</span>
-                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400"><Users className="w-3 h-3" />{fd.audience}</span>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400">
+                              <Clock className="w-3 h-3" />
+                              {fd.duration}
+                            </span>
+                            <span className="text-gray-300 dark:text-gray-600">
+                              |
+                            </span>
+                            <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">
+                              {fd.questions}
+                            </span>
+                            <span className="text-gray-300 dark:text-gray-600">
+                              |
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400">
+                              <Users className="w-3 h-3" />
+                              {fd.audience}
+                            </span>
                           </div>
                         </div>
                       </div>
-                      <ChevronDown className={`w-5 h-5 text-gray-400 dark:text-gray-500 shrink-0 transition-transform duration-300 ${foundationOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown
+                        className={`w-5 h-5 text-gray-400 dark:text-gray-500 shrink-0 transition-transform duration-300 ${foundationOpen ? "rotate-180" : ""}`}
+                      />
                     </button>
 
-                    <div className={`transition-all duration-300 ease-in-out ${foundationOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
+                    <div
+                      className={`transition-all duration-300 ease-in-out ${foundationOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}
+                    >
                       <div className="px-6 pb-6 space-y-4">
                         {fd.sections.map((sub) => {
                           const SubIcon = sub.icon;
                           const diff = difficultyConfig[sub.difficulty];
                           const isOpen = expandedSubs.has(sub.name);
                           return (
-                            <div key={sub.name} className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+                            <div
+                              key={sub.name}
+                              className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden"
+                            >
                               <button
                                 onClick={() => toggleSub(sub.name)}
                                 className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                               >
                                 <div className="flex items-center gap-3 min-w-0">
                                   <SubIcon className="w-4.5 h-4.5 text-[#2563EB] dark:text-blue-400 shrink-0" />
-                                  <span className="font-bold text-[#111827] dark:text-white text-sm">{sub.name}</span>
-                                  <span className="text-xs text-[#9CA3AF] dark:text-gray-500 font-medium hidden sm:inline">{sub.questions}</span>
+                                  <span className="font-bold text-[#111827] dark:text-white text-sm">
+                                    {sub.name}
+                                  </span>
+                                  <span className="text-xs text-[#9CA3AF] dark:text-gray-500 font-medium hidden sm:inline">
+                                    {sub.questions}
+                                  </span>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
-                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${diff.bg} ${diff.text}`}>{diff.label}</span>
-                                  <ChevronDown className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                                  <span
+                                    className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${diff.bg} ${diff.text}`}
+                                  >
+                                    {diff.label}
+                                  </span>
+                                  <ChevronDown
+                                    className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                                  />
                                 </div>
                               </button>
 
-                              <div className={`transition-all duration-200 ease-in-out ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
+                              <div
+                                className={`transition-all duration-200 ease-in-out ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}
+                              >
                                 <div className="px-5 pb-4 space-y-3">
                                   <div className="flex flex-wrap gap-1.5">
                                     {sub.topics.map((t) => (
-                                      <span key={t} className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs font-medium text-[#374151] dark:text-gray-300">{t}</span>
+                                      <span
+                                        key={t}
+                                        className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs font-medium text-[#374151] dark:text-gray-300"
+                                      >
+                                        {t}
+                                      </span>
                                     ))}
                                   </div>
                                   <p className="text-xs text-[#6B7280] dark:text-gray-400 leading-relaxed bg-blue-50/50 dark:bg-blue-950/30 rounded-lg px-3 py-2 border border-blue-100/50 dark:border-blue-900/30">
@@ -742,55 +1169,100 @@ export default function HomePage() {
                           <Zap className="w-5 h-5 text-violet-600 dark:text-violet-400" />
                         </div>
                         <div className="min-w-0">
-                          <h4 className="font-black text-[#111827] dark:text-white text-lg">{ad.title}</h4>
+                          <h4 className="font-black text-[#111827] dark:text-white text-lg">
+                            {ad.title}
+                          </h4>
                           <div className="flex flex-wrap items-center gap-2 mt-1">
-                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400"><Clock className="w-3 h-3" />{ad.duration}</span>
-                            <span className="text-gray-300 dark:text-gray-600">|</span>
-                            <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">{ad.questions}</span>
-                            <span className="text-gray-300 dark:text-gray-600">|</span>
-                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400"><Users className="w-3 h-3" />{ad.audience}</span>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400">
+                              <Clock className="w-3 h-3" />
+                              {ad.duration}
+                            </span>
+                            <span className="text-gray-300 dark:text-gray-600">
+                              |
+                            </span>
+                            <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">
+                              {ad.questions}
+                            </span>
+                            <span className="text-gray-300 dark:text-gray-600">
+                              |
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] dark:text-gray-400">
+                              <Users className="w-3 h-3" />
+                              {ad.audience}
+                            </span>
                           </div>
                         </div>
                       </div>
-                      <ChevronDown className={`w-5 h-5 text-gray-400 dark:text-gray-500 shrink-0 transition-transform duration-300 ${advancedOpen ? "rotate-180" : ""}`} />
+                      <ChevronDown
+                        className={`w-5 h-5 text-gray-400 dark:text-gray-500 shrink-0 transition-transform duration-300 ${advancedOpen ? "rotate-180" : ""}`}
+                      />
                     </button>
 
-                    <div className={`transition-all duration-300 ease-in-out ${advancedOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
+                    <div
+                      className={`transition-all duration-300 ease-in-out ${advancedOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}
+                    >
                       <div className="px-6 pb-6 space-y-4">
                         {ad.sections.map((sub) => {
                           const SubIcon = sub.icon;
                           const diff = difficultyConfig[sub.difficulty];
                           const isOpen = expandedSubs.has(sub.name);
                           return (
-                            <div key={sub.name} className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+                            <div
+                              key={sub.name}
+                              className="rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden"
+                            >
                               <button
                                 onClick={() => toggleSub(sub.name)}
                                 className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                               >
                                 <div className="flex items-center gap-3 min-w-0">
                                   <SubIcon className="w-4.5 h-4.5 text-violet-600 dark:text-violet-400 shrink-0" />
-                                  <span className="font-bold text-[#111827] dark:text-white text-sm">{sub.name}</span>
-                                  <span className="text-xs text-[#9CA3AF] dark:text-gray-500 font-medium hidden sm:inline">{sub.questions}</span>
+                                  <span className="font-bold text-[#111827] dark:text-white text-sm">
+                                    {sub.name}
+                                  </span>
+                                  <span className="text-xs text-[#9CA3AF] dark:text-gray-500 font-medium hidden sm:inline">
+                                    {sub.questions}
+                                  </span>
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
-                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${diff.bg} ${diff.text}`}>{diff.label}</span>
-                                  <ChevronDown className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+                                  <span
+                                    className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${diff.bg} ${diff.text}`}
+                                  >
+                                    {diff.label}
+                                  </span>
+                                  <ChevronDown
+                                    className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                                  />
                                 </div>
                               </button>
 
-                              <div className={`transition-all duration-200 ease-in-out ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}>
+                              <div
+                                className={`transition-all duration-200 ease-in-out ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"} overflow-hidden`}
+                              >
                                 <div className="px-5 pb-4 space-y-3">
                                   <div className="flex flex-wrap gap-1.5">
                                     {sub.topics.map((t) => (
-                                      <span key={t} className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs font-medium text-[#374151] dark:text-gray-300">{t}</span>
+                                      <span
+                                        key={t}
+                                        className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-xs font-medium text-[#374151] dark:text-gray-300"
+                                      >
+                                        {t}
+                                      </span>
                                     ))}
                                   </div>
                                   {"languages" in sub && sub.languages && (
                                     <div className="flex items-center gap-2">
-                                      <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">Languages:</span>
+                                      <span className="text-xs font-semibold text-[#6B7280] dark:text-gray-400">
+                                        Languages:
+                                      </span>
                                       <div className="flex flex-wrap gap-1.5">
                                         {sub.languages.map((lang) => (
-                                          <span key={lang} className="px-2 py-0.5 rounded bg-violet-50 dark:bg-violet-950 text-xs font-bold text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800">{lang}</span>
+                                          <span
+                                            key={lang}
+                                            className="px-2 py-0.5 rounded bg-violet-50 dark:bg-violet-950 text-xs font-bold text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800"
+                                          >
+                                            {lang}
+                                          </span>
                                         ))}
                                       </div>
                                     </div>
@@ -816,30 +1288,62 @@ export default function HomePage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-gray-50 dark:bg-gray-800">
-                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">Section</th>
-                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">Duration</th>
-                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">Questions</th>
-                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">Key Topics</th>
+                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">
+                        Section
+                      </th>
+                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">
+                        Duration
+                      </th>
+                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">
+                        Questions
+                      </th>
+                      <th className="text-left px-5 py-3 font-bold text-[#111827] dark:text-white">
+                        Key Topics
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white dark:bg-gray-800/50">
                     <tr className="border-t border-gray-100 dark:border-gray-700">
-                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">Foundation</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">75 mins</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">~65</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">Numerical, Verbal, Reasoning</td>
+                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">
+                        Foundation
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        75 mins
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        ~65
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        Numerical, Verbal, Reasoning
+                      </td>
                     </tr>
                     <tr className="border-t border-gray-100 dark:border-gray-700">
-                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">Advanced (MCQ)</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">25 mins</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">14–16</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">Advanced Quant, Reasoning, Puzzles</td>
+                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">
+                        Advanced (MCQ)
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        25 mins
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        14–16
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        Advanced Quant, Reasoning, Puzzles
+                      </td>
                     </tr>
                     <tr className="border-t border-gray-100 dark:border-gray-700">
-                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">Advanced (Coding)</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">90 mins</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">2</td>
-                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">DSA, Arrays, Strings, Algorithms</td>
+                      <td className="px-5 py-3 font-semibold text-[#111827] dark:text-white">
+                        Advanced (Coding)
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        90 mins
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        2
+                      </td>
+                      <td className="px-5 py-3 text-[#6B7280] dark:text-gray-400">
+                        DSA, Arrays, Strings, Algorithms
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -847,23 +1351,44 @@ export default function HomePage() {
             </div>
 
             {/* Eligibility & Cut-offs */}
-            <div className="mt-8 rounded-2xl border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 p-6 reveal-scale-up" data-reveal>
+            <div
+              className="mt-8 rounded-2xl border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/30 p-6 reveal-scale-up"
+              data-reveal
+            >
               <div className="flex items-center gap-3 mb-4">
                 <Trophy className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                <h4 className="font-black text-[#111827] dark:text-white text-lg">Eligibility & Cut-offs</h4>
+                <h4 className="font-black text-[#111827] dark:text-white text-lg">
+                  Eligibility & Cut-offs
+                </h4>
               </div>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#374151] dark:text-gray-300"><strong className="text-[#111827] dark:text-white">Eligibility:</strong> Minimum 60% aggregate with no active backlogs</p>
+                  <p className="text-sm text-[#374151] dark:text-gray-300">
+                    <strong className="text-[#111827] dark:text-white">
+                      Eligibility:
+                    </strong>{" "}
+                    Minimum 60% aggregate with no active backlogs
+                  </p>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-4 h-4 text-blue-500 dark:text-blue-400 mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#374151] dark:text-gray-300"><strong className="text-[#111827] dark:text-white">TCS Ninja:</strong> Score 40–45 out of 65 in Foundation round</p>
+                  <p className="text-sm text-[#374151] dark:text-gray-300">
+                    <strong className="text-[#111827] dark:text-white">
+                      TCS Ninja:
+                    </strong>{" "}
+                    Score 40–45 out of 65 in Foundation round
+                  </p>
                 </div>
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="w-4 h-4 text-violet-500 dark:text-violet-400 mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#374151] dark:text-gray-300"><strong className="text-[#111827] dark:text-white">Digital / Prime:</strong> Clear Advanced section with at least 1 fully solved coding problem</p>
+                  <p className="text-sm text-[#374151] dark:text-gray-300">
+                    <strong className="text-[#111827] dark:text-white">
+                      Digital / Prime:
+                    </strong>{" "}
+                    Clear Advanced section with at least 1 fully solved coding
+                    problem
+                  </p>
                 </div>
               </div>
             </div>
@@ -875,7 +1400,10 @@ export default function HomePage() {
       <section className="py-20 sm:py-24">
         <div className="max-w-[1140px] mx-auto px-6">
           <div className="max-w-2xl mx-auto">
-            <div className="flex items-center justify-center gap-3 mb-10 reveal-fade-up" data-reveal>
+            <div
+              className="flex items-center justify-center gap-3 mb-10 reveal-fade-up"
+              data-reveal
+            >
               <HelpCircle className="w-7 h-7 text-[#2563EB] dark:text-blue-400 shrink-0" />
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#111827] dark:text-white tracking-tight">
                 Frequently Asked Questions
@@ -889,8 +1417,12 @@ export default function HomePage() {
                   data-reveal
                   style={{ transitionDelay: `${i * 80}ms` }}
                 >
-                  <h3 className="font-black text-[#111827] dark:text-white text-[15px] mb-2">{item.q}</h3>
-                  <p className="text-sm text-[#6B7280] dark:text-gray-400 leading-relaxed">{item.a}</p>
+                  <h3 className="font-black text-[#111827] dark:text-white text-[15px] mb-2">
+                    {item.q}
+                  </h3>
+                  <p className="text-sm text-[#6B7280] dark:text-gray-400 leading-relaxed">
+                    {item.a}
+                  </p>
                 </div>
               ))}
             </div>
@@ -903,12 +1435,16 @@ export default function HomePage() {
         <div className="absolute top-[-20%] right-[-10%] w-[400px] h-[400px] rounded-full bg-white/5 blur-3xl auth-bg-glow" />
         <div className="absolute bottom-[-20%] left-[-10%] w-[350px] h-[350px] rounded-full bg-white/5 blur-3xl auth-bg-glow-2" />
 
-        <div className="relative z-10 max-w-[1140px] mx-auto px-6 text-center reveal-scale-up" data-reveal>
+        <div
+          className="relative z-10 max-w-[1140px] mx-auto px-6 text-center reveal-scale-up"
+          data-reveal
+        >
           <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
             Start Your Preparation Today
           </h2>
           <p className="text-blue-100 mt-4 text-base sm:text-lg max-w-lg mx-auto font-medium">
-            Join thousands of students cracking TCS NQT. No barriers — just practice.
+            Join thousands of students cracking TCS NQT. No barriers — just
+            practice.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
             <Link
@@ -929,61 +1465,196 @@ export default function HomePage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#111827] dark:bg-black text-white py-14">
-        <div className="max-w-[1140px] mx-auto px-6">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 mb-10">
-            <div className="col-span-2 sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center gap-2.5 mb-4">
-                <Image src="/llog.png" alt="CrackNQT" width={28} height={28} className="rounded-lg" />
-                <span className="text-lg font-black">CrackNQT</span>
+      <footer className="relative overflow-hidden border-t border-border bg-slate-950 text-white dark:bg-black">
+        {/* Ambient background */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+        >
+          <div className="absolute -left-40 -top-40 h-[420px] w-[420px] rounded-full bg-blue-600/10 blur-[120px]" />
+
+          <div className="absolute -right-40 top-20 h-[400px] w-[400px] rounded-full bg-violet-600/10 blur-[120px]" />
+
+          <div className="absolute bottom-0 left-1/2 h-[300px] w-[500px] -translate-x-1/2 rounded-full bg-cyan-500/5 blur-[120px]" />
+
+          {/* subtle grid */}
+          <div
+            className="absolute inset-0 opacity-[0.025]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+            }}
+          />
+        </div>
+
+        <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+          {/* ================================================================
+            CTA
+        ================================================================= */}
+          <div className="border-b border-white/10 py-10 sm:py-12 lg:py-14">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-xl sm:rounded-3xl sm:p-7 lg:p-8">
+              {/* CTA glow */}
+              <div
+                aria-hidden="true"
+                className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-blue-500/20 blur-3xl"
+              />
+
+              <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="max-w-2xl">
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-xs font-semibold text-blue-300">
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                    Built for NQT aspirants
+                  </div>
+
+                  <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl lg:text-3xl">
+                    Ready to crack your NQT?
+                  </h2>
+
+                  <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400 sm:text-base">
+                    Practice smarter with topic-wise questions, mock tests, and
+                    structured preparation — all in one place.
+                  </p>
+                </div>
+
+                <Link
+                  href="/tests"
+                  className="group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-black/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-100 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                >
+                  Start Practicing
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
               </div>
-              <p className="text-sm text-gray-400 leading-relaxed">
-                Free TCS NQT preparation platform. No ads, no charges — built for students.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-black text-sm uppercase tracking-wider text-gray-400 mb-4">Practice</h4>
-              <ul className="space-y-2.5 text-sm">
-                <li><Link href="/tests/foundation?section=numerical" className="text-gray-300 hover:text-white transition-colors">Numerical Ability</Link></li>
-                <li><Link href="/tests/foundation?section=reasoning" className="text-gray-300 hover:text-white transition-colors">Reasoning Ability</Link></li>
-                <li><Link href="/tests/foundation?section=verbal" className="text-gray-300 hover:text-white transition-colors">Verbal Ability</Link></li>
-                <li><Link href="/tests/advanced" className="text-gray-300 hover:text-white transition-colors">Advanced Section</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-black text-sm uppercase tracking-wider text-gray-400 mb-4">Tests</h4>
-              <ul className="space-y-2.5 text-sm">
-                <li><Link href="/tests" className="text-gray-300 hover:text-white transition-colors">All Tests</Link></li>
-                <li><Link href="/tests/mock" className="text-gray-300 hover:text-white transition-colors">Full Mock Test</Link></li>
-                <li><Link href="/practice" className="text-gray-300 hover:text-white transition-colors">Topic Practice</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-black text-sm uppercase tracking-wider text-gray-400 mb-4">Account</h4>
-              <ul className="space-y-2.5 text-sm">
-                <li><Link href="/login" className="text-gray-300 hover:text-white transition-colors">Sign In</Link></li>
-                <li><Link href="/register" className="text-gray-300 hover:text-white transition-colors">Create Account</Link></li>
-                <li><Link href="/sitemap.xml" className="text-gray-300 hover:text-white transition-colors">Sitemap</Link></li>
-              </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 dark:border-gray-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-gray-500">
-              &copy; {new Date().getFullYear()} CrackNQT. All rights reserved. Not affiliated with TCS.
-            </p>
-            <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-xs font-semibold text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                No Ads
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-xs font-semibold text-blue-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 inline-block" />
-                100% Free
-              </span>
+
+          {/* ================================================================
+            MAIN FOOTER
+        ================================================================= */}
+          <div className="py-12 sm:py-14 lg:py-16">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-[1.6fr_repeat(4,1fr)] lg:gap-10">
+              {/* BRAND */}
+              <div className="col-span-2 lg:col-span-1">
+                <Link href="/" className="group inline-flex items-center gap-3">
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-xl bg-blue-500/30 blur-md transition-all duration-300 group-hover:bg-blue-500/50" />
+
+                    <Image
+                      src="/llog.png"
+                      alt="CrackNQT"
+                      width={36}
+                      height={36}
+                      className="relative rounded-xl"
+                    />
+                  </div>
+
+                  <span className="text-xl font-black tracking-tight text-white">
+                    Crack<span className="text-blue-400">NQT</span>
+                  </span>
+                </Link>
+
+                <p className="mt-5 max-w-sm text-sm leading-6 text-slate-400">
+                  Free TCS NQT preparation platform built to help students
+                  practice better, improve faster, and approach their exams with
+                  confidence.
+                </p>
+
+                {/* Trust pills */}
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-slate-300">
+                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                    Student focused
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-slate-300">
+                    <BookOpen className="h-3.5 w-3.5 text-blue-400" />
+                    Free practice
+                  </div>
+                </div>
+              </div>
+
+              {/* NAVIGATION GROUPS */}
+              {footerGroups.map((group) => {
+                const Icon = group.icon;
+
+                return (
+                  <div key={group.title}>
+                    {/* Heading */}
+                    <div className="mb-5 flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/[0.06]">
+                        <Icon className="h-3.5 w-3.5 text-slate-400" />
+                      </div>
+
+                      <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">
+                        {group.title}
+                      </h3>
+                    </div>
+
+                    {/* Links */}
+                    <ul className="space-y-2">
+                      {group.links.map((link) => (
+                        <li key={link.href}>
+                          <Link
+                            href={link.href}
+                            className="group/link flex w-fit items-center gap-1.5 py-0.5 text-sm text-slate-300 transition-all duration-200 hover:translate-x-1 hover:text-white"
+                          >
+                            <span>{link.label}</span>
+
+                            <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-all duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 group-hover/link:opacity-100" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ================================================================
+            BOTTOM BAR
+        ================================================================= */}
+          <div className="border-t border-white/10 py-6">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              {/* Copyright */}
+              <div className="text-center sm:text-left">
+                <p className="text-xs leading-5 text-slate-500">
+                  © {new Date().getFullYear()} CrackNQT. All rights reserved.
+                </p>
+
+                <p className="mt-1 text-[11px] text-slate-600">
+                  CrackNQT is an independent preparation platform and is not
+                  affiliated with TCS.
+                </p>
+              </div>
+
+              {/* Right side */}
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
+                <Link
+                  href="/contact"
+                  className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-slate-400 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  Contact
+                </Link>
+
+                <Link
+                  href="/privacy-policy"
+                  className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-slate-400 transition-all duration-200 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+                >
+                  Privacy
+                </Link>
+
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/10 bg-emerald-400/5 px-3 py-1.5 text-xs font-semibold text-emerald-400">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+                  Free to practice
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </footer>
+    
     </div>
   );
 }
