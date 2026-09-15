@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth-store";
 import { register } from "@/lib/api/auth";
+import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 import Image from "next/image";
 import { Eye, EyeOff, Mail, Lock, Loader2, User, BookOpen, Code, Target } from "lucide-react";
 import AuthParticles from "@/components/auth/AuthParticles";
@@ -98,6 +99,7 @@ export default function RegisterPage() {
     try {
       const response = await register(name, email, password);
       storeLogin(response.data, response.accessToken, response.refreshToken);
+      trackEvent(AnalyticsEvents.SIGN_UP, { method: 'email', source_page: 'register' });
       toast.success("Account created! Welcome!");
       router.push("/dashboard");
     } catch {
@@ -166,7 +168,7 @@ export default function RegisterPage() {
             Start your journey today
           </h2>
           <p className="text-blue-100 text-sm text-center mt-2 auth-fade-up auth-delay-300">
-            Join thousands of students preparing for TCS NQT
+            Free to start. Premium for advanced preparation.
           </p>
 
           <div className="mt-10 space-y-4 w-full max-w-[300px]">
@@ -197,7 +199,7 @@ export default function RegisterPage() {
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-xs font-semibold text-white/90">
               <span className="w-2 h-2 rounded-full bg-blue-300 inline-block auth-badge-dot-2" />
-              100% Free
+              Free to start
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-xs font-semibold text-white/90">
               <span className="w-2 h-2 rounded-full bg-violet-300 inline-block auth-badge-dot-3" />
@@ -405,7 +407,7 @@ export default function RegisterPage() {
           {/* Mobile-only tagline & badges */}
           <div className="lg:hidden">
             <p className="text-center text-sm text-gray-400 mt-5 font-medium auth-fade-up auth-delay-800">
-              Crack TCS NQT with confidence — completely free, forever.
+              Crack TCS NQT with confidence — free to start, with Premium options.
             </p>
             <div className="flex items-center justify-center gap-3 mt-4 auth-fade-up auth-delay-900">
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
@@ -414,7 +416,7 @@ export default function RegisterPage() {
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 text-xs font-semibold text-blue-700 dark:text-blue-400">
                 <span className="w-2 h-2 rounded-full bg-blue-500 inline-block auth-badge-dot-2" />
-                100% Free
+                Free to start
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-50 dark:bg-violet-950 border border-violet-200 dark:border-violet-800 text-xs font-semibold text-violet-700 dark:text-violet-400">
                 <span className="w-2 h-2 rounded-full bg-violet-500 inline-block auth-badge-dot-3" />

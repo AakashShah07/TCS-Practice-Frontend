@@ -12,6 +12,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import apiClient from "@/lib/api/client";
+import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -27,6 +28,12 @@ export default function PaymentPage() {
         router.push("/login");
       } else if (user?.isPremium) {
         router.push("/premium");
+      } else {
+        trackEvent(AnalyticsEvents.BEGIN_CHECKOUT, {
+          value: 49,
+          currency: 'INR',
+          items: [{ item_name: 'Premium Lifetime Access' }]
+        });
       }
     }
   }, [isAuthenticated, user, isLoading, router]);
@@ -61,6 +68,12 @@ export default function PaymentPage() {
     if (!utrRegex.test(utr)) return toast.error("UTR must be exactly 12 alphanumeric characters");
 
     setIsSubmitting(true);
+    trackEvent(AnalyticsEvents.PAYMENT_INITIATED, {
+      product: "premium-lifetime",
+      payment_method: "upi",
+      value: 49,
+      currency: "INR"
+    });
     try {
       const { data } = await apiClient.post("/payment/submit", {
         utr,
@@ -72,6 +85,9 @@ export default function PaymentPage() {
         router.push("/premium");
       }
     } catch (error: any) {
+      trackEvent(AnalyticsEvents.PAYMENT_FAILED, {
+        failure_category: error.response?.data?.message || "unknown_error"
+      });
       toast.error(error.response?.data?.message || "Failed to submit payment");
     } finally {
       setIsSubmitting(false);

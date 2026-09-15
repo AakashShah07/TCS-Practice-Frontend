@@ -11,6 +11,7 @@ import {
   Search,
   Crown,
 } from "lucide-react";
+import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 import {
   Card,
   CardContent,
@@ -55,7 +56,9 @@ export default function CodingQuestionsPage() {
   const isPremium = user?.isPremium;
 
   useEffect(() => {
-    fetchCodingTopics().then(setTopics).catch(() => {});
+    fetchCodingTopics()
+      .then(setTopics)
+      .catch((err) => console.error("Failed to fetch topics:", err));
   }, []);
 
   useEffect(() => {
@@ -65,7 +68,10 @@ export default function CodingQuestionsPage() {
     if (selectedTopic) params.topic = selectedTopic;
     fetchCodingQuestions(params)
       .then(setQuestions)
-      .catch(() => setQuestions([]))
+      .catch((err) => {
+        console.error("Failed to fetch questions:", err);
+        setQuestions([]);
+      })
       .finally(() => setLoading(false));
   }, [selectedDifficulty, selectedTopic]);
 
@@ -260,7 +266,13 @@ export default function CodingQuestionsPage() {
             );
           })}
           {!isPremium && questions.length > 6 && (
-            <Link href="/premium/payment">
+            <Link href="/premium/payment" onClick={() => {
+              trackEvent(AnalyticsEvents.PREMIUM_CTA_CLICK, {
+                source_page: '/coding',
+                cta_location: 'content_list',
+                cta_text: 'Upgrade to Premium'
+              });
+            }}>
               <Card className="border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/30 hover:border-amber-300 transition-all cursor-pointer">
                 <CardContent className="py-6 px-5 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-4">

@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 import SectionAnalysis from "@/components/results/SectionAnalysis";
 import { fetchResult } from "@/lib/api/results";
 import type { TestResult } from "@/lib/api/types";
@@ -58,6 +59,14 @@ export default function ResultPage() {
       try {
         const data = await fetchResult(resultId);
         setResult(data);
+        
+        // Track Mock Completed
+        trackEvent(AnalyticsEvents.MOCK_COMPLETED, {
+          mock_id: data.test._id,
+          mock_category: data.test.category,
+          score_band: Math.floor(data.percentage / 20) * 20, // 0-20, 20-40, ...
+          completion_status: 'completed'
+        });
       } catch {
         // API not ready
       } finally {

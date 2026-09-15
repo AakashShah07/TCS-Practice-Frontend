@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import PremiumHero from "@/components/premium/PremiumHero";
 import FeatureGrid from "@/components/premium/FeatureGrid";
 import apiClient from "@/lib/api/client";
+import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 
 import {
   Card,
@@ -28,6 +29,10 @@ interface PremiumTest {
 
 export default function PremiumPage() {
   const { user } = useAuthStore();
+
+  useEffect(() => {
+    trackEvent(AnalyticsEvents.PREMIUM_PAGE_VIEW, { source_page: 'premium_page' });
+  }, []);
 
   const [premiumTests, setPremiumTests] = useState<PremiumTest[]>([]);
   const [isLoading, setIsLoading] = useState(true);

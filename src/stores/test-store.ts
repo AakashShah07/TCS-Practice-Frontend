@@ -20,6 +20,7 @@ interface TestState {
   attemptId: string | null;
   testId: string | null;
   testTitle: string;
+  testType: string | null;
   questions: Question[];
   sections: { name: Section; startIndex: number; endIndex: number }[];
   currentQuestionIndex: number;
@@ -40,6 +41,7 @@ interface TestState {
     attemptId: string;
     testId: string;
     testTitle: string;
+    testType: string;
     questions: Question[];
     duration: number;
     sections: { name: Section; startIndex: number; endIndex: number }[];
@@ -75,6 +77,7 @@ const initialState = {
   attemptId: null,
   testId: null,
   testTitle: "",
+  testType: null,
   questions: [],
   sections: [],
   currentQuestionIndex: 0,
@@ -175,6 +178,7 @@ export const useTestStore = create<TestState>((set, get) => ({
       attemptId: params.attemptId,
       testId: params.testId,
       testTitle: params.testTitle,
+      testType: params.testType,
       questions: params.questions,
       sections: params.sections,
       currentQuestionIndex: currentIdx,

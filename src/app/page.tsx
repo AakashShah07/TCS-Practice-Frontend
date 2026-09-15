@@ -47,23 +47,23 @@ const resourceLinks = [
 const faqData = [
   {
     q: "Is CrackNQT free?",
-    a: "Yes, CrackNQT is completely free with no ads, no premium tier, and no hidden charges. Every feature is available to all students.",
+    a: "CrackNQT offers free preparation resources and practice so you can get started without paying. Premium is optional and provides additional advanced preparation features for ₹49 with lifetime access.",
+  },
+  {
+    q: "What does Premium include?",
+    a: "Premium provides access to the advanced preparation features available on CrackNQT, including premium tests and other features marked as Premium throughout the platform. It costs ₹49 as a one-time payment and provides lifetime access.",
+  },
+  {
+    q: "Do I need Premium to start preparing?",
+    a: "No. You can start with the free resources and practice available on CrackNQT. Premium is optional for students who want access to additional advanced preparation features.",
+  },
+  {
+    q: "Is the ₹49 payment a subscription?",
+    a: "No. The current Premium plan is a one-time ₹49 payment for lifetime access.",
   },
   {
     q: "Is this similar to the real TCS NQT exam?",
     a: "Yes. Our tests simulate the actual TCS NQT exam pattern with timed sections, the same question distribution, and section-locking — just like the real exam.",
-  },
-  {
-    q: "Do I need to sign up to use CrackNQT?",
-    a: "You can browse tests and topics without signing up. Creating a free account lets you save progress, track analytics, and resume tests.",
-  },
-  {
-    q: "Are the questions repeated in every test?",
-    a: "No. Every test attempt picks a fresh random set of 25 questions from our pool of 1000+ questions, so you get a different test each time.",
-  },
-  {
-    q: "What sections does TCS NQT cover?",
-    a: "TCS NQT covers Numerical Ability, Reasoning Ability, Verbal Ability, and Advanced Quantitative & Reasoning. CrackNQT has dedicated practice for all four.",
   },
 ];
 
@@ -385,6 +385,12 @@ export default function HomePage() {
                     {link.label}
                   </Link>
                 ))}
+                <Link
+                  href="/premium"
+                  className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 py-2"
+                >
+                  Premium
+                </Link>
               </div>
             )}
 
@@ -393,7 +399,7 @@ export default function HomePage() {
               <div className="md:hidden">
                 <DropdownMenu>
                   <DropdownMenuTrigger className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 py-2 flex items-center gap-1">
-                    Resources <ChevronDown className="h-4 w-4" />
+                    Menu <ChevronDown className="h-4 w-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
                     {resourceLinks.map((link) => (
@@ -404,6 +410,9 @@ export default function HomePage() {
                         {link.label}
                       </DropdownMenuItem>
                     ))}
+                    <DropdownMenuItem onClick={() => (window.location.href = "/premium")}>
+                      Premium
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -419,7 +428,7 @@ export default function HomePage() {
               href="/register"
               className="auth-btn text-sm font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-blue-500 dark:hover:bg-blue-600 px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 dark:shadow-blue-500/10 transition-all"
             >
-              Get Started
+              Start Free Test
             </Link>
           </div>
         </div>
@@ -444,7 +453,7 @@ export default function HomePage() {
           {/* Trust pill — pop in */}
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-blue-50/80 dark:bg-blue-950/60 backdrop-blur-sm border border-blue-100 dark:border-blue-800 text-xs font-bold text-[#2563EB] dark:text-blue-400 mb-8 landing-scale-in tracking-wide uppercase">
             <Zap className="w-3.5 h-3.5" />
-            100% Free &bull; No Ads &bull; Student Focused
+            FREE TO START &bull; NO ADS &bull; BUILT FOR NQT
           </div>
 
           {/* Heading — blur in */}
@@ -456,10 +465,10 @@ export default function HomePage() {
 
           {/* Subtitle — fade up */}
           <p className="mt-7 text-lg sm:text-xl text-[#6B7280] dark:text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium landing-fade-up landing-delay-200">
-            Practice real exam-level questions, take mock tests, and track your
-            performance —{" "}
+            Practice exam-style questions, take mock tests, and track your
+            preparation —{" "}
             <span className="text-[#111827] dark:text-white font-bold">
-              completely free, forever.
+              free to start, with advanced preparation tools available with Premium.
             </span>
           </p>
 
@@ -469,7 +478,7 @@ export default function HomePage() {
               href="/register"
               className="auth-btn landing-cta-pulse inline-flex items-center gap-2.5 px-8 py-4 bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold text-base rounded-2xl landing-cta-glow hover:shadow-[0_14px_40px_rgba(37,99,235,0.35)] transition-all"
             >
-              Start Free Test
+              Start Free Mock Test
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
@@ -617,13 +626,13 @@ export default function HomePage() {
             className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight text-center mb-4 reveal-fade-up"
             data-reveal
           >
-            Everything You Need
+            Everything You Need to Prepare
           </h2>
           <p
             className="text-[#6B7280] dark:text-gray-400 text-center mb-14 text-base font-medium reveal-fade-up"
             data-reveal
           >
-            One platform, zero cost.
+            Start with free practice and unlock advanced preparation when you need it.
           </p>
 
           <div className="grid sm:grid-cols-3 gap-6">
@@ -688,46 +697,32 @@ export default function HomePage() {
             <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl animate-pulse delay-700" />
 
             <div className="relative z-10 flex flex-col items-center text-center">
-              {/* Animated Badge */}
-              <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-sm font-bold uppercase tracking-widest mb-8 animate-bounce">
-                <Trophy className="w-4 h-4" />
-                Limited Time Offer
-              </div>
-
-              {/* Headline with animated gradient */}
-              <h3 className="text-5xl sm:text-7xl font-[800] text-[#111827] dark:text-white mb-8 tracking-tighter leading-[0.9]">
-                Unlock{" "}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-600 animate-gradient-x">
-                  Lifetime Mastery
-                </span>
+              {/* Headline */}
+              <h3 className="text-4xl sm:text-5xl font-black text-[#111827] dark:text-white mb-6 tracking-tight leading-tight">
+                Go Further with Premium
               </h3>
 
               {/* Subheadline */}
-              <p className="text-xl sm:text-2xl text-[#6B7280] dark:text-gray-400 max-w-2xl mb-12 leading-relaxed">
-                Get{" "}
-                <strong className="text-[#111827] dark:text-white">
-                  unlimited access
-                </strong>{" "}
-                to premium mock tests, advanced coding challenges, and deep
-                analytical insights.
+              <p className="text-lg sm:text-xl text-[#6B7280] dark:text-gray-400 max-w-2xl mb-10 leading-relaxed">
+                Unlock advanced preparation tools designed to help you practice beyond the free experience.
               </p>
 
               {/* Price & CTA */}
-              <div className="flex flex-col items-center gap-6">
-                <div className="text-6xl font-black text-[#111827] dark:text-white tracking-tight">
-                  ₹49{" "}
-                  <span className="text-xl text-[#6B7280] dark:text-gray-500 font-medium">
-                    / lifetime
-                  </span>
+              <div className="flex flex-col items-center gap-4">
+                <div className="text-5xl font-black text-[#111827] dark:text-white tracking-tight">
+                  ₹49
                 </div>
+                <p className="text-[#6B7280] dark:text-gray-400 mb-6">One-time payment &bull; Lifetime access</p>
 
                 <Link
-                  href="/login"
-                  className="group relative inline-flex items-center gap-3 px-12 py-6 bg-[#111827] hover:bg-black dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-black text-lg rounded-3xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/40"
+                  href="/premium"
+                  className="group relative inline-flex items-center gap-3 px-10 py-5 bg-[#111827] hover:bg-black dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-black text-lg rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/40"
                 >
-                  Claim Lifetime Access
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                  Unlock Premium →
                 </Link>
+                <p className="text-sm text-[#6B7280] dark:text-gray-400 mt-4">
+                  No subscription. Pay once and keep access.
+                </p>
               </div>
             </div>
           </div>
@@ -966,19 +961,31 @@ export default function HomePage() {
             </h2>
             <div className="space-y-4 text-left">
               {[
-                "Completely free — no hidden charges, no premium tier, no paywalls.",
-                "No ads or distractions — a clean, focused preparation environment.",
-                "Built specifically for TCS NQT — not a generic quiz platform.",
-              ].map((text, i) => (
+                {
+                  title: "Free to Start",
+                  desc: "Access useful preparation resources and practice without paying. Upgrade only when you need advanced preparation features.",
+                },
+                {
+                  title: "No Ads During Practice",
+                  desc: "Keep your preparation focused without distracting advertisements inside the practice experience.",
+                },
+                {
+                  title: "Built for NQT Preparation",
+                  desc: "Practice by topic, take exam-style tests, and prepare across the sections that matter for placement exams.",
+                },
+              ].map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 px-6 py-5 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-md transition-all duration-300 reveal-slide-left"
+                  className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 px-6 py-5 hover:border-emerald-200 dark:hover:border-emerald-800 hover:shadow-md transition-all duration-300 reveal-slide-left"
                   data-reveal
                   style={{ transitionDelay: `${i * 120}ms` }}
                 >
-                  <CheckCircle2 className="w-6 h-6 text-emerald-500 mt-0.5 shrink-0" />
-                  <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed font-medium">
-                    {text}
+                  <h3 className="font-black text-[#111827] dark:text-white text-[15px] mb-2 flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                    {item.title}
+                  </h3>
+                  <p className="text-[15px] text-[#374151] dark:text-gray-300 leading-relaxed font-medium pl-8">
+                    {item.desc}
                   </p>
                 </div>
               ))}
@@ -1396,6 +1403,75 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Choose How You Prepare ── */}
+      <section className="py-20 sm:py-24 bg-gray-50 dark:bg-gray-950">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-black text-[#111827] dark:text-white tracking-tight mb-4">
+              Choose How You Prepare
+            </h2>
+            <p className="text-[#6B7280] dark:text-gray-400 text-lg font-medium">
+              Start free. Upgrade when you want more.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Free Card */}
+            <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm">
+              <h3 className="text-2xl font-black text-[#111827] dark:text-white mb-2">Free</h3>
+              <div className="text-4xl font-black text-[#111827] dark:text-white mb-4">₹0</div>
+              <p className="text-[#6B7280] dark:text-gray-400 mb-8">Start preparing without paying.</p>
+              <ul className="space-y-4 mb-8">
+                {[
+                  "Practice selected questions",
+                  "Access free preparation resources",
+                  "Take available free tests",
+                  "Explore topic-wise practice",
+                  "Create a free account",
+                  "Track basic progress",
+                ].map((feature) => (
+                  <li key={feature} className="flex items-center gap-3 text-[#374151] dark:text-gray-300">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/register" className="block w-full text-center py-4 rounded-xl bg-gray-100 dark:bg-gray-800 font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                Start Free
+              </Link>
+            </div>
+
+            {/* Premium Card */}
+            <div className="bg-white dark:bg-gray-900 rounded-3xl border-2 border-blue-500 p-8 shadow-lg relative">
+              <div className="absolute top-4 right-4 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                Best Value
+              </div>
+              <h3 className="text-2xl font-black text-[#111827] dark:text-white mb-2">Premium</h3>
+              <div className="text-4xl font-black text-[#111827] dark:text-white mb-1">₹49</div>
+              <p className="text-sm text-[#6B7280] dark:text-gray-400 mb-4">One-time &bull; Lifetime access</p>
+              <p className="text-[#6B7280] dark:text-gray-400 mb-8">For students who want deeper preparation.</p>
+              <ul className="space-y-4 mb-8">
+                {[
+                  "Premium mock tests",
+                  "Advanced practice",
+                  "Advanced coding preparation",
+                  "Deeper performance insights",
+                  "Lifetime access",
+                ].map((feature) => (
+                  <li key={feature} className="flex items-center gap-3 text-[#374151] dark:text-gray-300">
+                    <CheckCircle2 className="w-5 h-5 text-blue-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/premium" className="block w-full text-center py-4 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-colors">
+                Unlock Premium — ₹49
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── FAQ — accordion style reveal ── */}
       <section className="py-20 sm:py-24">
         <div className="max-w-[1140px] mx-auto px-6">
@@ -1554,9 +1630,7 @@ export default function HomePage() {
                 </Link>
 
                 <p className="mt-5 max-w-sm text-sm leading-6 text-slate-400">
-                  Free TCS NQT preparation platform built to help students
-                  practice better, improve faster, and approach their exams with
-                  confidence.
+                  CrackNQT is an independent preparation platform built to help students practice for placement and NQT-style exams. Free to start. Premium available for advanced preparation.
                 </p>
 
                 {/* Trust pills */}

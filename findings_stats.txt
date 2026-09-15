@@ -1,0 +1,18 @@
+./src/app/page.tsx:496:                25,000+
+./src/app/page.tsx:507:                8,500+
+./src/app/page.tsx:518:                92%
+./src/app/page.tsx:529:                15+
+./src/components/premium/FeatureGrid.tsx:300:                  whileInView={{ width: "92%" }}
+./src/components/premium/FeatureGrid.tsx:306:              <div className="mt-3 text-right text-sm font-semibold text-slate-800 dark:text-white/90">92%</div>
+./package-lock.json:2578:      "integrity": "sha512-Cq6UfpZZk15+r87BkIh5rDpi38W4b+Sjnb8wQCPPDDweS/LRCFjCyViEbzHk5Ck3f2QDfgmlxqSa7S7clDtlfg==",
+./audit_findings.txt:83:./src/app/page.tsx:496:                25,000+
+./audit_findings.txt:84:./src/app/page.tsx:507:                8,500+
+./audit_findings.txt:85:./src/app/page.tsx:518:                92%
+./audit_findings.txt:86:./src/app/page.tsx:529:                15+
+./audit_findings.txt:87:./src/components/premium/FeatureGrid.tsx:300:                  whileInView={{ width: "92%" }}
+./audit_findings.txt:88:./src/components/premium/FeatureGrid.tsx:306:              <div className="mt-3 text-right text-sm font-semibold text-slate-800 dark:text-white/90">92%</div>
+./audit_findings.txt:89:./package-lock.json:2578:      "integrity": "sha512-Cq6UfpZZk15+r87BkIh5rDpi38W4b+Sjnb8wQCPPDDweS/LRCFjCyViEbzHk5Ck3f2QDfgmlxqSa7S7clDtlfg==",
+./findings_pricing.txt:42:./findings_stats.txt:1:./src/app/page.tsx:496:                25,000+
+./findings_pricing.txt:43:./findings_stats.txt:8:./audit_findings.txt:83:./src/app/page.tsx:496:                25,000+
+./findings_pricing.txt:44:./findings_stats.txt:15:./findings_pricing.txt:141:./audit_findings.txt:83:./src/app/page.tsx:496:                25,000+
+./findings_pricing.txt:144:./audit_findings.txt:83:./src/app/page.tsx:496:                25,000+

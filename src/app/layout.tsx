@@ -7,11 +7,11 @@ const siteUrl = "https://cracknqt.vercel.app";
 
 export const metadata: Metadata = {
   title: {
-    default: "NQT Prep — Free TCS NQT Practice Tests & Exam Simulation",
-    template: "%s | NQT Prep",
+    default: "CrackNQT — TCS NQT Practice, Mock Tests & Preparation",
+    template: "%s | CrackNQT",
   },
   description:
-    "Free TCS NQT practice platform with 1000+ questions, real exam simulation, smart analytics, and detailed solutions. No ads, 100% free, student focused.",
+    "Prepare for TCS NQT with topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
   keywords: [
     "TCS NQT",
     "TCS NQT practice test",
@@ -24,13 +24,12 @@ export const metadata: Metadata = {
     "NQT practice",
     "NQT preparation online",
     "NQT aptitude test",
-    "free NQT questions",
     "TCS NQT numerical ability",
     "TCS NQT verbal ability",
     "TCS NQT reasoning",
   ],
-  authors: [{ name: "NQT Prep" }],
-  creator: "NQT Prep",
+  authors: [{ name: "CrackNQT" }],
+  creator: "CrackNQT",
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
@@ -39,24 +38,24 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     url: siteUrl,
-    siteName: "NQT Prep",
-    title: "NQT Prep — Free TCS NQT Practice Tests & Exam Simulation",
+    siteName: "CrackNQT",
+    title: "CrackNQT — TCS NQT Practice, Mock Tests & Preparation",
     description:
-      "Crack TCS NQT with confidence. Free practice tests with 1000+ questions, real exam simulation, and smart analytics. No ads, completely free.",
+      "Prepare for TCS NQT with topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "NQT Prep — Free TCS NQT Practice Platform",
+        alt: "CrackNQT — TCS NQT Practice Platform",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NQT Prep — Free TCS NQT Practice Tests",
+    title: "CrackNQT — TCS NQT Practice, Mock Tests & Preparation",
     description:
-      "Free TCS NQT exam practice with real simulation, 1000+ questions, and smart analytics.",
+      "Prepare for TCS NQT with topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
     images: ["/og-image.png"],
   },
   robots: {
@@ -94,10 +93,10 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "WebSite",
-      name: "NQT Prep",
+      name: "CrackNQT",
       url: siteUrl,
       description:
-        "Free TCS NQT practice platform with real exam simulation and smart analytics",
+        "TCS NQT practice platform with exam simulation and advanced preparation tools",
       potentialAction: {
         "@type": "SearchAction",
         target: `${siteUrl}/practice?q={search_term_string}`,
@@ -106,20 +105,20 @@ const jsonLd = {
     },
     {
       "@type": "Organization",
-      name: "NQT Prep",
+      name: "CrackNQT",
       url: siteUrl,
       logo: `${siteUrl}/llog.png`,
       description:
-        "Free TCS NQT practice test and preparation platform — No ads, 100% free, student focused",
+        "Independent preparation platform for TCS NQT and placement exams. Free to start, with Premium tools for advanced preparation.",
     },
     {
       "@type": "Course",
       name: "TCS NQT Preparation",
       description:
-        "Comprehensive TCS NQT exam preparation with 1000+ practice questions, real exam simulation, and detailed analytics",
+        "Comprehensive TCS NQT exam preparation with practice questions, real exam simulation, and analytics. Premium features available for advanced preparation.",
       provider: {
         "@type": "Organization",
-        name: "NQT Prep",
+        name: "CrackNQT",
         url: siteUrl,
       },
       isAccessibleForFree: true,

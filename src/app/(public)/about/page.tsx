@@ -13,8 +13,9 @@ import {
 } from "@/components/about/AboutExtra";
 
 export const metadata: Metadata = {
-  title: "About CrackNQT",
-  description: "Learn about CrackNQT, our mission, preparation approach, resources, and commitment to helping students and aspirants prepare more effectively.",
+  title: "About CrackNQT — Independent TCS NQT Preparation Platform",
+  description: "Learn about CrackNQT, an independent preparation platform built to help students practice for placement and NQT-style exams. Discover our mission, approach, and resources.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

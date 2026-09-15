@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Monitor, AlertTriangle, Clock, Eye, Pause, Play, Send } from "lucide-react";
+import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 import ExamTopBar from "@/components/exam/ExamTopBar";
 import QuestionPanel from "@/components/exam/QuestionPanel";
 import QuestionPalette from "@/components/exam/QuestionPalette";
@@ -33,6 +34,7 @@ export default function ExamPage() {
     isPaused,
     tabSwitchCount,
     testTitle,
+    testType,
     attemptDead,
     initTest,
     decrementTimer,
@@ -58,7 +60,26 @@ export default function ExamPage() {
     setSubmitting(true);
 
     try {
-      await submitAttempt(attemptId);
+      const result = await submitAttempt(attemptId);
+      
+      if (testType === 'full_mock') {
+        trackEvent(AnalyticsEvents.MOCK_COMPLETED, {
+          mock_id: testId,
+          mock_category: 'full',
+          mock_type: 'full_mock',
+          score_band: result.result.percentage >= 80 ? 'high' : result.result.percentage >= 50 ? 'medium' : 'low',
+          completion_status: 'completed',
+        });
+      } else if (testType === 'topic_practice') {
+        trackEvent(AnalyticsEvents.PRACTICE_COMPLETED, {
+          practice_topic: testTitle,
+          practice_category: 'practice',
+          question_count: result.result.totalQuestions,
+          difficulty: 'unknown',
+          source_page: 'exam/[testId]'
+        });
+      }
+      
       setSubmitted();
       // Small delay so the user sees the success state of the animation
       await new Promise((r) => setTimeout(r, 1800));
@@ -148,11 +169,20 @@ export default function ExamPage() {
           ...range,
         })
       );
+      
+      if (state.test.type === 'full_mock') {
+        trackEvent(AnalyticsEvents.MOCK_STARTED, {
+          mock_id: state.test._id,
+          mock_category: state.test.section || 'full',
+          mock_type: 'full_mock',
+        });
+      }
 
       initTest({
         attemptId: attempt._id,
         testId: state.test._id,
         testTitle: state.test.title,
+        testType: state.test.type,
         questions,
         duration: state.duration,
         sections,

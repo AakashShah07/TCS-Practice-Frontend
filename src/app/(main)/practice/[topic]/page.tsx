@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 import {
   fetchTopicsWithCounts,
   generatePracticeTest,
@@ -86,7 +87,16 @@ export default function TopicPracticePage() {
         practiceParams.difficulty = selectedDifficulty;
       }
 
+      // Start practice
+      trackEvent(AnalyticsEvents.PRACTICE_STARTED, {
+        practice_topic: topic,
+        practice_category: section,
+        question_count: Math.min(selectedCount, maxQuestions),
+        difficulty: selectedDifficulty,
+        source_page: '/practice/[topic]'
+      });
       const test = await generatePracticeTest(practiceParams);
+
       // Start attempt for the generated test
       const attempt = await startAttempt(test.testId);
       window.open(`/exam/${test.testId}`, "_blank");

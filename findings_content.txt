@@ -1,0 +1,24 @@
+./src/app/(auth)/login/page.tsx:82:    "w-full h-12 px-4 pl-11 rounded-xl border bg-white dark:bg-gray-800 text-sm text-[#111827] dark:text-white outline-none transition-colors duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+./src/app/(auth)/login/page.tsx:223:                    placeholder="you@example.com"
+./src/app/(auth)/login/page.tsx:257:                    placeholder="Enter your password"
+./src/app/(auth)/register/page.tsx:111:    "w-full h-12 px-4 pl-11 rounded-xl border bg-white dark:bg-gray-800 text-sm text-[#111827] dark:text-white outline-none transition-colors duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+./src/app/(auth)/register/page.tsx:262:                    placeholder="John Doe"
+./src/app/(auth)/register/page.tsx:296:                    placeholder="you@example.com"
+./src/app/(auth)/register/page.tsx:330:                    placeholder="At least 6 characters"
+./src/app/(main)/premium/page.tsx:133:              {/* Coming Soon Card */}
+./src/app/(main)/premium/page.tsx:136:                  More Tests Coming Soon
+./src/app/(main)/premium/payment/page.tsx:146:                  placeholder="Enter 12-digit UTR"
+./src/components/ui/input.tsx:12:        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+./src/components/contact/ContactForm.tsx:188:                          placeholder:text-muted-foreground
+./audit_findings.txt:1:./src/app/(auth)/login/page.tsx:82:    "w-full h-12 px-4 pl-11 rounded-xl border bg-white dark:bg-gray-800 text-sm text-[#111827] dark:text-white outline-none transition-colors duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+./audit_findings.txt:2:./src/app/(auth)/login/page.tsx:223:                    placeholder="you@example.com"
+./audit_findings.txt:3:./src/app/(auth)/login/page.tsx:257:                    placeholder="Enter your password"
+./audit_findings.txt:4:./src/app/(auth)/register/page.tsx:111:    "w-full h-12 px-4 pl-11 rounded-xl border bg-white dark:bg-gray-800 text-sm text-[#111827] dark:text-white outline-none transition-colors duration-200 placeholder:text-gray-400 dark:placeholder:text-gray-500";
+./audit_findings.txt:5:./src/app/(auth)/register/page.tsx:262:                    placeholder="John Doe"
+./audit_findings.txt:6:./src/app/(auth)/register/page.tsx:296:                    placeholder="you@example.com"
+./audit_findings.txt:7:./src/app/(auth)/register/page.tsx:330:                    placeholder="At least 6 characters"
+./audit_findings.txt:8:./src/app/(main)/premium/page.tsx:133:              {/* Coming Soon Card */}
+./audit_findings.txt:9:./src/app/(main)/premium/page.tsx:136:                  More Tests Coming Soon
+./audit_findings.txt:10:./src/app/(main)/premium/payment/page.tsx:146:                  placeholder="Enter 12-digit UTR"
+./audit_findings.txt:11:./src/components/ui/input.tsx:12:        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+./audit_findings.txt:12:./src/components/contact/ContactForm.tsx:188:                          placeholder:text-muted-foreground
