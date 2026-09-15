@@ -32,7 +32,7 @@ export default function PaymentPage() {
         trackEvent(AnalyticsEvents.BEGIN_CHECKOUT, {
           value: 49,
           currency: 'INR',
-          items: [{ item_name: 'Premium Lifetime Access' }]
+          items: JSON.stringify([{ item_name: 'Premium Lifetime Access' }])
         });
       }
     }

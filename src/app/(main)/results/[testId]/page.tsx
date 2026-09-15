@@ -63,7 +63,7 @@ export default function ResultPage() {
         // Track Mock Completed
         trackEvent(AnalyticsEvents.MOCK_COMPLETED, {
           mock_id: data.test._id,
-          mock_category: data.test.category,
+          mock_category: data.test.type,
           score_band: Math.floor(data.percentage / 20) * 20, // 0-20, 20-40, ...
           completion_status: 'completed'
         });
