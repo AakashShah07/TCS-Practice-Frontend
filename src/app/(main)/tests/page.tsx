@@ -845,9 +845,10 @@ export default function TestsPage() {
 
       {/* Topic practice cards */}
       {!specialLoading &&
-        topicCards.map((config) => {
+        topicCards.map((config, index) => {
           const test = topicTests[config.topic];
           if (!test) return null;
+          const isLocked = !user?.isPremium && index >= 6;
           return (
             <TopicTestCard
               key={config.topic}
@@ -860,6 +861,7 @@ export default function TestsPage() {
               difficultyLabel={config.difficultyLabel}
               buttonLabel={config.buttonLabel}
               colors={config.colors}
+              isLocked={isLocked}
               extraContent={
                 config.topic === "Passage Fill in the Blank"
                   ? passagePreview

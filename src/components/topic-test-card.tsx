@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
-import { ArrowRight, Flame } from "lucide-react";
+import { ArrowRight, Flame, Crown } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -36,6 +36,7 @@ export interface TopicTestCardProps {
   buttonLabel: string;
   colors: TopicCardColors;
   extraContent?: React.ReactNode;
+  isLocked?: boolean;
 }
 
 export function TopicTestCard({
@@ -49,6 +50,7 @@ export function TopicTestCard({
   buttonLabel,
   colors,
   extraContent,
+  isLocked = false,
 }: TopicTestCardProps) {
   const badgesAndButton = (
     <>
@@ -66,12 +68,21 @@ export function TopicTestCard({
         </Badge>
         <Badge className={colors.badges[3]}>{difficultyLabel}</Badge>
       </div>
-      <Button
-        className={`${colors.button} text-white`}
-        render={<Link href={`/exam/${test._id}`} target="_blank" />}
-      >
-        {buttonLabel} <ArrowRight className="ml-1 h-4 w-4" />
-      </Button>
+      {isLocked ? (
+        <Button
+          className="bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 text-white"
+          render={<Link href="/premium" />}
+        >
+          Buy Premium <Crown className="ml-1 h-4 w-4" />
+        </Button>
+      ) : (
+        <Button
+          className={`${colors.button} text-white`}
+          render={<Link href={`/exam/${test._id}`} target="_blank" />}
+        >
+          {buttonLabel} <ArrowRight className="ml-1 h-4 w-4" />
+        </Button>
+      )}
     </>
   );
 
