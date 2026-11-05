@@ -67,9 +67,9 @@ export default function PricingCard() {
               <div className="text-center">
                 <h2 className="text-4xl font-bold mt-2">Lifetime Access</h2>
                 <div className="flex items-center justify-center gap-1 mt-6">
-                  <span className="text-6xl font-bold">₹299</span>
+                  <span className="text-6xl font-bold">₹49</span>
                 </div>
-                <p className="text-muted-foreground mt-2">🔥 Only ₹0.81/day</p>
+                <p className="text-muted-foreground mt-2">🔥 One-time payment · Lifetime access</p>
               </div>
 
               <div className="mt-8 space-y-4">

@@ -205,7 +205,7 @@ export default function PremiumHero() {
                 </div>
 
                 <div className="mt-2 text-[11px] font-medium tracking-wide text-slate-500 dark:text-white/60">
-                  <span className="text-violet-700 dark:text-violet-300">₹99</span> one-time · No subscription · Lifetime access
+                  <span className="text-violet-700 dark:text-violet-300">₹49</span> one-time · No subscription · Lifetime access
                 </div>
               </div>
             </motion.div>

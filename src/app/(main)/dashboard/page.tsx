@@ -333,7 +333,7 @@ export default function DashboardPage() {
               Unlock Lifetime Access
             </Link>
             <span className="text-xs font-medium text-slate-500 dark:text-slate-300">
-              <span className="font-bold text-violet-700 dark:text-violet-300">₹99</span> one-time • No subscription • Lifetime access
+              <span className="font-bold text-violet-700 dark:text-violet-300">₹49</span> one-time • No subscription • Lifetime access
             </span>
           </div>
 

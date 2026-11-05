@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 import {
   FileText,
   BarChart3,
@@ -397,13 +399,25 @@ to Crack TCS NQT
             Stop guessing what to study. Let Premium show you exactly where to improve.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4">
-            <motion.button
+            <motion.div
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              className="rounded-full border border-violet-300/40 bg-linear-to-r from-violet-600 to-purple-500 px-8 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(124,58,237,0.25)] transition duration-300 hover:shadow-[0_0_30px_rgba(124,58,237,0.45)]"
+              transition={{ duration: 0.2 }}
             >
-              Unlock Premium →
-            </motion.button>
+              <Link
+                href="/premium/payment"
+                onClick={() =>
+                  trackEvent(AnalyticsEvents.PREMIUM_CTA_CLICK, {
+                    source_page: "/premium",
+                    cta_location: "feature_grid_bottom",
+                    cta_text: "Unlock Premium",
+                  })
+                }
+                className="inline-flex items-center gap-2 rounded-full border border-violet-300/40 bg-linear-to-r from-violet-600 to-purple-500 px-8 py-3 text-sm font-semibold text-white shadow-[0_0_25px_rgba(124,58,237,0.25)] transition duration-300 hover:shadow-[0_0_30px_rgba(124,58,237,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                Unlock Premium →
+              </Link>
+            </motion.div>
             <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-slate-500 dark:text-white/38">
               One-time payment • Lifetime access • Future updates included
             </p>
