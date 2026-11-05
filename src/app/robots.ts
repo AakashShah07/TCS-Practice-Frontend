@@ -10,6 +10,8 @@ export default function robots(): MetadataRoute.Robots {
           "/analytics",
           "/results/",
           "/exam/",
+          "/dashboard",
+          "/premium/payment",
         ],
       },
     ],

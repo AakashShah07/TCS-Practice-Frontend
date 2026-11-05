@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s | CrackNQT",
   },
   description:
-    "Prepare for TCS NQT with topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
+    "CrackNQT is a free exam preparation platform for TCS NQT, Infosys and other placement exams — topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
   keywords: [
     "TCS NQT",
     "TCS NQT practice test",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     siteName: "CrackNQT",
     title: "CrackNQT — TCS NQT Practice, Mock Tests & Preparation",
     description:
-      "Prepare for TCS NQT with topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
+      "CrackNQT is a free exam preparation platform for TCS NQT, Infosys and other placement exams — topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
     images: [
       {
         url: "/og-image.png",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CrackNQT — TCS NQT Practice, Mock Tests & Preparation",
     description:
-      "Prepare for TCS NQT with topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
+      "CrackNQT is a free exam preparation platform for TCS NQT, Infosys and other placement exams — topic-wise practice, exam-style mock tests and performance tracking. Start free and unlock advanced preparation with Premium.",
     images: ["/og-image.png"],
   },
   robots: {

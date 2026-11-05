@@ -290,6 +290,10 @@ export default function HomePage() {
           label: "Advanced Tests",
           href: "/tests/advanced",
         },
+        {
+          label: "Infosys System Engineer Exam 2027",
+          href: "/infosys-se-2027",
+        },
       ],
     },
     {
@@ -347,6 +351,22 @@ export default function HomePage() {
       />
 
       <LandingNavbar />
+
+      {/* Infosys 2027 recruitment notice — crawlable internal link */}
+      <div className="relative z-40 border-b border-amber-400/15 bg-gradient-to-r from-purple-950/60 via-[#1B1533] to-purple-950/60 backdrop-blur-sm">
+        <div className="mx-auto max-w-[1140px] px-4 sm:px-6 py-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
+          <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-amber-300/90">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" aria-hidden="true" />
+            Infosys Campus Hiring 2027
+          </span>
+          <Link
+            href="/infosys-se-2027"
+            className="text-[10px] sm:text-[11px] font-semibold text-white/80 hover:text-white underline underline-offset-2 decoration-amber-400/60 hover:decoration-amber-400 transition-colors"
+          >
+            Infosys System Engineer Exam 2027 – Exam Pattern, Syllabus &amp; Mock Test
+          </Link>
+        </div>
+      </div>
 
       {/* ── Hero ── */}
       <section className="pt-20 pb-16 sm:pt-28 sm:pb-24 relative overflow-hidden hero-gradient">

@@ -408,11 +408,11 @@ export const infosysFaq = [
     a: "It is the reported written assessment for the Software Engineer role: 60 questions across 7 sections (Reasoning 15, Technical 10, Verbal 20, Pseudocode 5, Numerical Puzzle 4, Grammar 5 and one essay), roughly 120 minutes in total. It is often searched as 'Infosys System Engineer Exam' or 'Infosys exam pattern'. Always confirm your campus-specific format in the placement notice.",
   },
   {
-    q: "What is the Infosys System Engineer salary for freshers in 2026?",
+    q: "What is the Infosys System Engineer salary for freshers?",
     a: "The commonly reported package is ₹3.6 LPA for the Software Engineer (SE) role in this drive — the figure appears in a college-specific placement notice, so CTC can vary between campuses and batches. Offer letters govern the final structure.",
   },
   {
-    q: "When is Infosys November hiring and the Infosys off campus drive in 2026?",
+    q: "When is the Infosys November hiring and the Infosys off campus drive?",
     a: "Exact drive dates are not confirmed publicly and change across campuses. The reported Software Engineer campus hiring targets the 2027 batch; check the official registration form and your placement cell for the confirmed schedule and deadlines — we do not republish unverified dates.",
   },
   {
