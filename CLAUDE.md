@@ -10,6 +10,7 @@ TCS NQT exam preparation platform built with Next.js 16, React 19, and TypeScrip
 - **UI:** React 19.2.4, Tailwind CSS v4, shadcn/ui, Base UI, Lucide icons
 - **State:** Zustand 5
 - **Data:** Axios (HTTP), Recharts (charts)
+- **Tests:** Vitest + Testing Library (jsdom)
 - **Notifications:** Sonner
 - **Theme:** next-themes with oklch color system (light/dark)
 
@@ -20,6 +21,8 @@ npm run dev      # Start dev server
 npm run build    # Production build
 npm run start    # Start production server
 npm run lint     # Run ESLint
+npm run test     # Run Vitest suite
+npm run typecheck # tsc --noEmit
 ```
 
 ## Project Structure
@@ -38,7 +41,7 @@ src/
     exam/                 # ExamTopBar, QuestionPanel, QuestionPalette, SectionPanel
     analytics/            # PerformanceCharts, TopicStrengths, TopicIntelligence
     results/              # SectionAnalysis, TimeAnalysis
-    providers.tsx         # Client providers (auth hydration, Toaster)
+    providers.tsx         # Client providers (auth hydration, Toaster, SessionRevokedHost)
   stores/
     auth-store.ts         # User auth state, login/logout, token persistence
     test-store.ts         # Active exam session (questions, timer, responses, sections)
@@ -55,6 +58,12 @@ src/
       results.ts          # fetchResult, fetchReview, fetchHistory
       types.ts            # All TypeScript interfaces (User, Test, Question, Attempt, etc.)
     utils.ts              # Utility helpers (cn for class merging)
+      errors.ts           # Backend auth error codes + helpers (lib/api/)
+      exam-sync.ts        # isSessionRevokedError() (lib/api/)
+    auth/
+      session.ts          # Centralized session cleanup, cross-tab sync
+      broadcast.ts        # BroadcastChannel wrapper (never carries tokens)
+tests/                      # Vitest + Testing Library suite
 ```
 
 ## Environment Variables
@@ -66,10 +75,14 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api   # Backend API base URL
 ## Architecture Notes
 
 ### Authentication
-- Tokens (access + refresh) stored in localStorage
+- Tokens (access + refresh) stored in localStorage; `sessionId` stored too (never displayed)
 - Auth store hydrates on app load via `providers.tsx`
 - Axios request interceptor auto-attaches Bearer token
-- 401 responses trigger silent token refresh; failed refresh redirects to /login
+- 401 handling is **code-aware**: `SESSION_REVOKED`/`TOKEN_INVALID` clear auth immediately (no refresh attempted); `TOKEN_EXPIRED` triggers a **single-flight shared refresh** with retry; `REFRESH_TOKEN_INVALID` re-reads storage to adopt another tab's rotated pair before giving up; network failures never log out; 403 `PREMIUM_REQUIRED`/`ADMIN_REQUIRED` show a deduped toast without logging out
+- Refreshed pairs are never allowed to overwrite a newer pair written by another tab (stale-response guard); localStorage is shared across tabs
+- Cross-tab coordination via `BroadcastChannel` (`logout` → other tabs clear + go to /login; `session-ended` → other tabs show the revoked screen) — never broadcasts token material
+- `SESSION_REVOKED` → immediate cleanup (tokens/sessionId/user/premium/progress cache) → idempotent full-screen "Your session has ended" experience (`SessionRevokedScreen` + `SessionRevokedHost`) → sign in again via `/login?from=<path>` (validated return URL) or back to home
+- Manual logout calls the backend `/auth/logout` (best-effort) and never shows the revoked screen
 
 ### Exam System
 - Section-locked exams mimic real TCS NQT format
@@ -128,7 +141,8 @@ NEXT_PUBLIC_API_URL=http://localhost:5000/api   # Backend API base URL
 4. Consume from Zustand stores or directly in components
 
 ### Testing Checklist
-- Run `npm run build` before pushing to catch type errors and build failures
+- Run `npm run test`, `npm run typecheck` and `npm run build` before pushing
+- For session/auth changes: run `tests/client.test.ts` and `tests/session.test.ts` — they cover the exact backend contract
 - Verify both light and dark theme appearance
-- Test auth flows: login, token refresh, and session expiry handling
+- Test auth flows: login, token refresh, session revocation (two browsers), and session expiry handling
 - For exam features: test section locking, timer, and tab-switch detection

@@ -69,10 +69,13 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const response = await login(email, password);
-      storeLogin(response.data, response.accessToken, response.refreshToken);
+      storeLogin(response.data, response.accessToken, response.refreshToken, response.sessionId);
       trackEvent(AnalyticsEvents.LOGIN, { method: 'email' });
       toast.success("Welcome back!");
-      router.push("/dashboard");
+      const from = new URLSearchParams(window.location.search).get("from");
+      const target =
+        from && from.startsWith("/") && !from.startsWith("//") ? from : "/dashboard";
+      router.push(target);
     } catch {
       toast.error("Invalid email or password");
     } finally {

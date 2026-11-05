@@ -29,6 +29,7 @@ import {
   navigate,
 } from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
+import { isSessionRevokedError } from "@/lib/api/exam-sync";
 
 /**
  * Formats question text so that coded-relation definitions, multi-line setups,
@@ -421,6 +422,13 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   function handleApiError(err: unknown) {
     // If attempt is already known to be dead, don't show more toasts
     if (attemptDead) return;
+
+    // Session replaced elsewhere → stop all further authenticated
+    // save/sync calls. The session-ended screen explains what happened.
+    if (isSessionRevokedError(err)) {
+      setAttemptDead();
+      return;
+    }
 
     const status = (err as { response?: { status?: number } })?.response?.status;
     const message =

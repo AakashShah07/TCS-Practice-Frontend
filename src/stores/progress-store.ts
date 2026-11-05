@@ -25,6 +25,8 @@ interface ProgressState {
   setTimeAnalysis: (data: TimeAnalysisData) => void;
   setHistory: (data: HistoryItem[]) => void;
   setLoading: (loading: boolean) => void;
+  /** Clear user-specific cached analytics (dashboard, topics, trends…). Called on logout/revocation. */
+  resetProgress: () => void;
 }
 
 export const useProgressStore = create<ProgressState>((set) => ({
@@ -42,4 +44,14 @@ export const useProgressStore = create<ProgressState>((set) => ({
   setTimeAnalysis: (data) => set({ timeAnalysis: data }),
   setHistory: (data) => set({ history: data }),
   setLoading: (loading) => set({ isLoading: loading }),
+  resetProgress: () =>
+    set({
+      dashboard: null,
+      topicStats: [],
+      recommendations: [],
+      trends: null,
+      timeAnalysis: null,
+      history: [],
+      isLoading: false,
+    }),
 }));

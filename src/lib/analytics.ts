@@ -29,4 +29,5 @@ export const AnalyticsEvents = {
   PURCHASE: 'purchase',
   PAYMENT_FAILED: 'payment_failed',
   PREMIUM_ACTIVATED: 'premium_activated',
+  SESSION_REVOKED: 'session_revoked',
 };

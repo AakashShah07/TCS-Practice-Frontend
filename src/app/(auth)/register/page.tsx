@@ -98,10 +98,13 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const response = await register(name, email, password);
-      storeLogin(response.data, response.accessToken, response.refreshToken);
+      storeLogin(response.data, response.accessToken, response.refreshToken, response.sessionId);
       trackEvent(AnalyticsEvents.SIGN_UP, { method: 'email', source_page: 'register' });
       toast.success("Account created! Welcome!");
-      router.push("/dashboard");
+      const from = new URLSearchParams(window.location.search).get("from");
+      const target =
+        from && from.startsWith("/") && !from.startsWith("//") ? from : "/dashboard";
+      router.push(target);
     } catch {
       toast.error("Registration failed. Please try again.");
     } finally {

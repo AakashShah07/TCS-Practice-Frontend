@@ -18,6 +18,7 @@ import {
   recordTabSwitch,
 } from "@/lib/api/exam";
 import type { Section } from "@/lib/api/types";
+import { isSessionRevokedError } from "@/lib/api/exam-sync";
 import { cn } from "@/lib/utils";
 
 export default function ExamPage() {
@@ -116,10 +117,15 @@ export default function ExamPage() {
       }
 
       if (status === 401) {
-        toast.error(
-          "Session expired. Your answers are saved locally. Please login in a new tab and come back to retry.",
-          { duration: 10000 }
-        );
+        if (isSessionRevokedError(err)) {
+          // Session replaced elsewhere — the session-ended screen explains it.
+          setAttemptDead();
+        } else {
+          toast.error(
+            "Session expired. Your answers are saved locally. Please login in a new tab and come back to retry.",
+            { duration: 10000 }
+          );
+        }
       } else {
         toast.error(message || "Failed to submit test. Please try again.");
       }

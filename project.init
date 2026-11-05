@@ -1,0 +1,153 @@
+# CrackNQT Frontend — Project Init / Analysis
+
+> TCS NQT exam preparation platform. Analysis generated Nov 2026.
+> Note: This repo root IS the frontend project (despite also containing a stray nested `frontend/` directory).
+
+---
+
+## 1. Framework & Dependencies
+
+### Core stack
+- **Next.js 16.2.3** — App Router, React Server Components, route groups.
+  ⚠ This Next version has breaking changes vs. common training data (see `AGENTS.md`; docs live in `node_modules/next/dist/docs/`).
+- **React 19.2.4** / **react-dom 19.2.4**
+- **TypeScript 5** — strict mode, path alias `@/*` → `./src/*` (plus `./frontend/src/*`, see issues).
+- **Tailwind CSS v4** via `@tailwindcss/postcss` — no `tailwind.config.*`; theme is CSS-variable based in `src/app/globals.css` (~484 lines, oklch colors, light/dark).
+- **shadcn/ui** (`components.json`, style `base-nova`) + **@base-ui/react** primitives, **class-variance-authority**, **clsx**, **tailwind-merge**, **tw-animate-css**.
+
+### App-specific libraries
+- **Zustand 5** — client state (`src/stores/`):
+  - `auth-store` — tokens/user in localStorage, hydration, login/logout
+  - `test-store` — active exam session (section-locked progress, question statuses, per-question timers, tab-switch violations, `attemptDead` handling)
+  - `progress-store` — analytics data (dashboard, topics, trends, recommendations)
+- **Axios** — HTTP client; Bearer interceptor, 401 → silent token-refresh with request queue, redirect to `/login` on failure (`src/lib/api/client.ts`).
+- **Recharts** — performance charts (analytics/results).
+- **framer-motion** — animations.
+- **lucide-react** — icons.
+- **sonner** — toast notifications.
+- **next-themes** — system/light/dark theme.
+- **Razorpay-style premium payment flow** — premium payment page (`/premium/payment`).
+- **Env var**: `NEXT_PUBLIC_API_URL` (only one) — backend REST API base URL (default `http://localhost:5000/api`).
+
+### Tooling
+- ESLint 9 + `eslint-config-next`
+- `next/font` (Geist), `next/image`, `next/script`
+- `src/app/sitemap.ts`, `src/app/robots.ts` — SEO
+- Scripts: `dev` (next dev) · `build` (next build) · `start` (next start) · `lint` (eslint)
+- **No test framework installed.**
+
+---
+
+## 2. Folder Structure
+
+```
+frontend/                        (repo root = frontend project)
+├── src/
+│   ├── app/                     # Next.js App Router
+│   │   ├── layout.tsx           # Root layout: metadata/SEO, Providers, globals.css
+│   │   ├── page.tsx             # Landing page (~75 KB, uncommitted modification)
+│   │   ├── globals.css          # Tailwind v4 theme + custom scroll animations
+│   │   ├── robots.ts, sitemap.ts
+│   │   ├── (auth)/              # Unauthenticated route group
+│   │   │   ├── layout.tsx
+│   │   │   ├── login/  register/   (+ per-page layouts)
+│   │   ├── (public)/            # Public / SEO content route group
+│   │   │   ├── about/  contact/  privacy-policy/
+│   │   │   ├── tcs-nqt-cutoff/  tcs-nqt-preparation/  tcs-nqt-syllabus/
+│   │   │   └── page.tsx         # ⚠ resolves to "/" — conflicts with src/app/page.tsx
+│   │   ├── (main)/              # Authenticated product shell (shared Navbar/Footer)
+│   │   │   ├── layout.tsx       # Navbar + container + Footer
+│   │   │   ├── dashboard/  analytics/  practice/ (+ [topic]/)
+│   │   │   ├── coding/    (+ [id]/)
+│   │   │   ├── tests/     (+ foundation/  advanced/  mock/)
+│   │   │   ├── premium/   (+ payment/)
+│   │   │   └── results/[testId]/  (+ review/)
+│   │   └── exam/[testId]/       # Full-screen exam UI (no Navbar):
+│   │                            #   timer, section locking, question palette/panel
+│   ├── components/
+│   │   ├── ui/                  # shadcn/ui primitives (button, card, dialog, table, …)
+│   │   ├── layout/              # Navbar, Footer
+│   │   ├── providers.tsx        # next-themes + auth hydration + Toaster
+│   │   ├── auth/                # AuthParticles (login/register visuals)
+│   │   ├── exam/                # ExamTopBar, QuestionPanel, QuestionPalette, SectionPanel
+│   │   ├── analytics/           # PerformanceCharts, TopicStrengths, TopicIntelligence
+│   │   ├── results/             # SectionAnalysis, TimeAnalysis
+│   │   ├── premium/             # PremiumHero, PricingCard, FeatureGrid, PremiumBanner
+│   │   └── about|contact|cutoff|syllabus|preparation|privacy/  # SEO page sections
+│   ├── hooks/                   # usePreventCopy (exam anti-cheat), usePremiumBanner
+│   ├── lib/
+│   │   ├── api/                 # Shared Axios client + per-domain modules:
+│   │   │                        #   client.ts (interceptors/refresh), auth, tests, exam,
+│   │   │                        #   analytics, practice, coding, results, types.ts
+│   │   ├── constants/pricing.ts # Premium plan pricing
+│   │   ├── utils.ts             # cn() class merger
+│   │   ├── cutoff-data.ts, syllabus-data.ts   # Static SEO content data
+│   │   └── analytics.ts
+│   ├── stores/                  # Zustand: auth-store, test-store, progress-store
+│   └── types/global.d.ts
+├── frontend/                    # ⚠ Nested PARTIAL COPY of the old structure
+│   └── src/…                    # Tracked in git; included in tsconfig paths
+├── public/                      # favicons, tcs/infosys/wipro logos, QR images, ads.txt
+├── docs/analytics.md
+└── Root-level artifacts         # audit_findings.txt, findings_*.txt, CURL_response.md,
+                                 # req.txt, rzp-key.csv, favicon_io.zip
+```
+
+### How it fits together
+- **Route groups**: `(auth)` = login/register · `(public)` = SEO/marketing pages · `(main)` = authenticated shell with shared Navbar/Footer. `exam/[testId]` is outside all groups — full-screen, chrome-free.
+- **Data flow**: Components / Zustand stores → `lib/api/*` modules → shared Axios client → backend REST API (`NEXT_PUBLIC_API_URL`). Responses wrapped in `ApiResponse<T>`; types centralized in `lib/api/types.ts`.
+- **Auth**: localStorage access/refresh tokens, hydrated on mount via `providers.tsx` → Zustand. 401 → single queued refresh call; failure → redirect `/login`.
+- **Exam system**: section-locked sections (numerical → reasoning → verbal → advanced), question statuses (`not_visited` / `not_answered` / `answered` / `marked_for_review`), per-question timing, tab-switch detection, `usePreventCopy`, localStorage backup of in-progress answers, `attemptDead` flag to stop API spam after a backend 400.
+- **SEO**: metadata-rich root layout, `sitemap.ts`, `robots.ts`, JSON-LD, static-content pages (syllabus / cutoff / preparation).
+
+---
+
+## 3. Known Issues (flagged, not yet fixed)
+
+1. **Duplicate `/` page (shadowed, not build-breaking)** — `src/app/page.tsx` and `src/app/(public)/page.tsx` both resolve to `/`. Empirically (verified Nov 2026, Next.js 16.2.3): `npm run build` succeeds, `/` serves the root `page.tsx` (landing), and the `(public)/page.tsx` ("TCS NQT Exam Pattern 2026") is dead code shadowed by it. Per Next docs, conflicting paths are unsupported and may error in other versions — the `(public)/page.tsx` should still be moved/renamed/deleted.
+   - The root `page.tsx` is the real landing page (uncommitted, 75 KB, `"use client"`).
+2. **Nested `frontend/` directory** committed to git and mapped in `tsconfig.json` paths (`"@/*": ["./src/*", "./frontend/src/*"]`).
+   Stale 8-file partial copy (tcs-nqt pages, breadcrumbs, analytics.ts…), still included in TS compilation & alias resolution.
+3. **Repo hygiene** —
+   - `.env*` is gitignored and `.env.local` is untracked ✅
+   - But committed artifacts at root: `audit_findings.txt` (230 KB), `findings_pricing.txt` (458 KB), `findings_content.txt`, `findings_stats.txt`, `CURL_response.md`, `req.txt`
+   - **`rzp-key.csv`** exists on disk but is gitignored and has never been committed — not exposed in git or history.
+   - `.env.local` is untracked and gitignored ✅; no env files, keys, tokens, or private keys are tracked anywhere in the repo (168 tracked files verified).
+4. **Uncommitted work** — `src/app/page.tsx` modified; `src/components/premium/PremiumBanner.tsx` + `src/hooks/usePremiumBanner.ts` untracked (referenced by the landing page).
+5. **Monolith page** — `src/app/page.tsx` at ~75 KB mixes the entire landing page inline; candidate for component extraction.
+6. Minor — `.next/` cache is 2.8 GB; README.md is default create-next-app boilerplate (real docs live in `CLAUDE.md` / `docs/`).
+
+---
+
+## 4. Environment & Commands
+
+```bash
+npm install
+cp .env.example .env.local   # set NEXT_PUBLIC_API_URL (backend must be running)
+npm run dev                  # start dev server (http://localhost:3000)
+npm run build                # production build (run before pushing — catches type errors)
+npm run start                # production server
+npm run lint                 # ESLint
+```
+
+`.env.local`:
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+```
+
+## 5. Conventions
+- `"use client"` for interactive components; RSC by default.
+- Prefer shadcn/ui components over custom UI.
+- Zustand stores for shared state; avoid prop drilling.
+- All HTTP via `src/lib/api/` modules — never raw axios in components.
+- `@/` path alias for all imports.
+- Skeleton loading states for data-fetching pages.
+- Verify light AND dark themes; test auth flows (login, refresh, expiry).
+- For exam features: test section locking, timer, tab-switch detection.
+
+## 6. Suggested Fix Order
+1. Resolve `/` route conflict (move/rename `(public)/page.tsx` or delete it) → unblocks build.
+2. Remove stray `frontend/` directory from git + drop `./frontend/src/*` from tsconfig paths.
+3. Purge `rzp-key.csv` (and other artifacts) from git history; rotate the key.
+4. Commit pending premium-banner work; extract `page.tsx` into components.
+5. Replace boilerplate README with real setup instructions.

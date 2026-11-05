@@ -30,19 +30,8 @@ import {
   Globe,
   Database,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useAuthStore } from "@/stores/auth-store";
-
-const resourceLinks = [
-  { href: "/tcs-nqt-syllabus", label: "Syllabus" },
-  { href: "/tcs-nqt-preparation", label: "Preparation" },
-  { href: "/tcs-nqt-cutoff", label: "Cutoff" },
-];
+import LandingNavbar from "@/components/layout/LandingNavbar";
+import { PremiumBanner } from "@/components/premium/PremiumBanner";
 
 const faqData = [
   {
@@ -256,7 +245,6 @@ export default function HomePage() {
   const [foundationOpen, setFoundationOpen] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [expandedSubs, setExpandedSubs] = useState<Set<string>>(new Set());
-  const { isAuthenticated } = useAuthStore();
 
   const footerGroups = [
     {
@@ -357,82 +345,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      {/* ── Nav ── */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 landing-slide-down">
-        <div className="max-w-[1140px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 sm:gap-2.5">
-            <Image
-              src="/llog.png"
-              alt="CrackNQT"
-              width={32}
-              height={32}
-              className="rounded-lg"
-            />
-            <span className="text-lg sm:text-xl font-black text-[#111827] dark:text-white tracking-tight">
-              CrackNQT
-            </span>
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Desktop: Show links directly */}
-            {!isAuthenticated && (
-              <div className="hidden md:flex items-center gap-1">
-                {resourceLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 py-2"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <Link
-                  href="/premium"
-                  className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 py-2"
-                >
-                  Premium
-                </Link>
-              </div>
-            )}
-
-            {/* Mobile: Show dropdown */}
-            {!isAuthenticated && (
-              <div className="md:hidden">
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 py-2 flex items-center gap-1">
-                    Menu <ChevronDown className="h-4 w-4" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    {resourceLinks.map((link) => (
-                      <DropdownMenuItem
-                        key={link.href}
-                        onClick={() => (window.location.href = link.href)}
-                      >
-                        {link.label}
-                      </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuItem onClick={() => (window.location.href = "/premium")}>
-                      Premium
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            )}
-
-            <Link
-              href="/login"
-              className="text-sm font-semibold text-[#374151] dark:text-gray-300 hover:text-[#111827] dark:hover:text-white transition-colors px-2 sm:px-3 py-2"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/register"
-              className="auth-btn text-sm font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] dark:bg-blue-500 dark:hover:bg-blue-600 px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 dark:shadow-blue-500/10 transition-all"
-            >
-              Start Free Test
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <LandingNavbar />
 
       {/* ── Hero ── */}
       <section className="pt-20 pb-16 sm:pt-28 sm:pb-24 relative overflow-hidden hero-gradient">
@@ -686,46 +599,16 @@ export default function HomePage() {
       </section>
 
       {/* ── Premium Test Promotion ── */}
-      <section className="py-24 sm:py-32 bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/20 dark:to-gray-950 border-y border-amber-100 dark:border-amber-900/30">
+      <section className="py-24 sm:py-32">
         <div className="max-w-5xl mx-auto px-6">
-          <div
-            className="relative bg-white dark:bg-gray-900 rounded-[2.5rem] p-10 sm:p-16 border border-amber-200 dark:border-amber-800 shadow-2xl shadow-amber-500/10 overflow-hidden reveal-scale-up"
-            data-reveal
-          >
-            {/* Background decorative glow */}
-            <div className="absolute -top-24 -right-24 w-64 h-64 bg-amber-400/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-orange-400/20 rounded-full blur-3xl animate-pulse delay-700" />
-
-            <div className="relative z-10 flex flex-col items-center text-center">
-              {/* Headline */}
-              <h3 className="text-4xl sm:text-5xl font-black text-[#111827] dark:text-white mb-6 tracking-tight leading-tight">
-                Go Further with Premium
-              </h3>
-
-              {/* Subheadline */}
-              <p className="text-lg sm:text-xl text-[#6B7280] dark:text-gray-400 max-w-2xl mb-10 leading-relaxed">
-                Unlock advanced preparation tools designed to help you practice beyond the free experience.
-              </p>
-
-              {/* Price & CTA */}
-              <div className="flex flex-col items-center gap-4">
-                <div className="text-5xl font-black text-[#111827] dark:text-white tracking-tight">
-                  ₹49
-                </div>
-                <p className="text-[#6B7280] dark:text-gray-400 mb-6">One-time payment &bull; Lifetime access</p>
-
-                <Link
-                  href="/premium"
-                  className="group relative inline-flex items-center gap-3 px-10 py-5 bg-[#111827] hover:bg-black dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-black text-lg rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-amber-500/40"
-                >
-                  Unlock Premium →
-                </Link>
-                <p className="text-sm text-[#6B7280] dark:text-gray-400 mt-4">
-                  No subscription. Pay once and keep access.
-                </p>
-              </div>
-            </div>
-          </div>
+          <PremiumBanner 
+            variant="post-completion" 
+            sourcePage="/"
+            title="Go Further with Premium"
+            description="Unlock advanced preparation tools designed to help you practice beyond the free experience. One-time payment, lifetime access."
+            ctaText="Unlock Premium - ₹49"
+            bannerId="homepage_hero"
+          />
         </div>
       </section>
 

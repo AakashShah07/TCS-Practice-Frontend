@@ -62,6 +62,8 @@ export interface AuthResponse {
   data: User;
   accessToken: string;
   refreshToken: string;
+  /** Backend-issued session id (sid also embedded in the JWTs). Not a secret — never displayed. */
+  sessionId?: string;
 }
 
 export type Section = "numerical" | "reasoning" | "verbal" | "advanced";

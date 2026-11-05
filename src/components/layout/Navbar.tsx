@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuthStore } from "@/stores/auth-store";
+import { logout as apiLogout } from "@/lib/api/auth";
+import { manualLogout } from "@/lib/auth/session";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 
@@ -38,10 +40,13 @@ const navLinks = [
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, isLoading } = useAuthStore();
 
   const handleLogout = () => {
-    logout();
+    // Best-effort backend logout (ends the server-side session); local cleanup
+    // and cross-tab sync happen regardless of the outcome.
+    apiLogout().catch(() => {});
+    manualLogout(); // clear auth + caches, broadcast to other tabs — no revoked screen
     router.push("/login");
   };
 
@@ -72,7 +77,7 @@ export default function Navbar() {
               const isAnalyticsLink = link.href === "/analytics";
               const isLocked = isAnalyticsLink && !user?.isPremium;
               const Icon = isLocked ? Lock : link.icon;
-              const isActive = pathname !== "/tcs-nqt-preparation" && pathname.startsWith(link.href);
+              const isActive = pathname.startsWith(link.href);
               
               return (
                 <Link
@@ -98,7 +103,9 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          {isAuthenticated ? (
+          {isLoading ? (
+            <div className="h-8 w-8 rounded-full bg-muted animate-pulse" aria-hidden="true" />
+          ) : isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger
                 className="relative h-8 w-8 rounded-full inline-flex items-center justify-center hover:bg-accent cursor-pointer"
@@ -148,8 +155,7 @@ export default function Navbar() {
                   const isAnalyticsLink = link.href === "/analytics";
                   const isLocked = isAnalyticsLink && !user?.isPremium;
                   const Icon = isLocked ? Lock : link.icon;
-                  const isActive = pathname !== "/tcs-nqt-preparation" && pathname.startsWith(link.href);
-                  
+                  const isActive = pathname.startsWith(link.href);   
                   return (
                     <Link
                       key={link.href}
@@ -167,7 +173,7 @@ export default function Navbar() {
                     </Link>
                   );
                 })}
-                {!isAuthenticated && (
+                {!isLoading && !isAuthenticated && (
                   <>
                     <Link
                       href="/login"
