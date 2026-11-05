@@ -1,7 +1,12 @@
 "use client";
 
 import { create } from "zustand";
-import type { Question, Section } from "@/lib/api/types";
+import type {
+  Question,
+  QuestionGroup,
+  QuestionMode,
+  Section,
+} from "@/lib/api/types";
 
 export type QuestionStatus =
   | "not_visited"
@@ -35,6 +40,8 @@ interface TestState {
   isPaused: boolean;
   sectionLocked: boolean; // whether sections are locked (full mock = true)
   submittedSections: Section[]; // sections that have been submitted
+  questionGroups: QuestionGroup[]; // shared stimuli referenced by grouped questions
+  questionMode: QuestionMode;
 
   // Actions
   initTest: (params: {
@@ -50,7 +57,11 @@ interface TestState {
     tabSwitchCount?: number;
     timer?: number;
     sectionLocked?: boolean;
+    questionGroups?: QuestionGroup[];
+    questionMode?: QuestionMode;
   }) => void;
+  /** Returns the shared group for a question index, or null for standalone questions. */
+  getGroupForIndex: (index: number) => QuestionGroup | null;
   setAnswer: (index: number, selectedAnswer: number) => void;
   clearAnswer: (index: number) => void;
   markForReview: (index: number) => void;
@@ -92,6 +103,8 @@ const initialState = {
   isPaused: false,
   sectionLocked: false,
   submittedSections: [] as Section[],
+  questionGroups: [] as QuestionGroup[],
+  questionMode: "standalone" as QuestionMode,
   attemptDead: false,
 };
 
@@ -192,7 +205,16 @@ export const useTestStore = create<TestState>((set, get) => ({
       questionEnteredAt: Date.now(),
       sectionLocked: params.sectionLocked ?? false,
       submittedSections: [],
+      questionGroups: params.questionGroups ?? [],
+      questionMode: params.questionMode ?? "standalone",
     });
+  },
+
+  getGroupForIndex: (index) => {
+    const { questions, questionGroups } = get();
+    const groupId = questions[index]?.groupId;
+    if (!groupId) return null;
+    return questionGroups.find((g) => g.id === groupId) ?? null;
   },
 
   setAnswer: (index, selectedAnswer) => {

@@ -70,6 +70,69 @@ export type Section = "numerical" | "reasoning" | "verbal" | "advanced";
 
 export type TestType = "section_test" | "full_mock" | "topic_practice";
 
+// ── Grouped / media question support ──────────────────────────────────────
+export type MediaType = "image" | "chart" | "table";
+
+export type QuestionType = "mcq" | "image_mcq";
+
+export type QuestionGroupType =
+  | "data_interpretation"
+  | "reading_comprehension"
+  | "image_based"
+  | "table_based"
+  | "case_study";
+
+/** Structured table data (optional — backend currently only sends url/alt). */
+export interface MediaTableData {
+  columns: string[];
+  rows: (string | number)[][];
+}
+
+/** Structured chart data (optional — backend currently only sends url/alt). */
+export interface MediaChartSeries {
+  key: string;
+  label?: string;
+  color?: string;
+}
+
+export interface MediaChartData {
+  kind: "bar" | "line" | "pie";
+  data: Record<string, string | number>[];
+  xKey?: string;
+  yKey?: string;
+  series?: MediaChartSeries[];
+  nameKey?: string;
+  valueKey?: string;
+}
+
+export interface Media {
+  type: MediaType;
+  url?: string;
+  alt?: string;
+  /** Optional structured table (rendered when present instead of an image). */
+  table?: MediaTableData;
+  /** Optional structured chart (rendered when present instead of an image). */
+  chart?: MediaChartData;
+}
+
+export interface Stimulus {
+  text?: string;
+  media?: Media | null;
+}
+
+export interface QuestionGroup {
+  id: string;
+  title: string;
+  type: QuestionGroupType;
+  section?: Section;
+  topic?: string;
+  difficulty?: "easy" | "medium" | "hard";
+  stimulus: Stimulus;
+  questionIds: string[];
+}
+
+export type QuestionMode = "standalone" | "grouped" | "mixed";
+
 export interface Question {
   _id: string;
   text: string;
@@ -79,6 +142,9 @@ export interface Question {
   topic: string;
   difficulty: "easy" | "medium" | "hard";
   explanation?: string;
+  questionType?: QuestionType;
+  media?: Media | null;
+  groupId?: string | null;
 }
 
 export interface Test {
@@ -92,7 +158,11 @@ export interface Test {
   sectionLocked: boolean;
   isActive: boolean;
   isPremium?: boolean;
+  selectionMode?: "auto" | "fixed" | "random";
   questions?: Question[];
+  groups?: string[];
+  questionMode?: QuestionMode;
+  questionGroups?: QuestionGroup[];
   createdAt: string;
 }
 
@@ -137,6 +207,8 @@ export interface AttemptState {
   currentSection?: string;
   tabSwitchCount: number;
   responses: AttemptResponsePopulated[];
+  questionMode?: QuestionMode;
+  questionGroups?: QuestionGroup[];
 }
 
 // Result types
@@ -203,6 +275,8 @@ export interface ReviewResponse {
   score: number;
   totalQuestions: number;
   percentage: number;
+  questionMode?: QuestionMode;
+  questionGroups?: QuestionGroup[];
   review: ReviewItem[];
 }
 

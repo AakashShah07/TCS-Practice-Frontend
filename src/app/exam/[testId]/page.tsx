@@ -193,6 +193,8 @@ export default function ExamPage() {
         duration: state.duration,
         sections,
         sectionLocked: state.test.sectionLocked ?? false,
+        questionGroups: state.questionGroups ?? [],
+        questionMode: state.questionMode ?? "standalone",
       });
     } catch {
       setError("Failed to load test. Please try again.");

@@ -30,6 +30,8 @@ import {
 } from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
 import { isSessionRevokedError } from "@/lib/api/exam-sync";
+import SharedStimulus, { MediaRenderer } from "./SharedStimulus";
+import AnswerOptions from "./AnswerOptions";
 
 /**
  * Formats question text so that coded-relation definitions, multi-line setups,
@@ -380,6 +382,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
     submitSection,
     setAttemptDead,
     goToQuestion,
+    getGroupForIndex,
   } = useTestStore();
 
   const [showSectionSubmit, setShowSectionSubmit] = useState(false);
@@ -390,6 +393,9 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   const currentResponse = responses[currentQuestionIndex];
   const selectedOption = currentResponse?.selectedAnswer ?? null;
   const isMarked = currentResponse?.markedForReview === true;
+
+  // Grouped question support — the shared stimulus for the current question.
+  const group = getGroupForIndex(currentQuestionIndex);
 
   const isLastInSection = sectionLocked && isLastQuestionInSection();
   const nextSec = getNextSection();
@@ -509,7 +515,65 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
   return (
     <div className="h-full flex flex-col bg-white dark:bg-gray-950">
       <div className="flex-1 min-h-0 p-5 sm:p-8 overflow-y-auto">
-        {isReadingComprehensionType && readingComprehensionParts ? (
+        {group ? (
+          /* ── Grouped question: Shared Stimulus + related question ── */
+          <div data-testid="grouped-layout" className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-1">
+            {/* Left: shared stimulus (persists across the group's questions) */}
+            <div className="min-w-0 overflow-y-auto p-5 sm:p-6 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+              <SharedStimulus group={group} />
+            </div>
+
+            {/* Right: current question + answer options */}
+            <div className="min-w-0 overflow-y-auto p-5 sm:p-6">
+              <div className="max-w-2xl mx-auto space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400">
+                      Q{currentQuestionIndex + 1}
+                    </span>
+                    <Badge variant="outline" className="text-xs font-medium bg-slate-50 dark:bg-slate-800">
+                      {question.topic}
+                    </Badge>
+                    {question.difficulty && (
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-[10px] capitalize",
+                          question.difficulty === "easy" && "border-green-200 text-green-700 bg-green-50",
+                          question.difficulty === "medium" && "border-amber-200 text-amber-700 bg-amber-50",
+                          question.difficulty === "hard" && "border-red-200 text-red-700 bg-red-50"
+                        )}
+                      >
+                        {question.difficulty}
+                      </Badge>
+                    )}
+                  </div>
+                  {isMarked && (
+                    <Badge className="bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-100 gap-1">
+                      <BookmarkCheck className="h-3 w-3" />
+                      Flagged
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-full" />
+                  <div className="pl-5 py-1">
+                    <QuestionText text={question.text} topic={question.topic} />
+                  </div>
+                </div>
+
+                {question.media && <MediaRenderer media={question.media} />}
+
+                <AnswerOptions
+                  options={question.options}
+                  selectedIndex={selectedOption}
+                  onSelect={handleOptionClick}
+                />
+              </div>
+            </div>
+          </div>
+        ) : isReadingComprehensionType && readingComprehensionParts ? (
           /* ── Reading Comprehension: Split Layout ── */
           <div className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-1">
             {/* Left: Passage */}
@@ -747,53 +811,15 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
               </div>
             </div>
 
-            {/* Options */}
-            <div className="space-y-3">
-              {question.options.map((option, index) => {
-                const isSelected = selectedOption === index;
-                const optionLabel = String.fromCharCode(65 + index);
+            {/* Per-question media (image_mcq) */}
+            {question.media && <MediaRenderer media={question.media} />}
 
-                return (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionClick(index)}
-                    className={cn(
-                      "group w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 text-left transition-all duration-200",
-                      "hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm",
-                      isSelected
-                        ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 shadow-md shadow-indigo-100 dark:shadow-indigo-900/20"
-                        : "border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600 bg-white dark:bg-slate-900"
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all duration-200",
-                        isSelected
-                          ? "bg-indigo-600 text-white shadow-sm"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900 group-hover:text-indigo-700 dark:group-hover:text-indigo-300"
-                      )}
-                    >
-                      {optionLabel}
-                    </span>
-                    <span
-                      className={cn(
-                        "text-[15px] leading-relaxed transition-colors",
-                        isSelected ? "text-indigo-900 dark:text-indigo-100 font-medium" : "text-slate-700 dark:text-slate-300"
-                      )}
-                    >
-                      {option}
-                    </span>
-                    {isSelected && (
-                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white shrink-0">
-                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            {/* Options */}
+            <AnswerOptions
+              options={question.options}
+              selectedIndex={selectedOption}
+              onSelect={handleOptionClick}
+            />
           </div>
         )}
       </div>
