@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import LandingNavbar from "@/components/layout/LandingNavbar";
 import { PremiumBanner } from "@/components/premium/PremiumBanner";
+import Infosys2027Popup from "@/components/campaigns/Infosys2027Popup";
 
 const faqData = [
   {
@@ -1611,7 +1612,10 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-    
+
+      {/* Infosys 2027 campaign — homepage popup (appears after a short delay, once per campaign) */}
+      <Infosys2027Popup />
+
     </div>
   );
 }

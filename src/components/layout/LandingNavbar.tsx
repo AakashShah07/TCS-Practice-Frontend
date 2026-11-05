@@ -16,6 +16,11 @@ const resourceLinks = [
   { href: "/tcs-nqt-cutoff", label: "Cutoff" },
 ];
 
+const campaignLink = {
+  href: "/infosys-se-2027",
+  label: "Infosys 2027",
+};
+
 /**
  * Public marketing navbar — landing page and other public marketing pages.
  * Completely independent of the authenticated application navbar.
@@ -56,6 +61,13 @@ export default function LandingNavbar() {
             >
               Premium
             </Link>
+            <Link
+              href={campaignLink.href}
+              className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/15 border border-amber-400/40 text-amber-700 dark:text-amber-300 hover:bg-amber-400/25 hover:border-amber-400/60 transition-colors px-2.5 py-1.5 text-xs font-bold uppercase tracking-wide"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" aria-hidden="true" />
+              {campaignLink.label}
+            </Link>
           </div>
 
           {/* Mobile: Show dropdown */}
@@ -75,6 +87,9 @@ export default function LandingNavbar() {
                 ))}
                 <DropdownMenuItem onClick={() => (window.location.href = "/premium")}>
                   Premium
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => (window.location.href = campaignLink.href)}>
+                  Infosys 2027
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
