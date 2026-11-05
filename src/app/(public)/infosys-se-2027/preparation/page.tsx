@@ -5,8 +5,16 @@ import { ArrowLeft, ArrowRight, Map } from "lucide-react";
 export const metadata: Metadata = {
   title: "Infosys SE 2027 Preparation Roadmap — Coming Soon",
   description:
-    "The Infosys 2027 Software Engineer preparation roadmap (topic sequence, strategy and mocks) is being prepared. Meanwhile, start practicing on CrackNQT.",
+    "The Infosys 2027 Software Engineer preparation roadmap — topic sequence, assessment strategy and official-pattern-aligned mock tests — is being prepared. Meanwhile, start practicing on CrackNQT.",
+  keywords: [
+    "Infosys System Engineer Mock Test",
+    "Infosys previous year questions",
+    "Infosys free mock test",
+    "Infosys exam preparation",
+    "Infosys 2027 preparation",
+  ],
   alternates: { canonical: "/infosys-se-2027/preparation" },
+  robots: { index: true, follow: true },
 };
 
 export default function InfosysPreparationPage() {

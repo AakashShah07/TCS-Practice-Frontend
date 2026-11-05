@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +10,18 @@ import {
 import { trackEvent, AnalyticsEvents } from "@/lib/analytics";
 import InfosysSectionHeading from "./InfosysSectionHeading";
 import { infosysFaq } from "@/lib/infosys-2027-data";
+
+const relatedSearches: { label: string; href: string }[] = [
+  { label: "Infosys previous year questions", href: "/practice" },
+  { label: "Infosys free mock test", href: "/tests/mock" },
+  { label: "Infosys aptitude test practice", href: "/practice" },
+  { label: "Infosys reasoning questions", href: "/tests/foundation?section=reasoning" },
+  { label: "Infosys verbal ability practice", href: "/tests/foundation?section=verbal" },
+  { label: "Infosys coding questions", href: "/coding" },
+  { label: "Infosys exam pattern", href: "#exam-pattern" },
+  { label: "Infosys eligibility criteria", href: "#eligibility" },
+  { label: "Infosys selection process", href: "#selection-process" },
+];
 
 export default function InfosysFAQ() {
   return (
@@ -43,6 +56,25 @@ export default function InfosysFAQ() {
             </AccordionItem>
           ))}
         </Accordion>
+      </div>
+
+      {/* Keyword-rich internal links */}
+      <div className="mt-6 max-w-3xl">
+        <h3 className="text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+          People also search for
+        </h3>
+        <ul className="mt-2 flex flex-wrap gap-2">
+          {relatedSearches.map((item) => (
+            <li key={item.label}>
+              <Link
+                href={item.href}
+                className="inline-block rounded-full border border-border/60 bg-muted/60 px-3 py-1.5 text-[11px] sm:text-xs font-medium text-foreground hover:border-primary/40 hover:text-primary transition-colors"
+              >
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

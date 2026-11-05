@@ -20,6 +20,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tests/advanced",
     "/tests/mock",
     "/tests/foundation",
+    "/infosys-se-2027",
+    "/infosys-se-2027/preparation",
   ];
 
   return routes.map((route) => ({

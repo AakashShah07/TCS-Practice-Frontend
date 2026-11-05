@@ -61,6 +61,12 @@ export default function InfosysHero() {
             Explore the reported Infosys 2027 hiring details, understand the
             selection process, and discover what to prepare for the assessment.
           </p>
+          <p className="mt-3 max-w-2xl mx-auto text-[11px] sm:text-xs text-white/40 leading-relaxed">
+            Searching for the Infosys System Engineer online assessment, Infosys
+            exam pattern or Infosys fresher hiring? This page covers the reported
+            Software Engineer (SE) campus drive for the 2027 batch — salary,
+            eligibility, syllabus and selection process — based on current reports.
+          </p>
 
           {/* Compact info chips */}
           <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-3xl mx-auto">

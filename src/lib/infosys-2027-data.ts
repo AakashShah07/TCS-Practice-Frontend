@@ -403,4 +403,28 @@ export const infosysFaq = [
     q: "Is the exam pattern confirmed for every campus?",
     a: "No. The pattern is based on a college-specific placement notice and can differ across campuses, sessions and drives. Treat everything on this page as reported information and confirm officially before the exam.",
   },
+  {
+    q: "What is the Infosys System Engineer Online Assessment?",
+    a: "It is the reported written assessment for the Software Engineer role: 60 questions across 7 sections (Reasoning 15, Technical 10, Verbal 20, Pseudocode 5, Numerical Puzzle 4, Grammar 5 and one essay), roughly 120 minutes in total. It is often searched as 'Infosys System Engineer Exam' or 'Infosys exam pattern'. Always confirm your campus-specific format in the placement notice.",
+  },
+  {
+    q: "What is the Infosys System Engineer salary for freshers in 2026?",
+    a: "The commonly reported package is ₹3.6 LPA for the Software Engineer (SE) role in this drive — the figure appears in a college-specific placement notice, so CTC can vary between campuses and batches. Offer letters govern the final structure.",
+  },
+  {
+    q: "When is Infosys November hiring and the Infosys off campus drive in 2026?",
+    a: "Exact drive dates are not confirmed publicly and change across campuses. The reported Software Engineer campus hiring targets the 2027 batch; check the official registration form and your placement cell for the confirmed schedule and deadlines — we do not republish unverified dates.",
+  },
+  {
+    q: "Is Infosys fresher hiring open for the 2027 batch?",
+    a: "Yes — the reported drive targets the 2027 graduating batch across BE/BTech, ME/MTech, MCA, MSc (5-year Integrated) and MSc (Mathematics). Eligibility is defined per campus, so verify with your placement cell and the official form before registering.",
+  },
+  {
+    q: "Where can I find Infosys System Engineer previous year questions and free mock tests?",
+    a: "The official Infosys sample paper (Systems Engineer) is linked in the Resources section below. CrackNQT also offers topic-wise practice, aptitude/reasoning/verbal/coding questions and full-length free TCS-style mock tests to build speed and accuracy — links are in the footer and on this page.",
+  },
+  {
+    q: "What is the Infosys eligibility criteria for freshers?",
+    a: "Reported minimums from the notice we saw: 60% in Class 10, 60% in Class 12, 65% for Diploma where applicable, and 65% in BTech. These are reported figures, not Infosys-wide criteria — your campus placement notice and the official registration form are the deciding documents.",
+  },
 ] as const;

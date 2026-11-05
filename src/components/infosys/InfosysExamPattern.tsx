@@ -138,6 +138,57 @@ export default function InfosysExamPattern() {
         </div>
       </div>
 
+      {/* Full pattern at a glance — semantic table for crawlers and quick scanning */}
+      <div className="mt-6 overflow-hidden rounded-2xl border border-border/60">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[36rem] text-left text-xs sm:text-sm">
+            <caption className="caption-top caption-left bg-card border-b border-border/60 px-4 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+              Infosys System Engineer Exam — reported pattern
+            </caption>
+            <thead className="bg-muted/60">
+              <tr>
+                <th scope="col" className="px-4 py-2.5 font-bold text-foreground">Section</th>
+                <th scope="col" className="px-4 py-2.5 font-bold text-foreground text-right">Questions</th>
+                <th scope="col" className="px-4 py-2.5 font-bold text-foreground text-right">Marks</th>
+                <th scope="col" className="px-4 py-2.5 font-bold text-foreground text-right">Duration</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/60 bg-card">
+              {examSections.map((section) => (
+                <tr key={section.id}>
+                  <th scope="row" className="px-4 py-2.5 font-medium text-foreground">
+                    {section.name}
+                  </th>
+                  <td className="px-4 py-2.5 text-right text-muted-foreground">
+                    {section.questions !== null ? section.questions : "1 (essay)"}
+                  </td>
+                  <td className="px-4 py-2.5 text-right text-muted-foreground">
+                    {section.marks !== null ? section.marks : "Not specified"}
+                  </td>
+                  <td className="px-4 py-2.5 text-right text-muted-foreground">
+                    {section.durationMinutes} min
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot className="bg-muted/60">
+              <tr>
+                <th scope="row" className="px-4 py-2.5 font-bold text-foreground">Total</th>
+                <td className="px-4 py-2.5 text-right font-bold text-foreground">
+                  {examPatternSummary.totalQuestions}
+                </td>
+                <td className="px-4 py-2.5 text-right font-bold text-foreground">
+                  {examPatternSummary.totalMarks}
+                </td>
+                <td className="px-4 py-2.5 text-right font-bold text-foreground">
+                  {examPatternSummary.totalMinutes} min
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
       <p className="mt-4 flex items-start gap-2 text-[10px] sm:text-[11px] text-muted-foreground leading-snug">
         <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         {examPatternDisclaimer}
