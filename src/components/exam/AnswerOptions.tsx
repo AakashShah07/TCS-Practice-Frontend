@@ -102,19 +102,19 @@ export default function AnswerOptions({
             onClick={() => onSelect(index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={cn(
-              "group flex w-full items-center gap-4 rounded-2xl border-2 px-5 py-4 text-left transition-all duration-200",
+              "group flex min-h-[60px] sm:min-h-[64px] w-full items-center gap-4 rounded-2xl border-2 px-4 sm:px-5 py-4 text-left transition-all duration-200",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-1",
               !disabled && "hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm",
               isSelected
                 ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 shadow-md shadow-indigo-100 dark:shadow-indigo-900/20"
-                : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900",
+                : "border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-900 hover:bg-white dark:hover:bg-slate-900",
               !disabled && !isSelected && "hover:border-indigo-300 dark:hover:border-indigo-600",
               disabled && "opacity-60 cursor-not-allowed"
             )}
           >
             <span
               className={cn(
-                "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all duration-200",
+                "flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl text-[15px] sm:text-base font-bold transition-all duration-200",
                 isSelected
                   ? "bg-indigo-600 text-white shadow-sm"
                   : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900 group-hover:text-indigo-700 dark:group-hover:text-indigo-300"
@@ -127,7 +127,7 @@ export default function AnswerOptions({
               {option && (
                 <span
                   className={cn(
-                    "block text-[15px] leading-relaxed transition-colors",
+                    "block text-base xl:text-[1.0625rem] leading-[1.6] transition-colors",
                     isSelected
                       ? "font-medium text-indigo-900 dark:text-indigo-100"
                       : "text-slate-700 dark:text-slate-300"

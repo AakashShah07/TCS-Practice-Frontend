@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { fetchReview } from "@/lib/api/results";
 import type { ReviewResponse, ReviewItem } from "@/lib/api/types";
-import SharedStimulus from "@/components/exam/SharedStimulus";
+import SharedStimulus, { MediaRenderer, segmentStimulusText, StimulusTable } from "@/components/exam/SharedStimulus";
 import { usePreventCopy } from "@/hooks/usePreventCopy";
 import { cn } from "@/lib/utils";
 
@@ -204,6 +204,8 @@ export default function ReviewPage() {
           const group = item.question.groupId
             ? groupsById.get(item.question.groupId)
             : undefined;
+          const qBlocks = segmentStimulusText(item.question.text);
+          const qTableBlock = qBlocks.find((b) => b.rows);
           return (
             <Card key={item.question._id}>
               <CardHeader className="pb-3">
@@ -233,13 +235,22 @@ export default function ReviewPage() {
                     <SharedStimulus group={group} />
                   </div>
                 )}
-                <p className="text-sm whitespace-pre-wrap">{item.question.text}</p>
+                {qTableBlock?.rows ? (
+                  <StimulusTable rows={qTableBlock.rows} />
+                ) : (
+                  <p className="text-sm whitespace-pre-wrap">
+                    {qBlocks.find((b) => b.prose)?.prose || item.question.text}
+                  </p>
+                )}
+                {item.question.media && <MediaRenderer media={item.question.media} />}
                 <div className="space-y-2">
                   {item.question.options.map((opt, i) => {
                     const isCorrect = i === item.correctAnswer;
                     const isSelected = i === item.selectedAnswer;
                     const isWrongSelected = isSelected && !isCorrect;
                     const optionLabel = String.fromCharCode(65 + i);
+                    const optionMedia = item.question.optionMedia?.[i];
+                    const hasOptionMedia = Boolean(optionMedia && optionMedia.type);
 
                     return (
                       <div
@@ -258,7 +269,13 @@ export default function ReviewPage() {
                         <span className="font-medium shrink-0">
                           {optionLabel}.
                         </span>
-                        <span>{opt}</span>
+                        {hasOptionMedia ? (
+                          <span className="min-w-0 flex-1">
+                            <MediaRenderer media={optionMedia} />
+                          </span>
+                        ) : (
+                          <span>{opt}</span>
+                        )}
                         {isCorrect && (
                           <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 ml-auto shrink-0" />
                         )}

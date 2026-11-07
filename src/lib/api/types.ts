@@ -66,7 +66,7 @@ export interface AuthResponse {
   sessionId?: string;
 }
 
-export type Section = "numerical" | "reasoning" | "verbal" | "advanced";
+export type Section = "numerical" | "reasoning" | "verbal" | "advanced" | "technical";
 
 export type TestType = "section_test" | "full_mock" | "topic_practice";
 
@@ -80,7 +80,9 @@ export type QuestionGroupType =
   | "reading_comprehension"
   | "image_based"
   | "table_based"
-  | "case_study";
+  | "case_study"
+  | "data_sufficiency"
+  | "syllogism";
 
 /** Structured table data (optional — backend currently only sends url/alt). */
 export interface MediaTableData {
@@ -144,6 +146,7 @@ export interface Question {
   explanation?: string;
   questionType?: QuestionType;
   media?: Media | null;
+  optionMedia?: (Media | null)[] | null;
   groupId?: string | null;
 }
 

@@ -59,7 +59,7 @@ export default function Navbar() {
     : "U";
 
   return (
-    <header className={cn("sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-background/60", user?.isPremium ? "border-amber-500/20 bg-background/95" : "bg-background/95")}>
+    <header className={cn("sticky top-0 z-50 w-full border-b backdrop-blur bg-white border-[#DCE5EF] supports-[backdrop-filter]:bg-white/80 dark:bg-background/95 dark:border-border dark:supports-[backdrop-filter]:bg-background/60", user?.isPremium && "border-amber-500/20 dark:border-amber-500/20")}>
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="flex items-center gap-2">

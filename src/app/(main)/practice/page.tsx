@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Calculator, Brain, BookOpen, Target, Database } from "lucide-react";
+import { Calculator, Brain, BookOpen, Target, Database, Terminal } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -26,6 +26,7 @@ const sectionMeta: Record<
   verbal: { icon: BookOpen, color: "text-green-600 dark:text-green-400", bg: "bg-green-50 dark:bg-green-950", label: "Verbal" },
   advanced: { icon: Target, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-50 dark:bg-orange-950", label: "Advanced" },
   system: { icon: Database, color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-950", label: "System IT" },
+  technical: { icon: Terminal, color: "text-cyan-600 dark:text-cyan-400", bg: "bg-cyan-50 dark:bg-cyan-950", label: "Technical" },
 };
 
 function difficultyBar(easy: number, medium: number, hard: number, total: number) {

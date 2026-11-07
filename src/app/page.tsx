@@ -344,7 +344,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] dark:bg-gray-950" ref={scrollRef}>
+    <div className="min-h-screen bg-background dark:bg-gray-950" ref={scrollRef}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

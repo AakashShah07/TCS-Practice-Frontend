@@ -11,6 +11,8 @@ export const INFOSYS_SE_2027_CAMPAIGN = {
   ctaUrl: "/infosys-se-2027",
   /** Preparation destination used across the Infosys 2027 page CTAs. */
   preparationUrl: "/infosys-se-2027/preparation",
+  /** Mock test catalog for the Infosys SE 2027 campaign. */
+  mocksUrl: "/exams/infosys-2027/mocks",
   desktopBanner: "/images/infosysBanner/PC_size_Banner.png",
   mobileBanner: "/images/infosysBanner/phonesize_banner.png",
   desktopBannerSize: { width: 1728, height: 910 },

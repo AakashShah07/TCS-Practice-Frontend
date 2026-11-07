@@ -750,10 +750,21 @@ export default function TestsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Tests</h1>
-        <p className="text-muted-foreground mt-1">
-          Choose a section to practice or take a full mock test
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Tests</h1>
+            <p className="text-muted-foreground mt-1">
+              Choose a section to practice or take a full mock test
+            </p>
+          </div>
+          <Link
+            href="/exams/infosys-2027/mocks"
+            className="inline-flex items-center gap-2 rounded-xl border border-blue-400/30 bg-blue-500/10 px-4 py-2 text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-500/15 transition-colors"
+          >
+            Infosys 2027 Mocks
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
       </div>
 
       {/* Premium Tests (if user is premium) */}

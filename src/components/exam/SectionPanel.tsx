@@ -5,12 +5,14 @@ import { useTestStore } from "@/stores/test-store";
 import { navigate } from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
 import type { Section } from "@/lib/api/types";
+import { isInfosys2027MockTest } from "@/lib/infosys-mock-test";
 
 const sectionLabels: Record<string, string> = {
   numerical: "Numerical",
   reasoning: "Reasoning",
   verbal: "Verbal",
   advanced: "Advanced",
+  technical: "Technical",
 };
 
 export default function SectionPanel() {
@@ -24,7 +26,11 @@ export default function SectionPanel() {
     sectionLocked,
     submittedSections,
     isSectionAccessible,
+    testId,
   } = useTestStore();
+
+  // Infosys 2027 mock: one continuous test — no section tabs at all.
+  if (isInfosys2027MockTest(testId)) return null;
 
   if (sections.length <= 1) return null;
 
@@ -62,7 +68,7 @@ export default function SectionPanel() {
               onClick={() => handleSetSection(sec.name)}
               disabled={isLocked}
               className={cn(
-                "relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-all",
+                "relative flex items-center gap-2 px-4 py-2.5 text-[13px] sm:text-sm font-medium whitespace-nowrap transition-all",
                 isActive
                   ? "text-indigo-700 dark:text-indigo-400"
                   : isSubmitted
@@ -80,7 +86,7 @@ export default function SectionPanel() {
 
               <span
                 className={cn(
-                  "text-[10px] px-1.5 py-0.5 rounded-full font-semibold tabular-nums",
+                  "text-[11px] px-1.5 py-0.5 rounded-full font-semibold tabular-nums",
                   isActive
                     ? "bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300"
                     : isSubmitted

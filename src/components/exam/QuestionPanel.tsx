@@ -30,8 +30,15 @@ import {
 } from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
 import { isSessionRevokedError } from "@/lib/api/exam-sync";
-import SharedStimulus, { MediaRenderer } from "./SharedStimulus";
+import SharedStimulus, { MediaRenderer, StimulusTable, segmentStimulusText } from "./SharedStimulus";
 import AnswerOptions from "./AnswerOptions";
+
+/**
+ * Shared typography scale — question content is the primary visual focus.
+ * Mobile/tablet 17px · laptop 18px · desktop 19px · large desktop 20px.
+ */
+const Q_TEXT =
+  "text-[1.0625rem] sm:text-[1.125rem] xl:text-[1.1875rem] 2xl:text-[1.25rem] leading-[1.7] text-foreground font-medium";
 
 /**
  * Formats question text so that coded-relation definitions, multi-line setups,
@@ -80,9 +87,16 @@ function QuestionText({ text, topic }: { text: string; topic?: string }) {
     return <FormattedFillInBlank text={text} />;
   }
 
+  // Table-based question: pipe-delimited tables render as a real table.
+  const blocks = segmentStimulusText(text);
+  const tableBlock = blocks.find((b) => b.rows);
+  if (tableBlock?.rows) {
+    return <StimulusTable rows={tableBlock.rows} />;
+  }
+
   // Default: render as-is
   return (
-    <p className="text-[17px] leading-[1.8] text-foreground font-medium whitespace-pre-wrap">
+    <p className={Q_TEXT + " whitespace-pre-wrap"}>
       {text}
     </p>
   );
@@ -194,14 +208,14 @@ function FormattedCodedQuestion({ text }: { text: string }) {
   }
 
   return (
-    <div className="text-[17px] leading-[1.8] text-foreground font-medium space-y-3">
-      <p className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm uppercase tracking-wide">
+    <div className={Q_TEXT + " space-y-3"}>
+      <p className="text-indigo-600 dark:text-indigo-400 font-semibold text-[13px] sm:text-sm uppercase tracking-wide">
         {prefix}
       </p>
-      <div className="space-y-1.5 pl-1">
+      <div className="space-y-2 pl-1">
         {defLines.map((line, i) => (
           <div key={i} className="flex items-start gap-2">
-            <span className="mt-[10px] h-1.5 w-1.5 rounded-full bg-indigo-400 shrink-0" />
+            <span className="mt-[11px] h-1.5 w-1.5 rounded-full bg-indigo-400 shrink-0" />
             <span>{line}</span>
           </div>
         ))}
@@ -223,7 +237,7 @@ function FormattedRelationChain({ text }: { text: string }) {
   const match = text.match(questionPatterns);
 
   if (!match || match.index === undefined) {
-    return <p className="text-[17px] leading-[1.8] text-foreground font-medium whitespace-pre-wrap">{text}</p>;
+    return <p className={Q_TEXT + " whitespace-pre-wrap"}>{text}</p>;
   }
 
   // Find the start of the question sentence
@@ -241,14 +255,14 @@ function FormattedRelationChain({ text }: { text: string }) {
   const hasIntro = statements.length > 0 && introPattern.test(statements[0]);
 
   return (
-    <div className="text-[17px] leading-[1.8] text-foreground font-medium space-y-3">
+    <div className={Q_TEXT + " space-y-3"}>
       {hasIntro && statements.length === 1 ? (
         <p>{statements[0]}.</p>
       ) : (
         <div className="space-y-1.5">
           {statements.map((stmt, i) => (
             <div key={i} className="flex items-start gap-2">
-              <span className="mt-[10px] h-1.5 w-1.5 rounded-full bg-indigo-400 shrink-0" />
+              <span className="mt-[11px] h-1.5 w-1.5 rounded-full bg-indigo-400 shrink-0" />
               <span>{stmt}</span>
             </div>
           ))}
@@ -267,8 +281,8 @@ function FormattedFillInBlank({ text }: { text: string }) {
   const parts = text.split(/(_{3,})/);
 
   return (
-    <div className="text-[17px] leading-[1.8] text-foreground font-medium space-y-3">
-      <p className="text-emerald-600 dark:text-emerald-400 font-semibold text-sm uppercase tracking-wide flex items-center gap-1.5">
+    <div className={Q_TEXT + " space-y-3"}>
+      <p className="text-emerald-600 dark:text-emerald-400 font-semibold text-[13px] sm:text-sm uppercase tracking-wide flex items-center gap-1.5">
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
         </svg>
@@ -302,7 +316,7 @@ function FormattedPassageFillBlank({ text, activeBlank }: { text: string; active
   const parts = text.split(/(\.\.\.\(\d+\)\.\.\.)/)
 
   return (
-    <p className="text-[15px] leading-[1.9] text-foreground font-medium whitespace-pre-wrap">
+    <p className={Q_TEXT + " whitespace-pre-wrap"}>
       {parts.map((part, i) => {
         const blankMatch = part.match(/\.\.\.\((\d+)\)\.\.\./);
         if (blankMatch) {
@@ -355,6 +369,7 @@ const sectionLabels: Record<string, string> = {
   reasoning: "Reasoning",
   verbal: "Verbal",
   advanced: "Advanced",
+  technical: "Technical",
 };
 
 interface QuestionPanelProps {
@@ -518,8 +533,12 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
         {group ? (
           /* ── Grouped question: Shared Stimulus + related question ── */
           <div data-testid="grouped-layout" className="h-full grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-1">
-            {/* Left: shared stimulus (persists across the group's questions) */}
-            <div className="min-w-0 overflow-y-auto p-5 sm:p-6 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+            {/* Left: shared stimulus (persists across the group's questions).
+                Keyed by group so switching groups never retains stale content. */}
+            <div
+              key={group.id}
+              className="min-w-0 overflow-y-auto p-5 sm:p-6 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50"
+            >
               <SharedStimulus group={group} />
             </div>
 
@@ -527,18 +546,18 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
             <div className="min-w-0 overflow-y-auto p-5 sm:p-6">
               <div className="max-w-2xl mx-auto space-y-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400">
+                  <div className="flex items-center gap-4">
+                    <span className="text-[20px] sm:text-[21px] font-bold leading-none text-indigo-700 dark:text-indigo-400">
                       Q{currentQuestionIndex + 1}
                     </span>
-                    <Badge variant="outline" className="text-xs font-medium bg-slate-50 dark:bg-slate-800">
+                    <Badge variant="outline" className="text-[12px] sm:text-[13px] font-medium bg-slate-50 dark:bg-slate-800">
                       {question.topic}
                     </Badge>
                     {question.difficulty && (
                       <Badge
                         variant="outline"
                         className={cn(
-                          "text-[10px] capitalize",
+                          "text-[11px] sm:text-[12px] font-semibold capitalize",
                           question.difficulty === "easy" && "border-green-200 text-green-700 bg-green-50",
                           question.difficulty === "medium" && "border-amber-200 text-amber-700 bg-amber-50",
                           question.difficulty === "hard" && "border-red-200 text-red-700 bg-red-50"
@@ -567,6 +586,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
 
                 <AnswerOptions
                   options={question.options}
+                  optionMedia={question.optionMedia ?? undefined}
                   selectedIndex={selectedOption}
                   onSelect={handleOptionClick}
                 />
@@ -583,7 +603,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
                   Reading Passage
                 </span>
               </div>
-              <p className="text-[15px] leading-[1.9] text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-medium">
+              <p className="text-base leading-[1.8] text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-medium">
                 {readingComprehensionParts.passage}
               </p>
             </div>
@@ -592,18 +612,18 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
             <div className="overflow-y-auto p-5 sm:p-6">
               <div className="max-w-2xl mx-auto space-y-8">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400">
+                  <div className="flex items-center gap-4">
+                    <span className="text-[20px] sm:text-[21px] font-bold leading-none text-indigo-700 dark:text-indigo-400">
                       Q{currentQuestionIndex + 1}
                     </span>
-                    <Badge variant="outline" className="text-xs font-medium bg-slate-50 dark:bg-slate-800">
+                    <Badge variant="outline" className="text-[12px] sm:text-[13px] font-medium bg-slate-50 dark:bg-slate-800">
                       {question.topic}
                     </Badge>
                     {question.difficulty && (
                       <Badge
                         variant="outline"
                         className={cn(
-                          "text-[10px] capitalize",
+                          "text-[11px] sm:text-[12px] font-semibold capitalize",
                           question.difficulty === "easy" && "border-green-200 text-green-700 bg-green-50",
                           question.difficulty === "medium" && "border-amber-200 text-amber-700 bg-amber-50",
                           question.difficulty === "hard" && "border-red-200 text-red-700 bg-red-50"
@@ -638,7 +658,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
                         key={index}
                         onClick={() => handleOptionClick(index)}
                         className={cn(
-                          "group w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 text-left transition-all duration-200",
+                          "group w-full flex min-h-[60px] sm:min-h-[64px] items-center gap-4 px-4 sm:px-5 py-4 rounded-2xl border-2 text-left transition-all duration-200",
                           "hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm",
                           isSelected
                             ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 shadow-md shadow-indigo-100 dark:shadow-indigo-900/20"
@@ -657,8 +677,8 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
                         </span>
                         <span
                           className={cn(
-                            "text-[15px] leading-relaxed transition-colors",
-                            isSelected ? "text-indigo-900 dark:text-indigo-100 font-medium" : "text-slate-700 dark:text-slate-300"
+                            "text-base leading-relaxed transition-colors",
+                            isSelected ? "text-indigo-900 dark:text-indigo-100 font-medium" : "text-slate-700 dark:text-slate-200"
                           )}
                         >
                           {option}
@@ -734,7 +754,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
                               handleOptionClick(optIdx);
                             }}
                             className={cn(
-                              "px-2.5 py-1 rounded-lg text-sm font-medium transition-all",
+                              "px-3 py-1.5 rounded-lg text-[15px] font-medium transition-all",
                               isThisSelected
                                 ? "bg-indigo-600 text-white shadow-sm"
                                 : "text-slate-700 dark:text-slate-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 hover:text-indigo-700 dark:hover:text-indigo-300"
@@ -746,7 +766,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
                           <span
                             key={optIdx}
                             className={cn(
-                              "text-sm px-1 py-0.5",
+                              "text-[15px] px-1.5 py-0.5",
                               isThisSelected
                                 ? "font-semibold text-indigo-600 dark:text-indigo-400"
                                 : "text-slate-600 dark:text-slate-400"
@@ -774,18 +794,18 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
           <div className="max-w-2xl mx-auto space-y-8">
             {/* Question Header */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400">
+              <div className="flex items-center gap-4">
+                <span className="text-[20px] sm:text-[21px] font-bold leading-none text-indigo-700 dark:text-indigo-400">
                   Q{currentQuestionIndex + 1}
                 </span>
-                <Badge variant="outline" className="text-xs font-medium bg-slate-50 dark:bg-slate-800">
+                <Badge variant="outline" className="text-[12px] sm:text-[13px] font-medium bg-slate-50 dark:bg-slate-800">
                   {question.topic}
                 </Badge>
                 {question.difficulty && (
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-[10px] capitalize",
+                      "text-[11px] sm:text-[12px] font-semibold capitalize",
                       question.difficulty === "easy" && "border-green-200 text-green-700 bg-green-50",
                       question.difficulty === "medium" && "border-amber-200 text-amber-700 bg-amber-50",
                       question.difficulty === "hard" && "border-red-200 text-red-700 bg-red-50"
@@ -817,6 +837,7 @@ export default function QuestionPanel({ onSubmitTest }: QuestionPanelProps) {
             {/* Options */}
             <AnswerOptions
               options={question.options}
+              optionMedia={question.optionMedia ?? undefined}
               selectedIndex={selectedOption}
               onSelect={handleOptionClick}
             />

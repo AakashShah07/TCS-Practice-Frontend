@@ -5,12 +5,14 @@ import { Progress } from "@/components/ui/progress";
 import { useTestStore } from "@/stores/test-store";
 import { navigate } from "@/lib/api/exam";
 import { cn } from "@/lib/utils";
+import { isInfosys2027MockTest } from "@/lib/infosys-mock-test";
 
 const sectionLabels: Record<string, string> = {
   numerical: "Numerical",
   reasoning: "Reasoning",
   verbal: "Verbal",
   advanced: "Advanced",
+  technical: "Technical",
 };
 
 export default function QuestionPalette() {
@@ -23,12 +25,19 @@ export default function QuestionPalette() {
     sections,
     goToQuestion,
     getStatus,
+    testId,
   } = useTestStore();
 
-  // Get current section range
+  // Targeted Infosys 2027 mock: the sidebar must always list every question
+  // in the canonical order with global numbering and one stable identity.
+  const isInfosysMock = isInfosys2027MockTest(testId);
+
+  // Get current section range (all other tests keep their section-scoped list)
   const currentSectionInfo = sections.find((s) => s.name === currentSection);
-  const sectionStart = currentSectionInfo?.startIndex ?? 0;
-  const sectionEnd = currentSectionInfo?.endIndex ?? questions.length - 1;
+  const sectionStart = isInfosysMock ? 0 : (currentSectionInfo?.startIndex ?? 0);
+  const sectionEnd = isInfosysMock
+    ? questions.length - 1
+    : (currentSectionInfo?.endIndex ?? questions.length - 1);
 
   // Only show questions for the current section
   const sectionIndices: number[] = [];
@@ -63,10 +72,10 @@ export default function QuestionPalette() {
       {/* Header with section name + progress */}
       <div className="px-5 pt-3 pb-2 border-b">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-bold text-xs text-slate-800 dark:text-slate-200">
-            {sectionLabels[currentSection] || currentSection}
+          <h3 className="font-bold text-[12px] sm:text-[13px] text-slate-800 dark:text-slate-200">
+            {isInfosysMock ? "Questions" : sectionLabels[currentSection] || currentSection}
           </h3>
-          <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
+          <span className="text-[11px] sm:text-[12px] font-semibold text-indigo-600 dark:text-indigo-400">
             {sectionAnswered}/{sectionTotal}
           </span>
         </div>
@@ -74,7 +83,7 @@ export default function QuestionPalette() {
       </div>
 
       {/* Legend — single row */}
-      <div className="px-5 py-2 border-b flex items-center gap-3 text-[10px] text-muted-foreground">
+      <div className="px-5 py-2 border-b flex items-center gap-3 text-[11px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />
           {sectionAnswered}
@@ -96,7 +105,7 @@ export default function QuestionPalette() {
       {/* Flagged in this section */}
       {sectionMarked > 0 && (
         <div className="px-5 py-2 border-b bg-amber-50/60 dark:bg-amber-950/20">
-          <div className="flex items-center gap-1 text-[10px] font-bold text-amber-700 dark:text-amber-400 mb-1.5">
+          <div className="flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400 mb-1.5">
             <Bookmark className="h-3 w-3" />
             Flagged ({sectionMarked})
           </div>
@@ -108,7 +117,7 @@ export default function QuestionPalette() {
                   key={i}
                   onClick={() => handleGoToQuestion(i)}
                   className={cn(
-                    "w-7 h-7 rounded-md text-[10px] font-bold bg-amber-400 text-amber-950 hover:bg-amber-500 transition-all active:scale-90",
+                    "w-7 h-7 rounded-md text-[11px] font-bold bg-amber-400 text-amber-950 hover:bg-amber-500 transition-all active:scale-90",
                     i === currentQuestionIndex && "ring-2 ring-indigo-600 ring-offset-1"
                   )}
                 >
@@ -126,14 +135,14 @@ export default function QuestionPalette() {
             const status = getStatus(globalIndex);
             const isCurrent = globalIndex === currentQuestionIndex;
             const isFlagged = responses[globalIndex]?.markedForReview;
-            const displayNum = globalIndex - sectionStart + 1;
+            const displayNum = isInfosysMock ? globalIndex + 1 : globalIndex - sectionStart + 1;
 
             return (
               <button
                 key={globalIndex}
                 onClick={() => handleGoToQuestion(globalIndex)}
                 className={cn(
-                  "relative w-full aspect-square rounded-md text-[11px] font-bold transition-all duration-150",
+                  "relative w-full aspect-square rounded-md text-xs font-bold transition-all duration-150",
                   "hover:scale-105 active:scale-95",
                   statusStyles[status] || statusStyles.not_visited,
                   isFlagged && "ring-2 ring-amber-400 dark:ring-amber-500",

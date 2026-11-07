@@ -12,6 +12,13 @@
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
+  --color-surface: var(--surface);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-coral: var(--accent-coral);
+  --color-accent-teal: var(--accent-teal);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
@@ -49,38 +56,50 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /* Cool Blue Canvas — light mode foundation */
+  --background: #F1F5F9;
+  --foreground: #172033;
+  --surface: #FFFFFF;
+  --surface-secondary: #F5F8FC;
+  --primary-soft: #EEE9FF;
+  --accent-blue: #4388C8;
+  --accent-cyan: #DFF5FC;
+  --accent-coral: #FFF0E9;
+  --accent-teal: #E3F8F1;
+  /* Extremely subtle atmospheric canvas — light mode only */
+  --canvas-gradient:
+    radial-gradient(ellipse at 0% 0%, rgba(67, 136, 200, 0.045), transparent 40%),
+    radial-gradient(ellipse at 100% 20%, rgba(108, 66, 245, 0.025), transparent 35%);
+  --card: #FFFFFF;
+  --card-foreground: #172033;
+  --popover: #FFFFFF;
+  --popover-foreground: #172033;
+  --primary: #6C42F5;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F5F8FC;
+  --secondary-foreground: #172033;
+  --muted: #F5F8FC;
+  --muted-foreground: #64748B;
+  --accent: #E9EEF6;
+  --accent-foreground: #172033;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: #DCE5EF;
+  --input: #DCE5EF;
+  --ring: #6C42F5;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #172033;
+  --sidebar-primary: #6C42F5;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F5F8FC;
+  --sidebar-accent-foreground: #172033;
+  --sidebar-border: #DCE5EF;
+  --sidebar-ring: #6C42F5;
 }
 
 .dark {
@@ -107,6 +126,15 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
+  /* Dark mode keeps its existing look — no canvas gradient, neutral surfaces */
+  --canvas-gradient: none;
+  --surface: oklch(0.205 0 0);
+  --surface-secondary: oklch(0.269 0 0);
+  --primary-soft: oklch(0.269 0 0);
+  --accent-blue: oklch(0.556 0 0);
+  --accent-cyan: oklch(0.269 0 0);
+  --accent-coral: oklch(0.269 0 0);
+  --accent-teal: oklch(0.269 0 0);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -123,6 +151,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-image: var(--canvas-gradient);
+    background-position: 0 0, 100% 0;
+    background-repeat: no-repeat;
   }
   html {
     @apply font-sans;
@@ -482,4 +513,63 @@
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(200%); }
+}
+/* ---------------------------------------------------------------------------
+   Coding Questions page — scoped design tokens (".coding-page").
+   Light values complement the global Cool Blue Canvas; dark values give the
+   page its own layered navy-charcoal surface system. Unrelated pages are
+   unaffected (the selectors below are scoped to .coding-page).
+   --------------------------------------------------------------------------- */
+.coding-page {
+  /* light mode — transparent so the global canvas gradient shows through */
+  --coding-page-background: transparent;
+  --coding-card-background: #ffffff;
+  --coding-card-secondary: #f5f8fc;
+  --coding-card-border: #dce5ef;
+  --coding-text-primary: #172033;
+  --coding-text-secondary: #64748b;
+  --coding-blue: #3b82f6;
+  --coding-violet: #8b5cf6;
+  --coding-green: #10b981;
+  --coding-orange: #f97316;
+  --coding-selected-background: #eef2ff;
+  --coding-selected-border: #c7d2fe;
+  --coding-selected-foreground: #3730a3;
+  --coding-number-background: #eef2f8;
+  --coding-number-foreground: #172033;
+  --coding-card-shadow: 0 1px 2px rgba(23, 32, 51, 0.06), 0 1px 3px rgba(23, 32, 51, 0.04);
+  --coding-card-shadow-hover: 0 8px 22px rgba(23, 32, 51, 0.12);
+}
+
+.dark .coding-page {
+  --coding-page-background: #0b0f19;
+  --coding-card-background: #121a29;
+  --coding-card-secondary: #172235;
+  --coding-card-border: #263247;
+  --coding-text-primary: #f1f5f9;
+  --coding-text-secondary: #a6b4c8;
+  --coding-blue: #60a5fa;
+  --coding-violet: #a78bfa;
+  --coding-green: #34d399;
+  --coding-orange: #fb923c;
+  --coding-selected-background: #1c2440;
+  --coding-selected-border: #3730a3;
+  --coding-selected-foreground: #c7d2fe;
+  --coding-number-background: #172235;
+  --coding-number-foreground: #e2e8f0;
+  --coding-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --coding-card-shadow-hover: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.coding-page {
+  min-height: calc(100dvh - 4rem);
+  margin: -1.5rem -1rem -1.5rem;
+  padding: 1.5rem 1rem 2rem;
+  background-color: var(--coding-page-background);
+}
+
+@media (min-width: 640px) {
+  .coding-page {
+    padding: 1.75rem 1.5rem 2.5rem;
+  }
 }

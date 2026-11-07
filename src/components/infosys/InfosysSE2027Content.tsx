@@ -12,6 +12,7 @@ import InfosysSyllabus from "./InfosysSyllabus";
 import InfosysFAQ from "./InfosysFAQ";
 import InfosysResources from "./InfosysResources";
 import InfosysFinalCTA from "./InfosysFinalCTA";
+import InfosysMockTeaser from "./InfosysMockTeaser";
 
 export default function InfosysSE2027Content() {
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function InfosysSE2027Content() {
         <InfosysSyllabus />
         <InfosysFAQ />
         <InfosysResources />
+        <InfosysMockTeaser />
       </main>
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 pb-16 sm:pb-20">
         <InfosysFinalCTA />

@@ -46,12 +46,137 @@ const GROUP_TYPE_LABELS: Record<string, string> = {
   image_based: "Image Based",
   table_based: "Table Based",
   case_study: "Case Study",
+  data_sufficiency: "Data Sufficiency",
+  syllogism: "Syllogism",
 };
 
 const CHART_COLORS = ["#6366f1", "#0ea5e9", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6"];
 
 function hasUrl(media: Media): boolean {
   return typeof media.url === "string" && media.url.trim().length > 0;
+}
+
+// ── Pipe-delimited table support ────────────────────────────────────────────
+// Some question sets (e.g. Infosys SE 2027 "QuickKart" / Sales & Profit mocks)
+// embed tables as pipe-delimited text in the stimulus/question string, e.g.:
+//   Year | Sales (₹ lakh) | Profit (₹ lakh)
+//   2019 | 200 | 40
+//   2020 | 250 | 55
+// The frontend should render these as a real <table>, not raw text.
+
+function isPipeRow(line: string): boolean {
+  const t = line.trim();
+  if (!t) return false;
+  const cells = t.split("|").map((c) => c.trim());
+  if (cells.length < 2) return false;
+  // Skip markdown-style separator rows such as "---|---|---".
+  if (cells.every((c) => /^:?-{2,}:?$/.test(c))) return false;
+  return cells.some((c) => c.length > 0);
+}
+
+function isNumericCell(c: string): boolean {
+  return /^\s*-?[\d,]*\.?\d+\s*$/.test(c) || /^\s*₹\s*-?[\d,]*\.?\d+\s*$/.test(c);
+}
+
+function isHeaderRow(row: string[]): boolean {
+  if (row.length === 0) return false;
+  return row.every((c) => c !== "" && !isNumericCell(c));
+}
+
+function parsePipeRows(lines: string[]): string[][] | null {
+  const rows = lines
+    .map((l) => l.trim().split("|").map((c) => c.trim()))
+    .filter((r) => r.some((c) => c.length > 0));
+  if (rows.length < 2) return null;
+  return rows;
+}
+
+interface StimulusBlock {
+  prose?: string;
+  rows?: string[][];
+}
+
+/** Splits stimulus text into prose paragraphs and pipe-delimited table blocks. */
+export function segmentStimulusText(text: string): StimulusBlock[] {
+  const lines = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+  const blocks: StimulusBlock[] = [];
+  let prose: string[] | null = null;
+  let tableLines: string[] = [];
+
+  const flushProse = () => {
+    if (prose && prose.length > 0) {
+      blocks.push({ prose: prose.join("\n") });
+      prose = null;
+    }
+  };
+  const flushTable = () => {
+    if (tableLines.length > 0) {
+      const rows = parsePipeRows(tableLines);
+      if (rows) blocks.push({ rows });
+      tableLines = [];
+    }
+  };
+
+  for (const line of lines) {
+    if (isPipeRow(line)) {
+      flushProse();
+      tableLines.push(line);
+    } else {
+      flushTable();
+      if (!prose) prose = [];
+      prose.push(line);
+    }
+  }
+  flushTable();
+  flushProse();
+
+  return blocks;
+}
+
+export function StimulusTable({ rows, className }: { rows: string[][]; className?: string }) {
+  const header = isHeaderRow(rows[0]) ? rows[0] : null;
+  const body = header ? rows.slice(1) : rows;
+
+  return (
+    <div
+      data-testid="stimulus-table"
+      className={cn(
+        "w-full overflow-x-auto rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900",
+        className
+      )}
+    >
+      <Table>
+        {header && (
+          <TableHeader>
+            <TableRow className="bg-slate-50 dark:bg-slate-900/60">
+              {header.map((h, i) => (
+                <TableHead key={i} className="font-semibold whitespace-normal text-slate-700 dark:text-slate-200">
+                  {h}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+        )}
+        <TableBody>
+          {body.map((r, ri) => (
+            <TableRow
+              key={ri}
+              className={header ? undefined : "bg-slate-50/60 dark:bg-slate-900/40"}
+            >
+              {r.map((c, ci) => (
+                <TableCell
+                  key={ci}
+                  className="whitespace-nowrap align-middle text-slate-700 dark:text-slate-300"
+                >
+                  {c}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 }
 
 /** Neutral fallback — never renders a broken image or a raw URL. */
@@ -285,6 +410,7 @@ export default function SharedStimulus({ group }: { group: QuestionGroup }) {
   const hasText = typeof stimulus.text === "string" && stimulus.text.trim().length > 0;
   const hasMedia = Boolean(stimulus.media && stimulus.media.type);
   const typeLabel = GROUP_TYPE_LABELS[group.type] || "Shared Information";
+  const blocks = hasText ? segmentStimulusText(stimulus.text ?? "") : [];
 
   return (
     <section
@@ -292,20 +418,35 @@ export default function SharedStimulus({ group }: { group: QuestionGroup }) {
       data-testid="shared-stimulus"
       className="flex min-w-0 flex-col gap-4"
     >
-      <header className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-sky-700 dark:bg-sky-950/50 dark:text-sky-300 dark:border-sky-800">
+      <header className="flex flex-wrap items-center gap-2.5 border-b border-slate-200 dark:border-slate-800 pb-3">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[12px] font-semibold text-sky-700 dark:bg-sky-950/50 dark:text-sky-300 dark:border-sky-800">
           <FileText className="h-3.5 w-3.5" />
           {typeLabel}
         </span>
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">{group.title}</h2>
+        <h2 className="text-[15px] sm:text-base font-semibold text-slate-800 dark:text-slate-100">
+          {group.title}
+        </h2>
       </header>
 
       {hasMedia && <MediaRenderer media={stimulus.media} />}
 
       {hasText ? (
-        <p className="whitespace-pre-wrap text-[15px] leading-[1.9] text-slate-700 dark:text-slate-300">
-          {stimulus.text}
-        </p>
+        blocks.length > 0 ? (
+          blocks.map((block, i) =>
+            block.prose ? (
+              <p
+                key={`prose-${i}`}
+                className="max-w-prose whitespace-pre-wrap text-base leading-[1.85] text-slate-700 dark:text-slate-200"
+              >
+                {block.prose}
+              </p>
+            ) : block.rows ? (
+              <StimulusTable key={`table-${i}`} rows={block.rows} />
+            ) : null
+          )
+        ) : (
+          <p className="text-sm text-muted-foreground">No additional information provided.</p>
+        )
       ) : (
         !hasMedia && (
           <p className="text-sm text-muted-foreground">No additional information provided.</p>

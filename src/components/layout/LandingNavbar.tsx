@@ -29,7 +29,7 @@ const campaignLink = {
  */
 export default function LandingNavbar() {
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 landing-slide-down">
+    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-[#DCE5EF] dark:border-gray-800 landing-slide-down">
       <div className="max-w-[1140px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 sm:gap-2.5">
           <Image

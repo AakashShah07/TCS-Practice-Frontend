@@ -15,6 +15,7 @@ const sectionLabels: Record<string, string> = {
   reasoning: "Reasoning Ability",
   verbal: "Verbal Ability",
   advanced: "Advanced",
+  technical: "Technical Ability",
 };
 
 interface Props {

@@ -19,6 +19,7 @@ import {
 } from "@/lib/api/exam";
 import type { Section } from "@/lib/api/types";
 import { isSessionRevokedError } from "@/lib/api/exam-sync";
+import { getErrorStatus, getErrorCode } from "@/lib/api/errors";
 import { cn } from "@/lib/utils";
 
 export default function ExamPage() {
@@ -196,7 +197,14 @@ export default function ExamPage() {
         questionGroups: state.questionGroups ?? [],
         questionMode: state.questionMode ?? "standalone",
       });
-    } catch {
+    } catch (err) {
+      const status = getErrorStatus(err);
+      const code = getErrorCode(err);
+      if (status === 403 || code === "PREMIUM_REQUIRED") {
+        // Premium mock — route users without a premium subscription to the buy page.
+        router.push("/premium/payment");
+        return;
+      }
       setError("Failed to load test. Please try again.");
     } finally {
       setLoading(false);

@@ -47,11 +47,11 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
         <div className="flex items-center justify-between px-5 h-12">
           {/* Left: Title + Question */}
           <div className="flex items-center gap-3">
-            <span className="font-bold text-sm text-indigo-700 dark:text-indigo-400 hidden sm:block">
+            <span className="font-bold text-[13px] sm:text-sm text-indigo-700 dark:text-indigo-400 hidden sm:block">
               {testTitle}
             </span>
             <div className="hidden sm:block w-px h-5 bg-border" />
-            <span className="text-xs text-muted-foreground font-medium">
+            <span className="text-[12px] sm:text-[13px] text-muted-foreground font-medium tabular-nums">
               Q {currentQuestionIndex + 1}/{questions.length}
             </span>
           </div>
@@ -68,7 +68,7 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
             {/* Timer */}
             <div
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-sm font-bold tracking-wider transition-all",
+                "flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[13px] sm:text-sm font-bold tracking-wider transition-all",
                 isCriticalTime
                   ? "bg-red-500 text-white animate-pulse shadow-lg shadow-red-200 dark:shadow-red-900"
                   : isLowTime
@@ -85,7 +85,7 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
               size="sm"
               variant="outline"
               onClick={togglePause}
-              className="rounded-lg px-3 font-semibold transition-all active:scale-95"
+              className="rounded-lg px-3 font-semibold text-[12px] sm:text-[13px] transition-all active:scale-95"
             >
               {isPaused ? (
                 <Play className="h-3.5 w-3.5 mr-1.5" />
@@ -99,7 +99,7 @@ export default function ExamTopBar({ testTitle, onSubmit }: ExamTopBarProps) {
             <Button
               size="sm"
               onClick={() => setShowConfirm(true)}
-              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 rounded-lg shadow-sm transition-all hover:shadow-md active:scale-95"
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 rounded-lg text-[12px] sm:text-[13px] shadow-sm transition-all hover:shadow-md active:scale-95"
             >
               <Send className="h-3.5 w-3.5 mr-1.5" />
               Submit

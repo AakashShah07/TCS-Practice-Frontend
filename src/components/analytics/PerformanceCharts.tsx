@@ -37,6 +37,7 @@ const sectionLabels: Record<string, string> = {
   reasoning: "Reasoning",
   verbal: "Verbal",
   advanced: "Advanced",
+  technical: "Technical",
 };
 
 export default function PerformanceCharts({
