@@ -620,14 +620,14 @@ export default function HomePage() {
       </section>
 
       {/* ── Premium Test Promotion ── */}
-      <section className="py-24 sm:py-32">
+      <section className="py-16 sm:py-24">
         <div className="max-w-5xl mx-auto px-6">
           <PremiumBanner 
             variant="post-completion" 
             sourcePage="/"
-            title="Go Further with Premium"
-            description="Unlock advanced preparation tools designed to help you practice beyond the free experience. One-time payment, lifetime access."
-            ctaText="Unlock Premium - ₹49"
+            title="Prepare Beyond the Basics"
+            description="Unlock advanced mock tests, deeper performance insights, and smarter preparation tools to get exam-ready with confidence."
+            ctaText="Unlock Premium Access"
             bannerId="homepage_hero"
           />
         </div>
