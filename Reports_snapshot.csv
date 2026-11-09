@@ -1,0 +1,413 @@
+# ----------------------------------------
+# Reports snapshot
+# Account: Aakash Shah
+# Property: Crack NQT
+# ----------------------------------------
+#  
+# Start date: 20260810
+# End date: 20261107
+Active users,New users,Average engagement time per active user,Event count
+1083,971,770.775623268698,26282
+
+#  
+# Start date: 20260810
+# End date: 20261107
+Page title and screen class,Views,Active users,Event count,Bounce rate
+NQT Prep — Free TCS NQT Practice Tests & Exam Simulation,4242,624,8586,0.18365921787709497
+Practice Tests | NQT Prep,1542,386,2377,0.125
+Topic Practice | NQT Prep,1319,195,2012,0.06481481481481481
+"CrackNQT — TCS NQT Practice, Mock Tests & Preparation",1247,277,3180,0.26521739130434785
+Dashboard | NQT Prep,1211,368,1591,0.06504065040650407
+Sign In | NQT Prep,802,342,1764,0.1533442088091354
+Create Account | NQT Prep,762,436,1451,0.0821917808219178
+TCS NQT Coding Questions (PYQ) | NQT Prep,497,134,718,0.3134920634920635
+Practice Tests | CrackNQT,493,120,815,0.29357798165137616
+Sign In | CrackNQT,446,137,1167,0.4403409090909091
+Topic Practice | CrackNQT,428,61,789,0.18796992481203006
+Dashboard | CrackNQT,375,118,549,0.15810276679841898
+Create Account | CrackNQT,270,187,631,0.12735849056603774
+TCS NQT Coding Questions (PYQ) | CrackNQT,211,45,325,0.3465346534653465
+Analytics | NQT Prep,158,93,178,0.008333333333333333
+"Infosys System Engineer Exam 2027 | Pattern, Syllabus & Mock Test | CrackNQT",18,14,90,0.21428571428571427
+Infosys SE 2027 Preparation Roadmap — Coming Soon | CrackNQT,9,8,19,0.125
+Analytics | CrackNQT,5,5,10,0
+404: This page could not be found.,3,2,5,0.5
+About CrackNQT | NQT Prep,2,2,2,0
+About CrackNQT — Independent TCS NQT Preparation Platform | CrackNQT,2,2,4,0.5
+Contact CrackNQT | CrackNQT,2,2,5,0.5
+"Infosys SE 2027 Recruitment | Eligibility, Exam Pattern & Preparation | CrackNQT",2,2,8,0
+Privacy Policy | CrackNQT | CrackNQT,1,1,3,1
+खाता बनाएँ | एनक्यूटी तैयारी,1,1,3,0.5
+
+#  
+# Start date: 20260810
+# End date: 20261107
+First user source / medium,Active users
+(direct) / (none),476
+google / organic,447
+bing / organic,71
+chatgpt.com / ai-assistant,38
+in.search.yahoo.com / referral,19
+gemini.google.com / ai-assistant,11
+google / cpc,5
+linkedin.com / referral,5
+chatgpt.com / referral,3
+yahoo / organic,3
+claude.ai / ai-assistant,1
+copilot.com / ai-assistant,1
+keep.google.com / referral,1
+payuin.lightning.force.com / referral,1
+web.telegram.org / referral,1
+
+#  
+# Start date: 20260810
+# End date: 20261107
+Session source / medium,Sessions
+google / organic,1281
+(direct) / (none),1073
+bing / organic,316
+chatgpt.com / ai-assistant,160
+in.search.yahoo.com / referral,53
+gemini.google.com / ai-assistant,23cracknqt-research/
+├── cracknqt-overview.md
+├── premium-experiment.md
+└── student-personas.md
+keep.google.com / referral,12
+linkedin.com / referral,8
+google / cpc,5
+claude.ai / ai-assistant,4
+yahoo / organic,4
+copilot.com / ai-assistant,3
+chatgpt.com / (none),1
+payuin.lightning.force.com / referral,1
+web.telegram.org / referral,1
+
+#  
+# Start date: 20260810
+# End date: 20261107
+Nth day,new,returning
+0000,38,47
+0001,33,29
+0002,42,29
+0003,25,40
+0004,34,42
+0005,49,39
+0006,32,32
+0007,11,18
+0008,10,23
+0009,12,11
+0010,22,11
+0011,21,21
+0012,25,22
+0013,11,20
+0014,10,26
+0015,16,26
+0016,4,7
+0017,3,2
+0018,6,5
+0019,2,2
+0020,11,12
+0021,8,8
+0022,4,7
+0023,3,6
+0024,37,9
+0025,13,4
+0026,7,5
+0027,16,7
+0028,10,7
+0029,17,1
+0030,20,9
+0031,14,10
+0032,16,13
+0033,10,11
+0034,11,10
+0035,13,8
+0036,8,4
+0037,6,6
+0038,17,3
+0039,6,3
+0040,5,3
+0041,21,3
+0042,9,5
+0043,8,6
+0044,7,7
+0045,3,4
+0046,5,5
+0047,9,3
+0048,4,4
+0049,7,5
+0050,6,6
+0051,4,7
+0052,9,2
+0053,3,1
+0054,2,7
+0055,6,6
+0056,7,7
+0057,14,6
+0058,10,7
+0059,4,3
+0060,6,3
+0061,4,4
+0062,8,3
+0063,8,4
+0064,3,3
+0065,9,3
+0066,13,5
+0067,12,6
+0068,5,5
+0069,3,4
+0070,2,2
+0071,1,2
+0072,1,2
+0073,7,3
+0074,6,1
+0075,8,6
+0076,3,4
+0077,2,2
+0078,0,0
+0079,2,2
+0080,4,2
+0081,6,5
+0082,9,2
+0083,4,3
+0084,1,5
+0085,11,2
+0086,0,1
+0087,5,3
+0088,4,2
+0089,22,3
+
+# How does activity on your platforms compare?
+# Start date: 20260810
+# End date: 20261107
+Platform,Key events
+
+
+#  
+# Start date: 20260810
+# End date: 20261107
+City,Active users
+Hyderabad,103
+Chennai,59
+Council Bluffs,51
+Pune,49
+Kolkata,47
+Bengaluru,41
+Lucknow,36
+Sultanpur,31
+Mumbai,24
+Bhopal,19
+Bhubaneswar,19
+Visakhapatnam,19
+Delhi,18
+Indore,17
+Nagpur,17
+Prayagraj,17
+Ahmedabad,16
+Ashta,16
+Kanpur,16
+Vijayawada,16
+Patna,15
+Glenview,14
+Coimbatore,13
+Kochi,13
+Vellore,13
+San Jose,11
+Solapur,10
+Columbus,9
+Secunderabad,8
+Singapore,8
+Ashburn,7
+Bhimavaram,7
+Nellore,7
+New Delhi,7
+Sangola,7
+Flint Hill,6
+Guntur,6
+Gurugram,6
+Kakinada,6
+Kurnool,6
+Mysuru,5
+Noida,5
+Rajanagaram,5
+Varanasi,5
+Beed,4
+Boardman,4
+Des Moines,4
+Durgapur,4
+Gwalior,4
+Hosur,4
+Jaipur,4
+Madurai,4
+New York,4
+Pimpri-Chinchwad,4
+Rajamahendravaram,4
+Salem,4
+Bokaro Steel City,3
+Dehradun,3
+Ghaziabad,3
+Hoshiarpur,3
+Howrah,3
+Jabalpur,3
+Kolhapur,3
+Meerut,3
+Moradabad,3
+Moses Lake,3
+Nanded,3
+North Dumdum,3
+Ongole,3
+Panihati,3
+Sangli Miraj Kupwad,3
+Siliguri,3
+Surat,3
+Thiruvananthapuram,3
+Tirupati,3
+Anantapur,2
+Bankura,2
+Barrackpore,2
+Belagavi,2
+Bhatpara,2
+Bheemunipatnam,2
+Brahmapur,2
+Chhatrapati Sambhajinagar,2
+Erode,2
+Faridabad,2
+Hassan,2
+Hayathnagar,2
+Kalyan,2
+Malegaon,2
+Moscow,2
+Naaldwijk,2
+Narasaraopeta,2
+Navi Mumbai,2
+Pandharpur,2
+Raipur,2
+Rajkot,2
+Shimla,2
+Tanuku,2
+Thane,2
+The Dalles,2
+Tiruchirappalli,2
+Tuljapur,2
+Ulaanbaatar,2
+Vizianagaram,2
+Agartala,1
+Ambikapur,1
+Asansol,1
+Ashoknagar,1
+Badlapur,1
+Balangir,1
+Banda,1
+Bangaon,1
+Baramati,1
+Bardhaman,1
+Bareilly,1
+Bathinda,1
+Beirut,1
+Berhampore,1
+Bhilwara,1
+Bhinga,1
+Bhuvanagiri,1
+Birmingham,1
+Boisar,1
+Bongloor,1
+Bulandshahr,1
+Chakdaha,1
+Chandrapur,1
+Chebrolu,1
+Chilakaluripet,1
+Chirala,1
+Chittaranjan,1
+Conakry,1
+Cooch Behar,1
+Dahmi Kalan,1
+Datia,1
+Denver,1
+Dhaka,1
+Dhanbad,1
+Dibai,1
+Fort Worth,1
+Gannavaram,1
+Ghatiya,1
+Ghatkesar,1
+Ghazipur,1
+Gilbert,1
+Gorakhpur,1
+Greater Noida,1
+Groningen,1
+Guwahati,1
+Haldia,1
+Hanamkonda,1
+Haridwar,1
+Hazaribagh,1
+Hisar,1
+Hong Kong,1
+Ichalkaranji,1
+Ichhapur Defence Estate,1
+Jammu,1
+Jamnagar,1
+Jhansi,1
+Kadiri,1
+Kanchrapara,1
+Karwar,1
+Kasibugga,1
+Khammam,1
+Kharagpur,1
+Kodad,1
+Kodumur,1
+Kollam,1
+Kotdwar,1
+Kottayam,1
+Lahore,1
+Lalitpur,1
+Latehar,1
+Latur,1
+Los Angeles,1
+Machilipatnam,1
+Malda,1
+Mandi,1
+Mylavaram,1
+Narsapur,1
+Nashik,1
+Nizamabad,1
+North Bergen,1
+Nuzvid,1
+Ooty,1
+Palakoderu,1
+Panipat,1
+Panruti,1
+Paris,1
+Perumbavoor,1
+Pithapuram,1
+Ramara,1
+Ranchi,1
+Ratnanagar,1
+Shahjahanpur,1
+Srikakulam,1
+Srivilliputhur,1
+Suginami City,1
+Tadepalligudem,1
+Tehran,1
+Thoothukudi,1
+Thrissur,1
+Tiruppur,1
+Tiruvannamalai,1
+Toshima City,1
+Udaipur,1
+Ulhasnagar,1
+Urun-Ishwarpur,1
+Vadodara,1
+Vasai-Virar,1
+Vempalli,1
+Vidisha,1
+Wah,1
+Walwa,1
+Washington,1
+Yangon,1
+Ypsilanti,1
+
+#  
+# Start date: 20260810
+# End date: 20261107
+Audience name,Active users
+All Users,1083
