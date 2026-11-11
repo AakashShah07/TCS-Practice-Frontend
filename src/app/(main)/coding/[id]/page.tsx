@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -190,6 +190,27 @@ function SolutionSection({
   type: "bruteForce" | "optimal";
 }) {
   const [expanded, setExpanded] = useState(type === "optimal");
+  const [contentHeight, setContentHeight] = useState(0);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+    const handler = () => setPrefersReducedMotion(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    if (expanded && contentRef.current) {
+      const el = contentRef.current;
+      requestAnimationFrame(() => {
+        setContentHeight(el.scrollHeight);
+      });
+    }
+  }, [expanded, contentRef]);
 
   const isBrute = type === "bruteForce";
   const icon = isBrute ? (
@@ -198,44 +219,74 @@ function SolutionSection({
     <Zap className="h-5 w-5 text-emerald-500" />
   );
   const title = isBrute ? "Brute Force / Naive Approach" : "Optimal Solution";
-  const borderColor = isBrute
-    ? "border-amber-200 dark:border-amber-800"
-    : "border-emerald-200 dark:border-emerald-800";
   const headerBg = isBrute
     ? "bg-amber-50 dark:bg-amber-950/30"
     : "bg-emerald-50 dark:bg-emerald-950/30";
+  const headerBorder = isBrute
+    ? "border-amber-200 dark:border-amber-800"
+    : "border-emerald-200 dark:border-emerald-800";
+
+  const contentId = `solution-content-${type}`;
+  const headerId = `solution-header-${type}`;
+
+  const reducedMotion = prefersReducedMotion;
+
+  const contentStyle = {
+    maxHeight: expanded ? contentHeight : 0,
+    opacity: expanded ? 1 : 0,
+    transform: expanded ? "translateY(0)" : "translateY(-4px)",
+    transition: reducedMotion
+      ? "none"
+      : "max-height 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-out, transform 200ms ease-out",
+  };
 
   return (
-    <Card className={`overflow-hidden border-2 ${borderColor}`}>
+    <Card
+      className={cn(
+        "overflow-hidden border border-border/60 bg-card dark:border-border/40 transition-all duration-200 ease-out",
+        expanded
+          ? "border-primary/60 shadow-sm dark:border-primary/40 dark:shadow-amber-900/10"
+          : "hover:border-primary/50 dark:hover:border-primary/30 hover:bg-accent/50 dark:hover:bg-accent/10"
+      )}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
-        className={`w-full flex items-center justify-between px-5 py-4 ${headerBg} cursor-pointer`}
+        aria-expanded={expanded}
+        aria-controls={contentId}
+        className={cn(
+          "w-full flex items-center justify-between px-5 py-4 cursor-pointer transition-colors duration-200",
+          expanded
+            ? "bg-amber-50 dark:bg-amber-950/30 border-amber-100 dark:border-amber-800/50 shadow-sm dark:shadow-amber-900/10"
+            : "bg-transparent hover:bg-accent/50 dark:hover:bg-accent/10"
+        )}
       >
         <div className="flex items-center gap-3">
           {icon}
           <span className="text-lg font-bold">{title}</span>
         </div>
-        <div className="flex items-center gap-3">
-          {expanded ? (
-            <ChevronUp className="h-4 w-4 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 transition-transform duration-200 ease-out",
+            expanded ? "rotate-180" : ""
           )}
-        </div>
+        />
       </button>
 
-      {/* Complexity indicators - always visible below the heading */}
-      <div className="px-5 py-3 border-b border-border/60">
-        <ComplexityIndicator
-          timeComplexity={solution.timeComplexity}
-          spaceComplexity={solution.spaceComplexity}
-        />
-      </div>
+      <div
+        ref={contentRef}
+        id={contentId}
+        className="overflow-hidden"
+        style={contentStyle}
+      >
+        <div className="px-5 py-4">
+          {/* Complexity indicators - staggered entrance */}
+          <ComplexityIndicator
+            timeComplexity={solution.timeComplexity}
+            spaceComplexity={solution.spaceComplexity}
+          />
 
-      {expanded && (
-        <CardContent className="pt-5 space-y-4">
           {/* Approach */}
-          <div className="prose prose-sm dark:prose-invert max-w-none">
+          <div className="prose prose-sm dark:prose-invert max-w-none mt-4">
             <div className="text-base leading-7 whitespace-pre-wrap">
               {solution.approach.split(/\*\*(.*?)\*\*/g).map((part, i) =>
                 i % 2 === 1 ? (
@@ -249,8 +300,8 @@ function SolutionSection({
 
           {/* Code */}
           <CodeBlock code={solution.code} language={solution.language} />
-        </CardContent>
-      )}
+        </div>
+      </div>
     </Card>
   );
 }
