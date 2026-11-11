@@ -23,6 +23,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { fetchCodingQuestion } from "@/lib/api/coding";
+import { cn } from "@/lib/utils";
 import type { CodingQuestion, CodingSolution } from "@/lib/api/types";
 import { usePreventCopy } from "@/hooks/usePreventCopy";
 
@@ -47,9 +48,136 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
       <div className="flex items-center justify-between px-4 py-2 bg-slate-900 dark:bg-slate-800 border-b border-slate-700">
         <span className="text-xs text-slate-400 font-mono">{language}</span>
       </div>
-      <pre className="p-4 overflow-x-auto text-sm leading-relaxed">
+      <pre className="p-4 overflow-x-auto text-base leading-relaxed">
         <code className="text-slate-200 font-mono whitespace-pre">{code}</code>
       </pre>
+    </div>
+  );
+}
+
+function getComplexityInfo(complexity: string): {
+  label: string;
+  description: string;
+} {
+  const n = complexity.trim().toLowerCase().replace(/\s/g, "");
+
+  if (n === "o(1)") {
+    return {
+      label: "Constant",
+      description: "Execution time stays the same regardless of input size.",
+    };
+  }
+  if (n === "o(logn)") {
+    return {
+      label: "Logarithmic",
+      description: "Grows logarithmically with input size.",
+    };
+  }
+  if (n === "o(n)") {
+    return { label: "Linear", description: "Grows linearly with input size." };
+  }
+  if (n === "o(nlogn)") {
+    return {
+      label: "Linearithmic",
+      description: "Grows in proportion to n log n.",
+    };
+  }
+  if (n === "o(n²)" || n === "o(n^2)" || n === "o(n2)") {
+    return {
+      label: "Quadratic",
+      description: "Grows quadratically with input size.",
+    };
+  }
+  if (n === "o(2^n)") {
+    return {
+      label: "Exponential",
+      description: "Grows exponentially with input size.",
+    };
+  }
+  if (n === "o(n!)") {
+    return {
+      label: "Factorial",
+      description: "Grows factorially with input size.",
+    };
+  }
+
+  return {
+    label: "Varies",
+    description: "Complexity depends on input size and implementation.",
+  };
+}
+
+function ComplexityCard({
+  label,
+  value,
+  classification,
+  description,
+  Icon,
+  accentColor,
+}: {
+  label: string;
+  value: string;
+  classification: string;
+  description: string;
+  Icon: React.FC<{ className?: string }>;
+  accentColor: "amber" | "blue";
+}) {
+  const isAmber = accentColor === "amber";
+
+  return (
+    <div className={cn(
+      "rounded-lg border p-4 flex flex-col",
+      isAmber
+        ? "border-amber-200/50 bg-amber-50/60 dark:border-amber-900/40 dark:bg-amber-900/20"
+        : "border-blue-200/50 bg-blue-50/60 dark:border-blue-900/40 dark:bg-blue-900/20"
+    )}>
+      <div className="flex items-start gap-3">
+        <div className={`flex h-8 w-8 items-center justify-center rounded-md ${isAmber ? "bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400" : "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400"}`}>
+          <Icon className="h-4 w-4" />
+        </div>
+        <div className="flex-1">
+          <div className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+            {label}
+          </div>
+          <div className="text-lg font-bold text-foreground">{value}</div>
+          <div className="text-xs font-medium text-foreground">{classification}</div>
+        </div>
+      </div>
+      <div className="mt-3 text-[10px] text-muted-foreground leading-tight">
+        {description}
+      </div>
+    </div>
+  );
+}
+
+function ComplexityIndicator({
+  timeComplexity,
+  spaceComplexity,
+}: {
+  timeComplexity: string;
+  spaceComplexity: string;
+}) {
+  const timeInfo = getComplexityInfo(timeComplexity);
+  const spaceInfo = getComplexityInfo(spaceComplexity);
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <ComplexityCard
+        label="Time Complexity"
+        value={timeComplexity || "N/A"}
+        classification={timeInfo.label}
+        description={timeInfo.description}
+        Icon={Clock}
+        accentColor="amber"
+      />
+      <ComplexityCard
+        label="Space Complexity"
+        value={spaceComplexity || "N/A"}
+        classification={spaceInfo.label}
+        description={spaceInfo.description}
+        Icon={HardDrive}
+        accentColor="blue"
+      />
     </div>
   );
 }
@@ -85,19 +213,9 @@ function SolutionSection({
       >
         <div className="flex items-center gap-3">
           {icon}
-          <span className="font-semibold text-sm">{title}</span>
+          <span className="text-lg font-bold">{title}</span>
         </div>
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2">
-            <Badge variant="outline" className="text-xs gap-1">
-              <Clock className="h-3 w-3" />
-              {solution.timeComplexity}
-            </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
-              <HardDrive className="h-3 w-3" />
-              {solution.spaceComplexity}
-            </Badge>
-          </div>
           {expanded ? (
             <ChevronUp className="h-4 w-4 text-muted-foreground" />
           ) : (
@@ -105,23 +223,20 @@ function SolutionSection({
           )}
         </div>
       </button>
+
+      {/* Complexity indicators - always visible below the heading */}
+      <div className="px-5 py-3 border-b border-border/60">
+        <ComplexityIndicator
+          timeComplexity={solution.timeComplexity}
+          spaceComplexity={solution.spaceComplexity}
+        />
+      </div>
+
       {expanded && (
         <CardContent className="pt-5 space-y-4">
-          {/* Complexity on mobile */}
-          <div className="flex sm:hidden items-center gap-2">
-            <Badge variant="outline" className="text-xs gap-1">
-              <Clock className="h-3 w-3" />
-              {solution.timeComplexity}
-            </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
-              <HardDrive className="h-3 w-3" />
-              {solution.spaceComplexity}
-            </Badge>
-          </div>
-
           {/* Approach */}
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            <div className="text-sm leading-relaxed whitespace-pre-wrap">
+            <div className="text-base leading-7 whitespace-pre-wrap">
               {solution.approach.split(/\*\*(.*?)\*\*/g).map((part, i) =>
                 i % 2 === 1 ? (
                   <strong key={i}>{part}</strong>
@@ -206,18 +321,20 @@ export default function CodingQuestionDetailPage() {
       {/* Title Section */}
       <div className="space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          <h1 className="border-l-4 border-primary pl-3 text-3xl sm:text-4xl leading-tight font-extrabold tracking-tight text-primary">
             {question.title}
           </h1>
-          <Badge className={diff.color}>{diff.label}</Badge>
+          <Badge className={`${diff.color} px-3 py-1 text-base font-bold`}>
+            {diff.label}
+          </Badge>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline" className="gap-1">
-            <Code2 className="h-3 w-3" />
+          <Badge variant="outline" className="gap-1.5 px-3 py-1 text-base font-semibold">
+            <Code2 className="h-4 w-4" />
             {question.topic}
           </Badge>
-          <Badge variant="outline" className="gap-1">
-            <BookOpen className="h-3 w-3" />
+          <Badge variant="outline" className="gap-1.5 px-3 py-1 text-base font-semibold">
+            <BookOpen className="h-4 w-4" />
             {question.source}
           </Badge>
         </div>
@@ -226,22 +343,22 @@ export default function CodingQuestionDetailPage() {
       {/* Problem Description */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Problem Statement</CardTitle>
+          <CardTitle className="text-lg">Problem Statement</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="text-sm leading-relaxed whitespace-pre-wrap">
+          <div className="text-base leading-7 whitespace-pre-wrap">
             {question.description}
           </div>
 
           {/* Constraints */}
           {question.constraints.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold mb-2">Constraints</h4>
+              <h4 className="text-base font-semibold mb-2">Constraints</h4>
               <ul className="space-y-1">
                 {question.constraints.map((c, i) => (
                   <li
                     key={i}
-                    className="text-sm text-muted-foreground font-mono bg-muted/50 px-3 py-1.5 rounded"
+                    className="text-sm sm:text-base text-muted-foreground font-mono bg-muted/50 px-3 py-1.5 rounded"
                   >
                     {c}
                   </li>
@@ -256,7 +373,7 @@ export default function CodingQuestionDetailPage() {
       {question.examples.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Examples</CardTitle>
+            <CardTitle className="text-lg">Examples</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {question.examples.map((ex, i) => (
@@ -274,7 +391,7 @@ export default function CodingQuestionDetailPage() {
                     <p className="text-xs font-semibold text-muted-foreground mb-1">
                       Input
                     </p>
-                    <pre className="text-sm font-mono bg-slate-950 dark:bg-slate-900 text-slate-200 p-3 rounded-md overflow-x-auto">
+                    <pre className="text-base font-mono bg-slate-950 dark:bg-slate-900 text-slate-200 p-3 rounded-md overflow-x-auto">
                       {ex.input}
                     </pre>
                   </div>
@@ -282,7 +399,7 @@ export default function CodingQuestionDetailPage() {
                     <p className="text-xs font-semibold text-muted-foreground mb-1">
                       Output
                     </p>
-                    <pre className="text-sm font-mono bg-slate-950 dark:bg-slate-900 text-slate-200 p-3 rounded-md overflow-x-auto">
+                    <pre className="text-base font-mono bg-slate-950 dark:bg-slate-900 text-slate-200 p-3 rounded-md overflow-x-auto">
                       {ex.output}
                     </pre>
                   </div>
@@ -292,7 +409,7 @@ export default function CodingQuestionDetailPage() {
                     <p className="text-xs font-semibold text-muted-foreground mb-1">
                       Explanation
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-base leading-7 text-muted-foreground">
                       {ex.explanation}
                     </p>
                   </div>
@@ -305,7 +422,7 @@ export default function CodingQuestionDetailPage() {
 
       {/* Solutions */}
       <div className="space-y-4">
-        <h2 className="text-xl font-bold">Solutions</h2>
+        <h2 className="text-2xl font-bold">Solutions</h2>
         <SolutionSection solution={question.bruteForce} type="bruteForce" />
         <SolutionSection solution={question.optimal} type="optimal" />
       </div>
