@@ -37,9 +37,9 @@ import ReviewPage from "@/app/(main)/results/[testId]/review/page";
 import SectionPanel from "@/components/exam/SectionPanel";
 import { useTestStore } from "@/stores/test-store";
 import type { Question, QuestionGroup } from "@/lib/api/types";
-import { INFOSYS_2027_MOCK_TEST_ID } from "@/lib/infosys-mock-test";
+import { INFOSYS_2027_MOCK_TEST_IDS } from "@/lib/infosys-mock-test";
 
-const TARGET_TEST_ID = INFOSYS_2027_MOCK_TEST_ID; // 6aed76cf8a37b5232a789b6f
+const TARGET_TEST_ID = INFOSYS_2027_MOCK_TEST_IDS[0]; // 6aed76cf8a37b5232a789b6f
 const OTHER_TEST_ID = "tcs-nqt-unrelated-mock";
 
 // ── Fixtures mirror the real API response for the target test ─────────────

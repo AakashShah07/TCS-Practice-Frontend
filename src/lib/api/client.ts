@@ -162,6 +162,21 @@ function toastNetworkOnce() {
 }
 
 // ---------------------------------------------------------------------------
+// Request deduplication — prevents duplicate API calls (e.g. React Strict Mode
+// double-mounting in development). In-flight requests are shared by URL.
+// ---------------------------------------------------------------------------
+
+const pendingRequests = new Map<string, Promise<any>>();
+
+function dedupeRequest<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  const existing = pendingRequests.get(key);
+  if (existing) return existing as Promise<T>;
+  const promise = fn().finally(() => pendingRequests.delete(key));
+  pendingRequests.set(key, promise);
+  return promise;
+}
+
+// ---------------------------------------------------------------------------
 // Response interceptor — exact backend contract handling.
 // ---------------------------------------------------------------------------
 
@@ -237,3 +252,4 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
+export { dedupeRequest };

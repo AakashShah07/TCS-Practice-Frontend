@@ -13,7 +13,7 @@ import {
   RefreshCw,
   AlertCircle,
 } from "lucide-react";
-import { fetchTests } from "@/lib/api/tests";
+import { fetchInfosysMocks } from "@/lib/api/tests";
 import type { Test } from "@/lib/api/types";
 import { useAuthStore } from "@/stores/auth-store";
 import { INFOSYS_MOCK_TESTS } from "@/lib/infosys-2027-mocks";
@@ -42,14 +42,14 @@ export default function InfosysMocksPage() {
     let cancelled = false;
     async function load() {
       try {
-        // Load from the test list endpoint (not get-by-id) so that premium
-        // mocks remain visible-but-locked for users without a subscription.
-        const tests = await fetchTests();
+        // Fetch only the four Infosys SE 2027 mock tests via the dedicated
+        // backend endpoint — avoids downloading the full test collection.
+        const tests = await fetchInfosysMocks();
         const byId = new Map<string, Test>(tests.map((t) => [t._id, t]));
         const loaded: LoadedMock[] = [];
         INFOSYS_MOCK_TESTS.forEach((config, configIndex) => {
           const test = byId.get(config.id);
-          if (test && test.isActive !== false) {
+          if (test) {
             loaded.push({ test, configIndex });
           }
         });
